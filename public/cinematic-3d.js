@@ -2,28 +2,17 @@
 (()=>{
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  // Wire menu button toggle for responsive navigation drawer
-  const menuBtn = document.querySelector('.btn-menu, .menu-toggle');
-  const nav = document.querySelector('.header-nav, nav');
-  if (menuBtn && nav) {
-    menuBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const isOpen = nav.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(isOpen));
-      menuBtn.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
-      document.body.style.overflow = isOpen && window.innerWidth <= 960 ? 'hidden' : '';
-    });
-    nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
+  // Menu drawer close when clicking outside or pressing Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const nav = document.querySelector('.header-nav');
+      const menuBtn = document.querySelector('.btn-menu');
+      if (nav && nav.classList.contains('open')) {
         nav.classList.remove('open');
-        document.body.style.overflow = '';
-        if (menuBtn) {
-          menuBtn.setAttribute('aria-expanded', 'false');
-          menuBtn.setAttribute('aria-label', 'Open navigation');
-        }
-      });
-    });
-  }
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
 
   // Wire Book Now buttons to open booking modal
   document.querySelectorAll('.btn-book-now, [data-book]').forEach(btn => {
