@@ -39,7 +39,7 @@ $$('[data-image]').forEach(b=>b.addEventListener('click',()=>{showPhoto(Number(b
 
 
 // Araliya and Olu are separate private villas. No live inventory is inferred.
-const channelUrls={booking:'https://www.booking.com/hotel/lk/tranquil-terrace-galle-galle1.html',agoda:'https://www.agoda.com/tranquil-terrace-galle-h79594102/hotel/galle-lk.html',airbnb:'https://www.airbnb.com/rooms/1493263628966005427'};
+const channelUrls={booking:'https://www.booking.com/hotel/lk/tranquil-terrace-galle-galle1.html?aid=356980',agoda:'https://www.agoda.com/tranquil-terrace-galle-h79594102/hotel/galle-lk.html',airbnb:'https://www.airbnb.co.in/rooms/1493263628966005427'};
 function channelHref(provider,arrival='',departure='',guests='2'){
  const url=new URL(channelUrls[provider]);
  if(arrival&&departure&&departure>arrival){

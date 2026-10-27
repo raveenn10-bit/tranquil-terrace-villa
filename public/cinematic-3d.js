@@ -1,40 +1,70 @@
 'use strict';
 (()=>{
- const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- const header=document.querySelector('header');
- if(header&&!header.querySelector('.site-utilities')){
-  const utilities=document.createElement('div');
-  utilities.className='site-utilities';
-  utilities.setAttribute('aria-label','Quick contact');
-  utilities.innerHTML='<a class="utility-call" href="tel:+94770682366">CALL</a><a class="utility-whatsapp" href="https://wa.me/94770682366" target="_blank" rel="noopener">WHATSAPP</a>';
-  const nav=header.querySelector('nav');
-  header.insertBefore(utilities,nav);
+ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+ 
+ // Wire menu button toggle for responsive navigation
+ const menuBtn = document.querySelector('.btn-menu, .menu-toggle');
+ const nav = document.querySelector('.header-nav, nav');
+ if (menuBtn && nav) {
+   menuBtn.addEventListener('click', (e) => {
+     e.preventDefault();
+     const isOpen = nav.classList.toggle('open');
+     menuBtn.setAttribute('aria-expanded', String(isOpen));
+   });
+   nav.querySelectorAll('a').forEach(link => {
+     link.addEventListener('click', () => {
+       nav.classList.remove('open');
+       if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+     });
+   });
  }
- if(reduced)return;
- const interactive=[...document.querySelectorAll('.split-hero,.inner-hero,.story')];
- interactive.forEach(section=>section.addEventListener('pointermove',event=>{
-  const r=section.getBoundingClientRect();
-  section.style.setProperty('--mx',`${((event.clientX-r.left)/r.width*100).toFixed(1)}%`);
-  section.style.setProperty('--my',`${((event.clientY-r.top)/r.height*100).toFixed(1)}%`);
- }));
- const tilts=[...document.querySelectorAll('.hero-right,.inner-photo')];
- tilts.forEach(card=>{
-  card.addEventListener('pointermove',event=>{
-   if(innerWidth<=800)return;
-   const r=card.getBoundingClientRect(),x=(event.clientX-r.left)/r.width-.5,y=(event.clientY-r.top)/r.height-.5;
-   card.style.transform=`rotateX(${(-y*3.5).toFixed(2)}deg) rotateY(${(x*4.5).toFixed(2)}deg) translateZ(8px)`;
-  });
-  card.addEventListener('pointerleave',()=>card.style.transform='');
+
+ // Wire Book Now buttons to open booking modal
+ document.querySelectorAll('.btn-book-now, [data-book]').forEach(btn => {
+   btn.addEventListener('click', () => {
+     const bookingDialog = document.getElementById('booking');
+     if (bookingDialog && typeof bookingDialog.showModal === 'function') {
+       bookingDialog.showModal();
+     }
+   });
  });
- document.querySelectorAll('.frame').forEach(frame=>frame.addEventListener('pointermove',event=>{
-  const r=frame.getBoundingClientRect();
-  frame.style.setProperty('--frame-x',`${((event.clientX-r.left)/r.width*100).toFixed(1)}%`);
-  frame.style.setProperty('--frame-y',`${((event.clientY-r.top)/r.height*100).toFixed(1)}%`);
+
+ if (reduced) return;
+
+ // Interactive luxury pointer sheen
+ const interactive = [...document.querySelectorAll('.split-hero, .inner-hero, .story')];
+ interactive.forEach(section => section.addEventListener('pointermove', event => {
+   const r = section.getBoundingClientRect();
+   section.style.setProperty('--mx', `${((event.clientX - r.left) / r.width * 100).toFixed(1)}%`);
+   section.style.setProperty('--my', `${((event.clientY - r.top) / r.height * 100).toFixed(1)}%`);
  }));
- let last=scrollY;
- addEventListener('scroll',()=>{
-  const current=scrollY;
-  document.body.dataset.scrollDirection=current>last?'down':'up';
-  last=current;
- },{passive:true});
+
+ // Gentle 3D perspective tilt
+ const tilts = [...document.querySelectorAll('.hero-right, .inner-photo, .collection-card .frame')];
+ tilts.forEach(card => {
+   card.addEventListener('pointermove', event => {
+     if (innerWidth <= 800) return;
+     const r = card.getBoundingClientRect();
+     const x = (event.clientX - r.left) / r.width - 0.5;
+     const y = (event.clientY - r.top) / r.height - 0.5;
+     card.style.transform = `rotateX(${(-y * 4).toFixed(2)}deg) rotateY(${(x * 5).toFixed(2)}deg) translateZ(10px)`;
+   });
+   card.addEventListener('pointerleave', () => {
+     card.style.transform = '';
+   });
+ });
+
+ // Shimmer light following pointer on photography frames
+ document.querySelectorAll('.frame').forEach(frame => frame.addEventListener('pointermove', event => {
+   const r = frame.getBoundingClientRect();
+   frame.style.setProperty('--frame-x', `${((event.clientX - r.left) / r.width * 100).toFixed(1)}%`);
+   frame.style.setProperty('--frame-y', `${((event.clientY - r.top) / r.height * 100).toFixed(1)}%`);
+ }));
+
+ let last = scrollY;
+ addEventListener('scroll', () => {
+   const current = scrollY;
+   document.body.dataset.scrollDirection = current > last ? 'down' : 'up';
+   last = current;
+ }, { passive: true });
 })();

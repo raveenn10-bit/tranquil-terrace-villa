@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  outputFileTracingIncludes: {
-    "/**": ["./legacy-site/**/*", "./public/**/*"],
-  },
+  reactStrictMode: true,
 };
 
 export default nextConfig;
