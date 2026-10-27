@@ -1,12 +1,16 @@
 import { getPageContent } from "@/lib/pages-content";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   _request: Request,
-  context: { params: Promise<{ slug?: string[] }> },
+  context: any,
 ) {
-  const { slug } = await context.params;
-  const key = (slug ?? []).join("/");
-  const html = getPageContent(key);
+  const params = await context?.params;
+  const slug = params?.slug;
+  const key = Array.isArray(slug) ? slug.join("/") : (slug || "");
+  const fileName = key === "" ? "index.html" : (key.endsWith(".html") ? key : `${key}.html`);
+  const html = getPageContent(fileName);
 
   if (!html) {
     return new Response("Not found", { status: 404 });

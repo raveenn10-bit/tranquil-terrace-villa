@@ -184,17 +184,5 @@ function createMemoryDb() {
 }
 
 export function getDb(): any {
-  // If Cloudflare D1 binding is present at runtime, dynamically use it
-  const cfEnv = (globalThis as any).DB ? (globalThis as any) : ((globalThis as any).process?.env || {});
-  if (cfEnv.DB && typeof cfEnv.DB.prepare === "function") {
-    try {
-      // Dynamic import to avoid build-time failure on non-Cloudflare environments like Vercel
-      const { drizzle } = require("drizzle-orm/d1");
-      return drizzle(cfEnv.DB, { schema });
-    } catch {
-      // Fall through to memory DB
-    }
-  }
-
   return createMemoryDb();
 }

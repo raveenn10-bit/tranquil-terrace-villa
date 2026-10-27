@@ -10,14 +10,15 @@ function textValue(value: unknown, max = 500) {
 
 export async function PATCH(
   request: Request,
-  context: { params: Promise<{ id: string }> },
+  context: any,
 ) {
   if (!isAdminRequest(request)) {
     return Response.json({ error: "Owner access required." }, { status: 403 });
   }
 
   try {
-    const { id } = await context.params;
+    const params = await context?.params;
+    const id = params?.id;
     const db = getDb();
     const [current] = await db.select().from(bookings).where(eq(bookings.id, id)).limit(1);
     if (!current) return Response.json({ error: "Booking not found." }, { status: 404 });
