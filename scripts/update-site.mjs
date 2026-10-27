@@ -13,7 +13,7 @@ const WHATSAPP_URL = "https://wa.me/94770682366";
 const PHONE_NUMBER = "+94 77 068 2366";
 const TEL_URL = "tel:+94770682366";
 
-// 1. Update app.js in both public and legacy-site, and copy CSS/JS assets
+// 1. Copy CSS/JS assets from public/ to legacy-site/
 for (const file of ["cinematic-3d.css", "cinematic-3d.js", "style.css", "redesign.css", "booking.css", "motion.css"]) {
   const src = path.join(root, "public", file);
   const dst = path.join(root, "legacy-site", file);
@@ -23,6 +23,7 @@ for (const file of ["cinematic-3d.css", "cinematic-3d.js", "style.css", "redesig
   }
 }
 
+// 2. Update app.js in both public/ and legacy-site/
 for (const dir of ["public", "legacy-site"]) {
   const appJsPath = path.join(root, dir, "app.js");
   if (fs.existsSync(appJsPath)) {
@@ -33,12 +34,16 @@ for (const dir of ["public", "legacy-site"]) {
     );
     content = content.replace(/wa\.me\/\d+/g, "wa.me/94770682366");
     content = content.replace(/tel:\+?\d+/g, TEL_URL);
+    content = content.replace(
+      /const footerBottom=\$\('\.new-footer \.footer-bottom'\);if\(footerBottom\)\{const adminLink=document\.createElement\('a'\);adminLink\.href='\/admin';adminLink\.textContent='ADMIN DASHBOARD ↗';adminLink\.setAttribute\('aria-label','Open booking dashboard'\);footerBottom\.insertBefore\(adminLink,footerBottom\.lastElementChild\)\}/,
+      `const footerBottom=$('.new-footer .footer-bottom');if(footerBottom&&!footerBottom.querySelector('a[href="/admin"]')){const adminLink=document.createElement('a');adminLink.href='/admin';adminLink.className='footer-admin-link';adminLink.textContent='Staff Portal ↗';adminLink.setAttribute('aria-label','Open booking dashboard');footerBottom.insertBefore(adminLink,footerBottom.lastElementChild)}`
+    );
     fs.writeFileSync(appJsPath, content, "utf-8");
     console.log(`Updated ${appJsPath}`);
   }
 }
 
-// 2. Taru-style Header HTML
+// 3. Taru-style Header HTML
 const taruHeaderHtml = (activePage) => `
 <header class="taru-header">
   <div class="header-left">
@@ -88,29 +93,178 @@ const taruHeaderHtml = (activePage) => `
 </header>
 `.trim();
 
-// 3. Social Media HTML block for footer
-const socialBlockHtml = `
-<div class="footer-social-section">
-  <span>CONNECT WITH US</span>
-  <div class="social-links-grid">
-    <a class="social-link" href="${IG_URL}" target="_blank" rel="noopener" aria-label="Instagram">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      <span>Instagram</span>
-    </a>
-    <a class="social-link" href="${FB_URL}" target="_blank" rel="noopener" aria-label="Facebook">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-      <span>Facebook</span>
-    </a>
-    <a class="social-link" href="${TIKTOK_URL}" target="_blank" rel="noopener" aria-label="TikTok">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v2a7 7 0 0 1-5-2.2V16a6 6 0 1 1-6-6v2z"/></svg>
-      <span>TikTok</span>
-    </a>
-    <a class="social-link" href="${WHATSAPP_URL}" target="_blank" rel="noopener" aria-label="WhatsApp">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-      <span>WhatsApp</span>
-    </a>
+// 4. World-Class Luxury Footer HTML (Taru Villas Inspired)
+const taruFooterHtml = `
+<footer class="new-footer" id="site-footer">
+  <div class="footer-invite">
+    <div class="footer-invite-text">
+      <p class="eyebrow">A LITTLE LESS ORDINARY · GALLE, SRI LANKA</p>
+      <h2>Your next chapter,<br/><em>at a slower pace.</em></h2>
+      <p class="footer-invite-sub">Two private luxury villas nestled in tropical cinnamon groves. Direct reservations receive guaranteed best rates and personalized concierge.</p>
+    </div>
+    <button class="reserve-orbit" data-book="" aria-label="Plan your stay at Tranquil Terrace Galle">
+      <span>Plan<br/>Your Stay</span>
+      <b>↗</b>
+      <i></i>
+    </button>
   </div>
-</div>
+
+  <div class="landscape-wrap">
+    <svg aria-hidden="true" class="villa-landscape" fill="none" viewbox="0 0 1400 380">
+      <defs>
+        <lineargradient id="poolGlow" x2="0" y2="1">
+          <stop stop-color="#b1c7b1" stop-opacity=".18"></stop>
+          <stop offset="1" stop-color="#b1c7b1" stop-opacity="0"></stop>
+        </lineargradient>
+        <radialgradient id="lamp">
+          <stop stop-color="#e1ba70" stop-opacity=".5"></stop>
+          <stop offset="1" stop-color="#e1ba70" stop-opacity="0"></stop>
+        </radialgradient>
+      </defs>
+      <g stroke="currentColor" stroke-width="1.2">
+        <path d="M300 239H1065M354 237V142H973V237M327 143L384 103H938L995 143ZM384 103V94H938V103M362 151H965M398 236V160H477V236M850 236V160H929V236M540 237V160H795V237M560 237V167H622V237M644 237V167H706V237M728 237V167H775V237M622 167L604 177V237M644 167L662 177V237"></path>
+        <path class="curtain" d="M485 149Q517 180 482 234M842 149Q810 180 845 234"></path>
+        <path d="M382 237L308 275H1068L990 237M308 275L274 298H1104L1068 275M360 255H1018L1042 271H333ZM333 271V278M1042 271V278"></path>
+        <path d="M406 237V201a29 29 0 0 1 58 0V237M412 232V202a23 23 0 0 1 46 0V232"></path>
+        <path class="pool-line" d="M367 259Q400 253 433 259T499 259T565 259T631 259T697 259T763 259T829 259T895 259T961 259"></path>
+        <path class="pool-line wave-delay" d="M350 266Q390 260 430 266T510 266T590 266T670 266T750 266T830 266T910 266T990 266"></path>
+        <path d="M320 239Q310 215 296 232Q289 195 275 225Q258 201 255 235M1013 240Q1022 208 1038 228Q1055 201 1057 238"></path>
+        <g class="palm-left"><path d="M214 283Q228 190 204 75M206 84Q145 43 90 85Q149 56 206 84ZM206 84Q188 13 129 23Q175 30 206 84ZM206 84Q217 7 268 16Q230 39 206 84ZM206 84Q272 35 312 76Q249 60 206 84ZM206 84Q276 95 273 157Q246 107 206 84ZM206 84Q158 100 150 155Q143 107 206 84Z"></path></g>
+        <g class="palm-right"><path d="M1195 290Q1170 190 1198 85M1198 90Q1134 41 1088 75Q1141 65 1198 90ZM1198 90Q1183 20 1134 27Q1180 53 1198 90ZM1198 90Q1215 13 1267 32Q1223 46 1198 90ZM1198 90Q1260 45 1312 88Q1251 71 1198 90ZM1198 90Q1269 102 1260 155Q1233 112 1198 90ZM1198 90Q1144 107 1146 160Q1127 120 1198 90Z"></path></g>
+        <path class="bird bird-one" d="M1020 55Q1030 46 1040 55Q1050 46 1060 55"></path>
+        <path class="bird bird-two" d="M1085 38Q1092 31 1099 38Q1106 31 1113 38"></path>
+        <path d="M110 299H1280" opacity=".5"></path>
+      </g>
+      <ellipse class="lamp-glow" cx="435" cy="205" fill="url(#lamp)" rx="65" ry="62"></ellipse>
+      <path d="M360 257H1017L1042 271H334Z" fill="url(#poolGlow)"></path>
+      <circle cx="1015" cy="92" opacity=".45" r="24" stroke="currentColor" stroke-width=".8"></circle>
+    </svg>
+    <p>AN INTIMATE PRIVATE SANCTUARY · GALLE, SRI LANKA</p>
+  </div>
+
+  <div class="footer-grid footer-links">
+    <!-- Col 1: Brand & Badges -->
+    <div class="footer-col footer-col-brand">
+      <a aria-label="Tranquil Terrace Galle home" class="brand brand-logo footer-logo" href="index.html">
+        <img src="assets/tranquil-terrace-logo.webp" alt="Tranquil Terrace Galle — Private Villa" width="1200" height="420" loading="lazy"/>
+      </a>
+      <p class="footer-brand-desc">Two private pool villas set amidst lush cinnamon hills in Galle, Sri Lanka. Designed for stillness, curated comfort, and slow tropical living.</p>
+      <div class="footer-badges">
+        <a class="footer-badge" href="https://www.google.com/maps/place/Tranquil+Terrace+Galle/@6.0750215,80.2264243,17z/data=!4m11!3m10!1s0x3ae17190008d4b95:0x7d9bae152f119179!5m2!4m1!1i2!8m2!3d6.0750215!4d80.2264243!9m1!1b1!16s%2Fg%2F11xsjw9mts!18m1!1e1" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="#b79258" width="13" height="13"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span><strong>4.8 / 5.0</strong> Google Reviews (49 verified stays) ↗</span>
+        </a>
+        <a class="footer-badge" href="contact.html#stay-calendar">
+          <span class="footer-sync-dot"></span>
+          <span>Live 2-Way Calendar Synced (Booking/Agoda/Airbnb)</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Col 2: Navigation -->
+    <div class="footer-col footer-col-nav">
+      <span class="footer-col-title">EXPLORE</span>
+      <ul class="footer-nav-list">
+        <li><a href="villas.html">The Private Villas</a></li>
+        <li><a href="experiences.html">Signature Experiences</a></li>
+        <li><a href="gallery.html">Visual Journal &amp; Film</a></li>
+        <li><a href="explore-galle.html">Explore Galle &amp; Fort</a></li>
+        <li><a href="contact.html">Contact &amp; Location</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 3: Direct Contact -->
+    <div class="footer-col footer-col-contact">
+      <span class="footer-col-title">SAY HELLO</span>
+      <div class="footer-contact-items">
+        <a class="footer-contact-link phone-link" href="${TEL_URL}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>${PHONE_NUMBER}</span>
+        </a>
+        <button class="footer-contact-link whatsapp-direct" data-book="" aria-label="Enquire on WhatsApp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Enquire on WhatsApp ↗</span>
+        </button>
+        <a class="footer-contact-link map-link" href="https://maps.app.goo.gl/RJAmGePoCYyHsJYX8" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Galle, Sri Lanka (Google Maps ↗)</span>
+        </a>
+        <p class="footer-motto">Two private villas.<br/>One tranquil escape.</p>
+      </div>
+    </div>
+
+    <!-- Col 4: Booking Channels Cards -->
+    <div class="footer-col footer-col-booking footer-platforms">
+      <span class="footer-col-title">BOOK YOUR STAY</span>
+      <div class="footer-channel-cards">
+        <a class="footer-channel-card channel-booking" data-channel="booking" href="${BOOKING_URL}" rel="noopener" target="_blank">
+          <div class="channel-card-left">
+            <span class="channel-card-name">Booking.com</span>
+            <span class="channel-card-sub">Preferred Partner · Instant Confirmation</span>
+          </div>
+          <span class="channel-card-arrow">↗</span>
+        </a>
+        <a class="footer-channel-card channel-airbnb" data-channel="airbnb" href="${AIRBNB_URL}" rel="noopener" target="_blank">
+          <div class="channel-card-left">
+            <span class="channel-card-name">Airbnb</span>
+            <span class="channel-card-sub">Superhost · Guest Favourite</span>
+          </div>
+          <span class="channel-card-arrow">↗</span>
+        </a>
+        <a class="footer-channel-card channel-agoda" data-channel="agoda" href="${AGODA_URL}" rel="noopener" target="_blank">
+          <div class="channel-card-left">
+            <span class="channel-card-name">Agoda</span>
+            <span class="channel-card-sub">Top Villa Galle · Best Rates</span>
+          </div>
+          <span class="channel-card-arrow">↗</span>
+        </a>
+        <a class="footer-channel-card footer-calendar-card" href="contact.html#stay-calendar">
+          <div class="channel-card-left">
+            <span class="channel-card-name">Live Stay Calendar</span>
+            <span class="channel-card-sub">Real-Time Synced Availability 2026/27</span>
+          </div>
+          <span class="channel-card-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Media Community Bar -->
+  <div class="footer-social-section">
+    <span class="social-header">CONNECT WITH US</span>
+    <div class="social-links-grid">
+      <a class="social-link" href="${IG_URL}" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <span>Instagram</span>
+      </a>
+      <a class="social-link" href="${FB_URL}" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        <span>Facebook</span>
+      </a>
+      <a class="social-link" href="${TIKTOK_URL}" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v2a7 7 0 0 1-5-2.2V16a6 6 0 1 1-6-6v2z"/></svg>
+        <span>TikTok</span>
+      </a>
+      <a class="social-link" href="${WHATSAPP_URL}" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Refined Luxury Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-left">
+      <span>© 2026 Tranquil Terrace Galle · All Rights Reserved</span>
+      <span class="footer-bottom-divider">·</span>
+      <span class="footer-bottom-tagline">PRIVATE BY NATURE · TRANQUIL BY DESIGN</span>
+    </div>
+    <div class="footer-bottom-right">
+      <a class="footer-admin-link" href="/admin" aria-label="Staff Portal">Staff Portal ↗</a>
+      <a class="footer-back-to-top" href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
 `.trim();
 
 const htmlFiles = [
@@ -128,42 +282,13 @@ for (const fileName of htmlFiles) {
   const sourcePath = path.join(root, "public", fileName);
   let html = fs.readFileSync(sourcePath, "utf-8");
 
-  // Replace header with Taru-style header
+  // 1. Replace header with Taru-style header
   html = html.replace(/<header[\s\S]*?<\/header>/, taruHeaderHtml(fileName));
 
-  // Update Booking.com link
-  html = html.replace(
-    /href="https:\/\/www\.booking\.com\/hotel\/lk\/tranquil-terrace-galle-galle1\.html[^"]*"/g,
-    `href="${BOOKING_URL}"`
-  );
+  // 2. Replace footer with unified Luxury Taru-style footer
+  html = html.replace(/<footer[\s\S]*?<\/footer>/, taruFooterHtml);
 
-  // Update Airbnb link
-  html = html.replace(
-    /href="https:\/\/www\.airbnb\.com\/rooms\/1493263628966005427[^"]*"/g,
-    `href="${AIRBNB_URL}"`
-  );
-
-  // Update Agoda link
-  html = html.replace(
-    /href="https:\/\/www\.agoda\.com\/tranquil-terrace-galle-h79594102\/hotel\/galle-lk\.html[^"]*"/g,
-    `href="${AGODA_URL}"`
-  );
-
-  // Ensure WhatsApp links
-  html = html.replace(/href="https:\/\/wa\.me\/\d+[^"]*"/g, `href="${WHATSAPP_URL}"`);
-
-  // Ensure phone number text and tel link
-  html = html.replace(/href="tel:\+?\d+"/g, `href="${TEL_URL}"`);
-
-  // Inject social block into footer if not present
-  if (!html.includes("footer-social-section")) {
-    html = html.replace(
-      /<div class="footer-bottom">/,
-      `${socialBlockHtml}\n<div class="footer-bottom">`
-    );
-  }
-
-  // Save to public and legacy-site
+  // 3. Save to public and legacy-site
   fs.writeFileSync(path.join(root, "public", fileName), html, "utf-8");
   fs.writeFileSync(path.join(root, "legacy-site", fileName), html, "utf-8");
 
@@ -171,7 +296,7 @@ for (const fileName of htmlFiles) {
   console.log(`Updated ${fileName} in public/ and legacy-site/`);
 }
 
-// 4. Generate lib/pages-content.ts with zero runtime fs access
+// 5. Generate lib/pages-content.ts with zero runtime fs access
 const pagesContentCode = `// Generated pages module - zero runtime filesystem access to ensure 100% Vercel & Turbopack build compatibility
 export const pages: Record<string, string> = ${JSON.stringify(processedPages, null, 2)};
 
