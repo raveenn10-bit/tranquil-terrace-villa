@@ -56,29 +56,125 @@ refreshChannels();
 if($('#stay-calendar')){
  const today=localDate(),base=new Date(today+'T12:00:00'),months=$('#calendar-months'),status=$('#calendar-status');
  let monthOffset=0,start='',end='';
+ let blockedDates=new Set(),bookedRanges=[],isSyncing=false;
  const shortDate=v=>new Date(v+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+ async function fetchAvailability(vName){
+  isSyncing=true;
+  if(status)status.textContent=`Syncing live calendar with Booking.com, Agoda & Airbnb for Villa ${vName}…`;
+  try{
+   const res=await fetch(`/api/calendar/availability?villa=${encodeURIComponent(vName)}`);
+   if(res.ok){
+    const d=await res.json();
+    blockedDates=new Set(d.blockedDates||[]);
+    bookedRanges=d.bookedRanges||[];
+   }
+  }catch(err){console.warn('Sync fetch error:',err)}
+  finally{isSyncing=false;renderCalendar();}
+ }
+
+ function hasOverlap(a,b){
+  try{
+   const cur=new Date(a+'T12:00:00Z'),stop=new Date(b+'T12:00:00Z');
+   while(cur<stop){
+    if(blockedDates.has(cur.toISOString().slice(0,10)))return true;
+    cur.setUTCDate(cur.getUTCDate()+1);
+   }
+  }catch(e){}
+  return false;
+ }
+
  function monthMarkup(offset){
   const date=new Date(base.getFullYear(),base.getMonth()+offset,1),year=date.getFullYear(),month=date.getMonth(),count=new Date(year,month+1,0).getDate(),leading=(date.getDay()+6)%7;
   const name=date.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
   let days=Array.from({length:leading},()=>'<span class="cal-empty" aria-hidden="true"></span>').join('');
   for(let n=1;n<=count;n++){
-   const value=localDate(new Date(year,month,n)),past=value<today,endpoint=value===start||value===end,inRange=start&&end&&value>start&&value<end;
-   days+=`<button type="button" data-date="${value}" class="cal-day${endpoint?' chosen':''}${inRange?' in-range':''}${value===today?' today':''}" ${past?'disabled':''} aria-label="${shortDate(value)}${value===start?', check-in':value===end?', check-out':''}" aria-pressed="${endpoint}" ${value===today?'aria-current="date"':''}>${n}</button>`;
+   const value=localDate(new Date(year,month,n));
+   const past=value<today;
+   const isBooked=blockedDates.has(value);
+   const endpoint=value===start||value===end;
+   const inRange=start&&end&&value>start&&value<end;
+   const rangeInfo=isBooked?bookedRanges.find(r=>r.start<=value&&value<r.end):null;
+   const srcLabel=rangeInfo?rangeInfo.source:'Reserved';
+   const titleTxt=isBooked?`Reserved via ${srcLabel}`:shortDate(value);
+   const ariaTxt=isBooked?`${shortDate(value)} (Reserved via ${srcLabel})`:`${shortDate(value)}${value===start?', check-in':value===end?', check-out':''}`;
+
+   days+=`<button type="button" data-date="${value}" class="cal-day${isBooked?' booked':''}${endpoint?' chosen':''}${inRange?' in-range':''}${value===today?' today':''}" ${(past||isBooked)?'disabled':''} title="${titleTxt}" aria-label="${ariaTxt}" aria-pressed="${endpoint}" ${value===today?'aria-current="date"':''}>${n}</button>`;
   }
   return `<div class="cal-month" role="group" aria-label="${name}"><h3>${name}</h3><div class="cal-week" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="cal-days">${days}</div></div>`;
  }
+
  function syncCalendar(){
   $('#cal-in').textContent=start?shortDate(start):'Select arrival';$('#cal-out').textContent=end?shortDate(end):'Select departure';
-  if(start&&end){let n=Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(start+'T12:00:00Z'))/86400000),villa=$('#calendar-villa').value;status.textContent=`${n} night${n===1?'':'s'} · Villa ${villa} · Availability to be confirmed.`;quick.elements.villa.value=villa;quick.elements.checkin.value=start;quick.elements.checkout.value=end;quick.elements.guests.value=$('#calendar-guests').value;syncDates(quick);refreshChannels(start,end,$('#calendar-guests').value);}
-  else{status.textContent=start?'Now choose your check-out date.':'Choose your check-in date, then your check-out date.';refreshChannels('','',$('#calendar-guests').value);}
+  if(start&&end){
+   let n=Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(start+'T12:00:00Z'))/86400000),villa=$('#calendar-villa').value;
+   status.textContent=`${n} night${n===1?'':'s'} · Villa ${villa} · Available for your stay (Live synced).`;
+   quick.elements.villa.value=villa;quick.elements.checkin.value=start;quick.elements.checkout.value=end;quick.elements.guests.value=$('#calendar-guests').value;
+   syncDates(quick);refreshChannels(start,end,$('#calendar-guests').value);
+  }else if(!isSyncing){
+   status.textContent=start?'Now choose your check-out date.':'Choose your check-in date, then your check-out date (Live synced with Booking.com, Agoda & Airbnb).';
+   refreshChannels('','',$('#calendar-guests').value);
+  }
  }
- function renderCalendar(){months.innerHTML=monthMarkup(monthOffset)+monthMarkup(monthOffset+1);$('#cal-prev').disabled=monthOffset===0;$('#cal-next').disabled=monthOffset>=17;syncCalendar();}
- months.addEventListener('click',e=>{const b=e.target.closest('[data-date]');if(!b||b.disabled)return;const v=b.dataset.date;if(!start||end||v<=start){start=v;end='';}else end=v;renderCalendar();const selected=months.querySelector(`[data-date="${v}"]`);selected?.focus({preventScroll:true});});
- $('#cal-prev').addEventListener('click',()=>{if(monthOffset>0){monthOffset--;renderCalendar();}});$('#cal-next').addEventListener('click',()=>{if(monthOffset<17){monthOffset++;renderCalendar();}});
+
+ function renderCalendar(){
+  months.innerHTML=monthMarkup(monthOffset)+monthMarkup(monthOffset+1);
+  $('#cal-prev').disabled=monthOffset===0;
+  $('#cal-next').disabled=monthOffset>=17;
+  syncCalendar();
+ }
+
+ months.addEventListener('click',e=>{
+  const b=e.target.closest('[data-date]');
+  if(!b||b.disabled)return;
+  const v=b.dataset.date;
+  if(blockedDates.has(v)){
+   status.textContent=`${shortDate(v)} is already reserved on Booking.com/Agoda/Airbnb.`;
+   return;
+  }
+  if(!start||end||v<=start){
+   start=v;end='';
+  }else{
+   if(hasOverlap(start,v)){
+    status.textContent='The selected dates include an existing OTA reservation. Please pick available dates.';
+    return;
+   }
+   end=v;
+  }
+  renderCalendar();
+  const selected=months.querySelector(`[data-date="${v}"]`);
+  selected?.focus({preventScroll:true});
+ });
+
+ $('#cal-prev').addEventListener('click',()=>{if(monthOffset>0){monthOffset--;renderCalendar();}});
+ $('#cal-next').addEventListener('click',()=>{if(monthOffset<17){monthOffset++;renderCalendar();}});
  $('#cal-clear').addEventListener('click',()=>{start='';end='';quick.elements.checkin.value='';quick.elements.checkout.value='';syncDates(quick);renderCalendar();});
  $('#calendar-guests').addEventListener('change',()=>{quick.elements.guests.value=$('#calendar-guests').value;syncCalendar();});
- $('#calendar-villa').addEventListener('change',()=>{quick.elements.villa.value=$('#calendar-villa').value;syncCalendar();});
- $('#calendar-enquire').addEventListener('click',()=>{if(!start||!end){status.textContent='Please select both check-in and check-out dates first.';months.querySelector('[data-date]:not([disabled])')?.focus();return;}openBooking({villa:$('#calendar-villa').value,checkin:start,checkout:end,guests:$('#calendar-guests').value});refreshChannels(start,end,$('#calendar-guests').value);});
- quick.addEventListener('change',()=>{const a=quick.elements.checkin.value,b=quick.elements.checkout.value;$('#calendar-villa').value=quick.elements.villa.value;if(a>=today&&b>a){start=a;end=b;$('#calendar-guests').value=quick.elements.guests.value;renderCalendar();}});
+ $('#calendar-villa').addEventListener('change',()=>{
+  const v=$('#calendar-villa').value;
+  quick.elements.villa.value=v;
+  start='';end='';
+  fetchAvailability(v);
+ });
+ $('#calendar-enquire').addEventListener('click',()=>{
+  if(!start||!end){
+   status.textContent='Please select both check-in and check-out dates first.';
+   months.querySelector('[data-date]:not([disabled])')?.focus();
+   return;
+  }
+  openBooking({villa:$('#calendar-villa').value,checkin:start,checkout:end,guests:$('#calendar-guests').value});
+  refreshChannels(start,end,$('#calendar-guests').value);
+ });
+ quick.addEventListener('change',()=>{
+  const a=quick.elements.checkin.value,b=quick.elements.checkout.value;
+  $('#calendar-villa').value=quick.elements.villa.value;
+  if(a>=today&&b>a&&!hasOverlap(a,b)){
+   start=a;end=b;
+   $('#calendar-guests').value=quick.elements.guests.value;
+   renderCalendar();
+  }
+ });
+
  renderCalendar();
+ fetchAvailability($('#calendar-villa').value);
 }

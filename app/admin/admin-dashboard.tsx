@@ -7,9 +7,13 @@ import {
   Check,
   ChevronRight,
   CircleDollarSign,
+  Copy,
   Download,
+  ExternalLink,
   Eye,
+  Globe,
   LayoutDashboard,
+  Link2,
   LoaderCircle,
   LogOut,
   Menu,
@@ -67,6 +71,7 @@ const shortDate = (value: string) => new Date(`${value}T12:00:00`).toLocaleDateS
 const nights = (start: string, end: string) => Math.max(0, Math.round((Date.parse(`${end}T12:00:00Z`) - Date.parse(`${start}T12:00:00Z`)) / 86400000));
 
 export default function AdminDashboard({ live, displayName, authHref }: Props) {
+  const [activeTab, setActiveTab] = useState<"reservations" | "calendar-sync">("reservations");
   const [bookings, setBookings] = useState<BookingRecord[]>(live ? [] : demoBookings);
   const [loading, setLoading] = useState(live);
   const [saving, setSaving] = useState(false);
@@ -79,6 +84,15 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Calendar sync state
+  const [syncData, setSyncData] = useState<any>(null);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncSaving, setSyncSaving] = useState(false);
+  const [feedsForm, setFeedsForm] = useState({
+    Araliya: { bookingUrl: "", airbnbUrl: "", agodaUrl: "" },
+    Olu: { bookingUrl: "", airbnbUrl: "", agodaUrl: "" },
+  });
+
   async function loadBookings() {
     if (!live) return;
     setLoading(true); setError("");
@@ -90,6 +104,63 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load bookings.");
     } finally { setLoading(false); }
+  }
+
+  async function loadCalendarSync(force = false) {
+    setSyncLoading(true);
+    try {
+      const endpoint = force ? "/api/calendar/settings" : "/api/calendar/settings";
+      const res = force
+        ? await fetch(endpoint, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ ...feedsForm, forceSync: true }),
+          })
+        : await fetch(endpoint, { cache: "no-store" });
+      const data = await res.json();
+      if (res.ok) {
+        setSyncData(data);
+        if (data.feeds) {
+          setFeedsForm({
+            Araliya: {
+              bookingUrl: data.feeds.Araliya?.bookingUrl || "",
+              airbnbUrl: data.feeds.Araliya?.airbnbUrl || "",
+              agodaUrl: data.feeds.Araliya?.agodaUrl || "",
+            },
+            Olu: {
+              bookingUrl: data.feeds.Olu?.bookingUrl || "",
+              airbnbUrl: data.feeds.Olu?.airbnbUrl || "",
+              agodaUrl: data.feeds.Olu?.agodaUrl || "",
+            },
+          });
+        }
+        if (force) showNotice("Calendar feeds resynced successfully!");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load calendar sync.");
+    } finally {
+      setSyncLoading(false);
+    }
+  }
+
+  async function saveCalendarFeeds(event?: FormEvent) {
+    if (event) event.preventDefault();
+    setSyncSaving(true);
+    try {
+      const res = await fetch("/api/calendar/settings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...feedsForm, forceSync: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not save feeds.");
+      setSyncData(data);
+      showNotice("OTA Sync feeds saved and synchronized!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save calendar feeds.");
+    } finally {
+      setSyncSaving(false);
+    }
   }
 
   useEffect(() => {
@@ -108,6 +179,12 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
     return () => { active = false; };
   }, [live]);
 
+  useEffect(() => {
+    if (activeTab === "calendar-sync") {
+      void loadCalendarSync(false);
+    }
+  }, [activeTab]);
+
   const filtered = useMemo(() => bookings.filter((booking) => {
     const haystack = `${booking.reference} ${booking.guestName} ${booking.email} ${booking.phone} ${booking.villaName}`.toLowerCase();
     return (filter === "all" || booking.status === filter) && haystack.includes(query.toLowerCase());
@@ -121,7 +198,12 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
   }), [bookings]);
 
   function showNotice(message: string) {
-    setNotice(message); window.setTimeout(() => setNotice(""), 2600);
+    setNotice(message); window.setTimeout(() => setNotice(""), 3000);
+  }
+
+  function copyText(text: string, title: string) {
+    navigator.clipboard.writeText(text);
+    showNotice(`${title} copied to clipboard!`);
   }
 
   function newBooking() {
@@ -183,6 +265,10 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
     const anchor = document.createElement("a"); anchor.href = url; anchor.download = `tranquil-terrace-bookings-${today}.csv`; anchor.click(); URL.revokeObjectURL(url);
   }
 
+  const originUrl = typeof window !== "undefined" ? window.location.origin : "https://tranquilterracevilla.com";
+  const araliyaIcsUrl = `${originUrl}/api/calendar/araliya.ics`;
+  const oluIcsUrl = `${originUrl}/api/calendar/olu.ics`;
+
   return (
     <div className="min-h-screen bg-[#f4f1e8] text-[#17392f]">
       {notice && <div className="fixed right-5 top-5 z-[80] flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-3 text-sm text-white shadow-2xl"><Check size={16}/>{notice}</div>}
@@ -191,7 +277,22 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
         <a href="/" className="block border-b border-white/15 pb-6"><img src="/assets/tranquil-terrace-logo.webp" alt="Tranquil Terrace Galle" width="1200" height="420" className="h-auto w-full rounded bg-[#f4f1e8] p-3"/></a>
         <p className="mt-8 text-[10px] font-semibold uppercase tracking-[.24em] text-white/45">Management</p>
         <nav className="mt-4 space-y-2">
-          <a className="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-sm" href="/admin"><LayoutDashboard size={18}/> Dashboard</a>
+          <button
+            onClick={() => setActiveTab("reservations")}
+            className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition-colors ${activeTab === "reservations" ? "bg-white/10 font-medium text-white" : "text-white/70 hover:bg-white/5"}`}
+          >
+            <LayoutDashboard size={18}/> Reservations
+          </button>
+          <button
+            onClick={() => setActiveTab("calendar-sync")}
+            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-colors ${activeTab === "calendar-sync" ? "bg-white/10 font-medium text-white" : "text-white/70 hover:bg-white/5"}`}
+          >
+            <span className="flex items-center gap-3"><CalendarDays size={18}/> Calendar Sync</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+          </button>
           <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-white/70 hover:bg-white/5" onClick={newBooking}><Plus size={18}/> Add booking</button>
           <a className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-white/70 hover:bg-white/5" href="/" target="_blank"><Eye size={18}/> View website</a>
         </nav>
@@ -203,11 +304,25 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
 
       <main className="min-h-screen lg:ml-[250px]">
         <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#17392f]/10 bg-[#f4f1e8]/90 px-5 backdrop-blur-xl sm:px-8">
-          <div className="flex items-center gap-4"><button className="lg:hidden" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu/></button><div><p className="text-[10px] font-semibold uppercase tracking-[.2em] text-[#17392f]/45">Tranquil Terrace Galle</p><h1 className="font-serif text-2xl">Booking dashboard</h1></div></div>
+          <div className="flex items-center gap-4">
+            <button className="lg:hidden" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu/></button>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-[#17392f]/45">Tranquil Terrace Galle</p>
+              <h1 className="font-serif text-2xl">{activeTab === "reservations" ? "Booking dashboard" : "OTA Calendar Synchronization"}</h1>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             {!live && <span className="hidden rounded-full bg-[#a58e56]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#806b39] sm:block">Read-only demo</span>}
-            <button onClick={() => void loadBookings()} disabled={!live || loading} className="rounded-xl border border-[#17392f]/15 p-2.5 disabled:opacity-40" aria-label="Refresh bookings"><RefreshCw size={17} className={loading ? "animate-spin" : ""}/></button>
-            <button onClick={newBooking} className="flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-2.5 text-xs font-semibold text-white"><Plus size={16}/> <span className="hidden sm:inline">New booking</span></button>
+            {activeTab === "reservations" ? (
+              <>
+                <button onClick={() => void loadBookings()} disabled={!live || loading} className="rounded-xl border border-[#17392f]/15 p-2.5 disabled:opacity-40" aria-label="Refresh bookings"><RefreshCw size={17} className={loading ? "animate-spin" : ""}/></button>
+                <button onClick={newBooking} className="flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-2.5 text-xs font-semibold text-white"><Plus size={16}/> <span className="hidden sm:inline">New booking</span></button>
+              </>
+            ) : (
+              <button onClick={() => void loadCalendarSync(true)} disabled={syncLoading} className="flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-2.5 text-xs font-semibold text-white disabled:opacity-60">
+                <RefreshCw size={15} className={syncLoading ? "animate-spin" : ""}/> <span>Sync OTAs Now</span>
+              </button>
+            )}
           </div>
         </header>
 
@@ -215,46 +330,343 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
           {!live && <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[#a58e56]/25 bg-[#fffaf0] p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-serif text-xl">Client preview mode</p><p className="mt-1 text-sm text-[#17392f]/60">Sample data is shown. Real guest information and editing controls remain owner-only.</p></div><a href={authHref} target="_top" className="text-sm font-semibold text-[#806b39]">Owner sign in <ChevronRight className="inline" size={16}/></a></div>}
           {error && <div role="alert" className="mb-6 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><span>{error}</span><button onClick={() => setError("")}><X size={17}/></button></div>}
 
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {[
-              ["Total bookings", stats.total, CalendarDays, "All records"],
-              ["Upcoming stays", stats.upcoming, BedDouble, "Active arrivals"],
-              ["Need attention", stats.pending, Users, "Inquiry + pending"],
-              ["Payments received", money(stats.revenue), CircleDollarSign, "Recorded amount"],
-            ].map(([title,value,Icon,caption]) => <article key={String(title)} className="rounded-2xl border border-[#17392f]/10 bg-white/70 p-5 shadow-[0_12px_35px_rgba(23,57,47,.05)]"><div className="flex items-start justify-between"><div><p className="text-xs text-[#17392f]/55">{String(title)}</p><strong className="mt-2 block font-serif text-3xl font-medium">{String(value)}</strong></div><span className="rounded-xl bg-[#17392f]/7 p-2.5"><Icon size={19}/></span></div><p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#17392f]/35">{String(caption)}</p></article>)}
-          </section>
+          {activeTab === "reservations" ? (
+            <>
+              <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {[
+                  ["Total bookings", stats.total, CalendarDays, "All records"],
+                  ["Upcoming stays", stats.upcoming, BedDouble, "Active arrivals"],
+                  ["Need attention", stats.pending, Users, "Inquiry + pending"],
+                  ["Payments received", money(stats.revenue), CircleDollarSign, "Recorded amount"],
+                ].map(([title,value,Icon,caption]) => <article key={String(title)} className="rounded-2xl border border-[#17392f]/10 bg-white/70 p-5 shadow-[0_12px_35px_rgba(23,57,47,.05)]"><div className="flex items-start justify-between"><div><p className="text-xs text-[#17392f]/55">{String(title)}</p><strong className="mt-2 block font-serif text-3xl font-medium">{String(value)}</strong></div><span className="rounded-xl bg-[#17392f]/7 p-2.5"><Icon size={19}/></span></div><p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#17392f]/35">{String(caption)}</p></article>)}
+              </section>
 
-          <section className="mt-7 overflow-hidden rounded-2xl border border-[#17392f]/10 bg-white/75 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
-            <div className="flex flex-col gap-4 border-b border-[#17392f]/10 p-5 lg:flex-row lg:items-center lg:justify-between">
-              <div><h2 className="font-serif text-2xl">Reservations</h2><p className="text-xs text-[#17392f]/45">{filtered.length} booking{filtered.length === 1 ? "" : "s"} shown</p></div>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <label className="flex items-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-3"><Search size={16}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Guest, phone or reference" className="h-10 w-full bg-transparent text-sm outline-none sm:w-56"/></label>
-                <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-11 rounded-xl border border-[#17392f]/15 bg-white px-3 text-sm"><option value="all">All statuses</option>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select>
-                <button onClick={exportCsv} className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-4 text-xs font-semibold"><Download size={16}/> Export CSV</button>
+              <section className="mt-7 overflow-hidden rounded-2xl border border-[#17392f]/10 bg-white/75 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
+                <div className="flex flex-col gap-4 border-b border-[#17392f]/10 p-5 lg:flex-row lg:items-center lg:justify-between">
+                  <div><h2 className="font-serif text-2xl">Reservations</h2><p className="text-xs text-[#17392f]/45">{filtered.length} booking{filtered.length === 1 ? "" : "s"} shown</p></div>
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <label className="flex items-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-3"><Search size={16}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Guest, phone or reference" className="h-10 w-full bg-transparent text-sm outline-none sm:w-56"/></label>
+                    <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-11 rounded-xl border border-[#17392f]/15 bg-white px-3 text-sm"><option value="all">All statuses</option>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select>
+                    <button onClick={exportCsv} className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-4 text-xs font-semibold"><Download size={16}/> Export CSV</button>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[1050px] text-left text-sm">
+                    <thead className="bg-[#17392f]/[.035] text-[10px] uppercase tracking-[.13em] text-[#17392f]/50"><tr><th className="px-5 py-4">Guest</th><th className="px-4 py-4">Villa</th><th className="px-4 py-4">Stay</th><th className="px-4 py-4">Guests</th><th className="px-4 py-4">Status</th><th className="px-4 py-4">Payment</th><th className="px-4 py-4">Value</th><th className="px-4 py-4">Source</th><th className="px-5 py-4 text-right">Action</th></tr></thead>
+                    <tbody className="divide-y divide-[#17392f]/8">
+                      {loading ? <tr><td colSpan={9} className="p-14 text-center"><LoaderCircle className="mx-auto animate-spin"/><p className="mt-3 text-xs text-[#17392f]/45">Loading bookings…</p></td></tr> : filtered.length === 0 ? <tr><td colSpan={9} className="p-14 text-center"><CalendarDays className="mx-auto text-[#17392f]/25"/><p className="mt-3 text-sm">No matching bookings yet.</p></td></tr> : filtered.map((booking) => (
+                        <tr key={booking.id} className="hover:bg-[#17392f]/[.025]">
+                          <td className="px-5 py-4"><button onClick={() => editBooking(booking)} className="text-left"><span className="block font-semibold">{booking.guestName}</span><span className="text-[11px] text-[#17392f]/45">{booking.reference} · {booking.phone}</span></button></td>
+                          <td className="px-4 py-4"><span className="rounded-full bg-[#a58e56]/12 px-3 py-2 text-[11px] font-semibold text-[#806b39]">{booking.villaName}</span></td>
+                          <td className="px-4 py-4"><span className="block">{shortDate(booking.checkin)} → {shortDate(booking.checkout)}</span><span className="text-[11px] text-[#17392f]/45">{nights(booking.checkin, booking.checkout)} nights</span></td>
+                          <td className="px-4 py-4">{booking.guests}</td>
+                          <td className="px-4 py-4"><select value={booking.status} onChange={(e) => void quickUpdate(booking, { status: e.target.value as BookingStatus })} className={`rounded-full border-0 px-3 py-2 text-[11px] font-semibold ${booking.status === "confirmed" ? "bg-emerald-100 text-emerald-800" : booking.status === "cancelled" ? "bg-red-100 text-red-700" : booking.status === "checked_in" ? "bg-blue-100 text-blue-800" : "bg-amber-100 text-amber-800"}`}>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
+                          <td className="px-4 py-4"><select value={booking.paymentStatus} onChange={(e) => void quickUpdate(booking, { paymentStatus: e.target.value as PaymentStatus })} className="rounded-full border border-[#17392f]/10 bg-white px-3 py-2 text-[11px]">{paymentStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
+                          <td className="px-4 py-4"><span className="block font-medium">{money(booking.totalAmount)}</span><span className="text-[11px] text-[#17392f]/45">Paid {money(booking.paidAmount)}</span></td>
+                          <td className="px-4 py-4 capitalize">{booking.source}</td>
+                          <td className="px-5 py-4 text-right"><button onClick={() => editBooking(booking)} className="rounded-lg border border-[#17392f]/15 p-2" aria-label={`Open ${booking.reference}`}><ChevronRight size={16}/></button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </>
+          ) : (
+            <div className="space-y-8">
+              {/* Sync Overview Banner */}
+              <div className="rounded-2xl border border-[#17392f]/10 bg-white/80 p-6 shadow-[0_12px_35px_rgba(23,57,47,.05)]">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      2-Way iCal Calendar Sync Active
+                    </div>
+                    <h2 className="mt-3 font-serif text-2xl">Connect Booking.com, Airbnb & Agoda</h2>
+                    <p className="mt-1 max-w-2xl text-xs text-[#17392f]/60 leading-relaxed">
+                      Prevent double-bookings effortlessly. Export your Tranquil Terrace availability to OTAs and automatically import reservations made on Booking.com, Airbnb, and Agoda.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => void loadCalendarSync(true)}
+                    disabled={syncLoading}
+                    className="flex items-center gap-2 rounded-xl bg-[#17392f] px-5 py-3 text-xs font-semibold text-white shadow-md transition-all hover:bg-[#0f2821] disabled:opacity-60"
+                  >
+                    <RefreshCw size={15} className={syncLoading ? "animate-spin" : ""}/>
+                    <span>{syncLoading ? "Checking OTAs…" : "Sync All Channels Now"}</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[1050px] text-left text-sm">
-                <thead className="bg-[#17392f]/[.035] text-[10px] uppercase tracking-[.13em] text-[#17392f]/50"><tr><th className="px-5 py-4">Guest</th><th className="px-4 py-4">Villa</th><th className="px-4 py-4">Stay</th><th className="px-4 py-4">Guests</th><th className="px-4 py-4">Status</th><th className="px-4 py-4">Payment</th><th className="px-4 py-4">Value</th><th className="px-4 py-4">Source</th><th className="px-5 py-4 text-right">Action</th></tr></thead>
-                <tbody className="divide-y divide-[#17392f]/8">
-                  {loading ? <tr><td colSpan={9} className="p-14 text-center"><LoaderCircle className="mx-auto animate-spin"/><p className="mt-3 text-xs text-[#17392f]/45">Loading bookings…</p></td></tr> : filtered.length === 0 ? <tr><td colSpan={9} className="p-14 text-center"><CalendarDays className="mx-auto text-[#17392f]/25"/><p className="mt-3 text-sm">No matching bookings yet.</p></td></tr> : filtered.map((booking) => (
-                    <tr key={booking.id} className="hover:bg-[#17392f]/[.025]">
-                      <td className="px-5 py-4"><button onClick={() => editBooking(booking)} className="text-left"><span className="block font-semibold">{booking.guestName}</span><span className="text-[11px] text-[#17392f]/45">{booking.reference} · {booking.phone}</span></button></td>
-                      <td className="px-4 py-4"><span className="rounded-full bg-[#a58e56]/12 px-3 py-2 text-[11px] font-semibold text-[#806b39]">{booking.villaName}</span></td>
-                      <td className="px-4 py-4"><span className="block">{shortDate(booking.checkin)} → {shortDate(booking.checkout)}</span><span className="text-[11px] text-[#17392f]/45">{nights(booking.checkin, booking.checkout)} nights</span></td>
-                      <td className="px-4 py-4">{booking.guests}</td>
-                      <td className="px-4 py-4"><select value={booking.status} onChange={(e) => void quickUpdate(booking, { status: e.target.value as BookingStatus })} className={`rounded-full border-0 px-3 py-2 text-[11px] font-semibold ${booking.status === "confirmed" ? "bg-emerald-100 text-emerald-800" : booking.status === "cancelled" ? "bg-red-100 text-red-700" : booking.status === "checked_in" ? "bg-blue-100 text-blue-800" : "bg-amber-100 text-amber-800"}`}>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
-                      <td className="px-4 py-4"><select value={booking.paymentStatus} onChange={(e) => void quickUpdate(booking, { paymentStatus: e.target.value as PaymentStatus })} className="rounded-full border border-[#17392f]/10 bg-white px-3 py-2 text-[11px]">{paymentStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
-                      <td className="px-4 py-4"><span className="block font-medium">{money(booking.totalAmount)}</span><span className="text-[11px] text-[#17392f]/45">Paid {money(booking.paidAmount)}</span></td>
-                      <td className="px-4 py-4 capitalize">{booking.source}</td>
-                      <td className="px-5 py-4 text-right"><button onClick={() => editBooking(booking)} className="rounded-lg border border-[#17392f]/15 p-2" aria-label={`Open ${booking.reference}`}><ChevronRight size={16}/></button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {/* Section 1: Outbound Feeds (Export to OTAs) */}
+              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
+                <div className="border-b border-[#17392f]/10 pb-4">
+                  <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#a58e56]">Step 1 · Outbound Export</span>
+                  <h3 className="mt-1 font-serif text-xl">Export Your Tranquil Terrace Calendars to OTAs</h3>
+                  <p className="text-xs text-[#17392f]/60">Copy these dedicated iCal feed URLs and paste them into your Airbnb, Booking.com Extranet, and Agoda YCS Extranets.</p>
+                </div>
+
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
+                  {/* Villa Araliya Export */}
+                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-lg bg-[#a58e56]/15 px-2.5 py-1 text-xs font-bold text-[#806b39]">Villa Araliya</span>
+                        <span className="text-[11px] text-[#17392f]/50">Export Feed</span>
+                      </div>
+                      <a href="/api/calendar/araliya.ics" target="_blank" className="text-xs text-[#806b39] hover:underline flex items-center gap-1">
+                        Download .ics <ExternalLink size={12}/>
+                      </a>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#17392f]/15 bg-white p-2 text-xs">
+                      <input readOnly value={araliyaIcsUrl} className="w-full bg-transparent font-mono text-[11px] text-[#17392f]/80 outline-none"/>
+                      <button
+                        onClick={() => copyText(araliyaIcsUrl, "Villa Araliya iCal link")}
+                        className="flex items-center gap-1 rounded bg-[#17392f]/8 px-2.5 py-1.5 font-sans font-semibold text-[#17392f] hover:bg-[#17392f]/15"
+                      >
+                        <Copy size={13}/> Copy
+                      </button>
+                    </div>
+                    <div className="mt-4 text-[11px] text-[#17392f]/65 space-y-1">
+                      <p>✓ Blocks dates on OTAs when a booking is confirmed on your website or WhatsApp.</p>
+                      <p>✓ Updates in real-time as soon as you add reservations.</p>
+                    </div>
+                  </div>
+
+                  {/* Villa Olu Export */}
+                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-lg bg-[#a58e56]/15 px-2.5 py-1 text-xs font-bold text-[#806b39]">Villa Olu</span>
+                        <span className="text-[11px] text-[#17392f]/50">Export Feed</span>
+                      </div>
+                      <a href="/api/calendar/olu.ics" target="_blank" className="text-xs text-[#806b39] hover:underline flex items-center gap-1">
+                        Download .ics <ExternalLink size={12}/>
+                      </a>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#17392f]/15 bg-white p-2 text-xs">
+                      <input readOnly value={oluIcsUrl} className="w-full bg-transparent font-mono text-[11px] text-[#17392f]/80 outline-none"/>
+                      <button
+                        onClick={() => copyText(oluIcsUrl, "Villa Olu iCal link")}
+                        className="flex items-center gap-1 rounded bg-[#17392f]/8 px-2.5 py-1.5 font-sans font-semibold text-[#17392f] hover:bg-[#17392f]/15"
+                      >
+                        <Copy size={13}/> Copy
+                      </button>
+                    </div>
+                    <div className="mt-4 text-[11px] text-[#17392f]/65 space-y-1">
+                      <p>✓ Blocks dates on OTAs when a booking is confirmed on your website or WhatsApp.</p>
+                      <p>✓ Updates in real-time as soon as you add reservations.</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Setup Instructions Accordion */}
+                <div className="mt-6 rounded-xl bg-[#17392f]/[0.03] p-4 text-xs text-[#17392f]/75">
+                  <strong className="block font-medium text-sm text-[#17392f] mb-2">Where to paste these links in OTA extranets:</strong>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
+                      <span className="font-bold text-[#073b80]">Booking.com Extranet</span>
+                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Rates & Availability</strong> → <strong>Sync calendars</strong> → Click <strong>Add calendar connection</strong> → Paste export link → Name it &quot;Tranquil Terrace Direct&quot;.</p>
+                    </div>
+                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
+                      <span className="font-bold text-[#c34d59]">Airbnb Host Calendar</span>
+                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Listing</strong> → <strong>Pricing & availability</strong> → <strong>Calendar sync</strong> → Click <strong>Import calendar</strong> → Paste link.</p>
+                    </div>
+                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
+                      <span className="font-bold text-[#364e76]">Agoda YCS Extranet</span>
+                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Calendar</strong> → <strong>Calendar Sync</strong> → Click <strong>Import Calendar</strong> → Paste link and save.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 2: Inbound Feeds (Import into Tranquil Terrace) */}
+              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#17392f]/10 pb-4">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#a58e56]">Step 2 · Inbound Import</span>
+                    <h3 className="mt-1 font-serif text-xl">Import OTA Calendars into Your Website</h3>
+                    <p className="text-xs text-[#17392f]/60">Paste the iCal export URLs provided by Booking.com, Airbnb, and Agoda for each villa below.</p>
+                  </div>
+                  <button
+                    onClick={saveCalendarFeeds}
+                    disabled={syncSaving}
+                    className="flex items-center gap-2 rounded-xl bg-[#17392f] px-5 py-2.5 text-xs font-semibold text-white shadow hover:bg-[#0f2821] disabled:opacity-60"
+                  >
+                    {syncSaving ? <LoaderCircle size={15} className="animate-spin"/> : <Check size={15}/>}
+                    <span>Save & Sync Feeds</span>
+                  </button>
+                </div>
+
+                <div className="mt-6 grid gap-8 lg:grid-cols-2">
+                  {/* Villa Araliya Inbound Feeds */}
+                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-3">
+                      <span className="rounded-lg bg-[#a58e56]/15 px-3 py-1 text-xs font-bold text-[#806b39]">Villa Araliya Feeds</span>
+                      <span className="text-[11px] text-[#17392f]/50">
+                        {syncData?.status?.Araliya?.blockedDatesCount ?? 0} blocked night(s) detected
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#073b80]">Booking.com iCal URL</label>
+                        {syncData?.status?.Araliya?.channels?.booking?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.booking.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?t=..."
+                        value={feedsForm.Araliya.bookingUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, bookingUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#c34d59]">Airbnb iCal URL</label>
+                        {syncData?.status?.Araliya?.channels?.airbnb?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.airbnb.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://www.airbnb.com/calendar/ical/1493263628966005427.ics?s=..."
+                        value={feedsForm.Araliya.airbnbUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, airbnbUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#364e76]">Agoda iCal URL</label>
+                        {syncData?.status?.Araliya?.channels?.agoda?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.agoda.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://ycs.agoda.com/api/v1/ical/..."
+                        value={feedsForm.Araliya.agodaUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, agodaUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Villa Olu Inbound Feeds */}
+                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-3">
+                      <span className="rounded-lg bg-[#a58e56]/15 px-3 py-1 text-xs font-bold text-[#806b39]">Villa Olu Feeds</span>
+                      <span className="text-[11px] text-[#17392f]/50">
+                        {syncData?.status?.Olu?.blockedDatesCount ?? 0} blocked night(s) detected
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#073b80]">Booking.com iCal URL</label>
+                        {syncData?.status?.Olu?.channels?.booking?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.booking.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?t=..."
+                        value={feedsForm.Olu.bookingUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, bookingUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#c34d59]">Airbnb iCal URL</label>
+                        {syncData?.status?.Olu?.channels?.airbnb?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.airbnb.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://www.airbnb.com/calendar/ical/...ics?s=..."
+                        value={feedsForm.Olu.airbnbUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, airbnbUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#364e76]">Agoda iCal URL</label>
+                        {syncData?.status?.Olu?.channels?.agoda?.configured ? (
+                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.agoda.eventCount} bookings)</span>
+                        ) : (
+                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
+                        )}
+                      </div>
+                      <input
+                        type="url"
+                        placeholder="https://ycs.agoda.com/api/v1/ical/..."
+                        value={feedsForm.Olu.agodaUrl}
+                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, agodaUrl: e.target.value } })}
+                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 3: Live Synchronized Calendar Status */}
+              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
+                <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-4">
+                  <div>
+                    <h3 className="font-serif text-xl">Current Channel Availability Status</h3>
+                    <p className="text-xs text-[#17392f]/60">Summary of blocked reservations currently protecting Tranquil Terrace from overlaps.</p>
+                  </div>
+                  <span className="text-[11px] text-[#17392f]/50">
+                    Last sync: {syncData?.status?.Araliya?.lastUpdated ? new Date(syncData.status.Araliya.lastUpdated).toLocaleTimeString() : "Just now"}
+                  </span>
+                </div>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
+                    <p className="text-[11px] text-[#17392f]/50 font-medium">Villa Araliya Total Blocked</p>
+                    <strong className="mt-1 block font-serif text-2xl">{syncData?.status?.Araliya?.blockedDatesCount ?? 0} nights</strong>
+                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">{syncData?.status?.Araliya?.bookedRangesCount ?? 0} active reservations</span>
+                  </div>
+                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
+                    <p className="text-[11px] text-[#17392f]/50 font-medium">Villa Olu Total Blocked</p>
+                    <strong className="mt-1 block font-serif text-2xl">{syncData?.status?.Olu?.blockedDatesCount ?? 0} nights</strong>
+                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">{syncData?.status?.Olu?.bookedRangesCount ?? 0} active reservations</span>
+                  </div>
+                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
+                    <p className="text-[11px] text-[#17392f]/50 font-medium">Supported OTAs</p>
+                    <strong className="mt-1 block font-serif text-2xl">3 Platforms</strong>
+                    <span className="mt-2 text-[10px] text-emerald-700 font-semibold block">Booking.com, Airbnb, Agoda</span>
+                  </div>
+                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
+                    <p className="text-[11px] text-[#17392f]/50 font-medium">Sync Standard</p>
+                    <strong className="mt-1 block font-serif text-2xl">RFC 5545 iCal</strong>
+                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">Universal hospitality standard</span>
+                  </div>
+                </div>
+              </section>
             </div>
-          </section>
+          )}
         </div>
       </main>
 
