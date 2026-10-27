@@ -13,7 +13,16 @@ const WHATSAPP_URL = "https://wa.me/94770682366";
 const PHONE_NUMBER = "+94 77 068 2366";
 const TEL_URL = "tel:+94770682366";
 
-// 1. Update app.js in both public and legacy-site
+// 1. Update app.js in both public and legacy-site, and copy CSS/JS assets
+for (const file of ["cinematic-3d.css", "cinematic-3d.js", "style.css", "redesign.css", "booking.css", "motion.css"]) {
+  const src = path.join(root, "public", file);
+  const dst = path.join(root, "legacy-site", file);
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, dst);
+    console.log(`Copied ${file} to legacy-site/`);
+  }
+}
+
 for (const dir of ["public", "legacy-site"]) {
   const appJsPath = path.join(root, dir, "app.js");
   if (fs.existsSync(appJsPath)) {
