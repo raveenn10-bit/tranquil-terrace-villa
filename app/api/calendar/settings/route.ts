@@ -4,10 +4,14 @@ import {
   getVillaAvailability,
   CalendarFeedsState,
 } from "@/lib/calendar-sync";
+import { isAdminRequest } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  if (!isAdminRequest(request)) {
+    return Response.json({ error: "Owner access required." }, { status: 403 });
+  }
   try {
     const feeds = getCalendarFeeds();
     const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "tranquilterracevilla.com";
@@ -48,6 +52,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isAdminRequest(request)) {
+    return Response.json({ error: "Owner access required." }, { status: 403 });
+  }
   try {
     const body = (await request.json()) as Partial<CalendarFeedsState> & { forceSync?: boolean };
     const { forceSync, ...feedUpdates } = body;
