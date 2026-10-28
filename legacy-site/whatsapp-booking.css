@@ -1,0 +1,784 @@
+/* ==========================================================================
+   TRANQUIL TERRACE GALLE — LUXURY WHATSAPP BOOKING ENGINE & MODAL
+   Taru Villas / Meta AI Luxury Aesthetic
+   Palette: Warm Ivory, Deep Charcoal, Subtle Gold (#C8A45D), WhatsApp Green (#25D366)
+   ========================================================================== */
+
+:root {
+  --tt-wa-gold: #C8A45D;
+  --tt-wa-gold-dark: #A88440;
+  --tt-wa-gold-glow: rgba(200, 164, 93, 0.25);
+  --tt-wa-ivory: #FAF7F2;
+  --tt-wa-ivory-light: #FDFCFA;
+  --tt-wa-ivory-card: #F4EFE8;
+  --tt-wa-charcoal: #191C1A;
+  --tt-wa-charcoal-muted: #5B615A;
+  --tt-wa-green: #25D366;
+  --tt-wa-green-hover: #20BD5A;
+  --tt-wa-border: rgba(200, 164, 93, 0.3);
+  --tt-wa-font-serif: 'Cormorant Garamond', Georgia, serif;
+  --tt-wa-font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --tt-wa-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   1. FLOATING WHATSAPP BUTTON (AUTHENTIC LOGO & LUXURY TOOLTIP)
+   -------------------------------------------------------------------------- */
+.tt-floating-wa,
+.meta-floating-whatsapp {
+  position: fixed !important;
+  bottom: 2rem !important;
+  right: 2rem !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  background: #25D366 !important;
+  background: linear-gradient(145deg, #25D366 0%, #1EBE5D 100%) !important;
+  color: #FFFFFF !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.45), 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  border: 2px solid rgba(255, 255, 255, 0.35) !important;
+  z-index: 9990 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: all 0.32s var(--tt-wa-ease) !important;
+  animation: ttWaPulse 3.6s infinite ease-in-out !important;
+  outline: none;
+}
+
+.tt-floating-wa:hover,
+.meta-floating-whatsapp:hover {
+  transform: scale(1.1) translateY(-3px) !important;
+  box-shadow: 0 14px 34px rgba(37, 211, 102, 0.6), 0 0 0 6px rgba(200, 164, 93, 0.25) !important;
+}
+
+.tt-floating-wa:active,
+.meta-floating-whatsapp:active {
+  transform: scale(0.96) !important;
+}
+
+.tt-floating-wa svg,
+.meta-floating-whatsapp svg {
+  width: 32px !important;
+  height: 32px !important;
+  display: block !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+@keyframes ttWaPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.65), 0 10px 28px rgba(37, 211, 102, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0), 0 10px 28px rgba(37, 211, 102, 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0), 0 10px 28px rgba(37, 211, 102, 0.45);
+  }
+}
+
+/* Official WhatsApp Icon Styles */
+.official-wa-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+button:hover .official-wa-icon,
+a:hover .official-wa-icon {
+  transform: scale(1.1);
+}
+
+/* Floating Tooltip */
+.tt-wa-tooltip {
+  position: fixed;
+  bottom: 2.35rem;
+  right: 6.4rem;
+  background: var(--tt-wa-ivory);
+  border: 1px solid var(--tt-wa-gold);
+  border-radius: 30px;
+  padding: 8px 16px 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(18, 20, 18, 0.2);
+  z-index: 9989;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tt-wa-charcoal);
+  letter-spacing: 0.2px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease, transform 0.3s var(--tt-wa-ease);
+  white-space: nowrap;
+}
+
+.tt-wa-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: var(--tt-wa-ivory);
+  border-top: 1px solid var(--tt-wa-gold);
+  border-right: 1px solid var(--tt-wa-gold);
+}
+
+.tt-wa-tooltip .tt-wa-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tt-wa-green);
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.25);
+  flex-shrink: 0;
+}
+
+.tt-wa-tooltip.visible,
+.tt-floating-wa:hover + .tt-wa-tooltip,
+.meta-floating-whatsapp:hover + .tt-wa-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --------------------------------------------------------------------------
+   2. LUXURY MODAL BACKDROP & OVERLAY
+   -------------------------------------------------------------------------- */
+.tt-wa-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 16, 15, 0.76);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.32s ease, visibility 0.32s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tt-wa-modal-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* --------------------------------------------------------------------------
+   3. LUXURY MODAL DIALOG CONTAINER
+   -------------------------------------------------------------------------- */
+.tt-wa-modal {
+  position: relative;
+  width: 100%;
+  max-width: 630px;
+  background: var(--tt-wa-ivory);
+  border: 1px solid var(--tt-wa-gold);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(200, 164, 93, 0.35);
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  transform: scale(0.94) translateY(24px);
+  opacity: 0;
+  transition: transform 0.35s var(--tt-wa-ease), opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.tt-wa-modal-backdrop.open .tt-wa-modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Mobile Drag Handle */
+.tt-wa-sheet-pill {
+  display: none;
+  width: 44px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 2px;
+  margin: 10px auto 0;
+  cursor: grab;
+}
+
+/* --------------------------------------------------------------------------
+   4. MODAL HEADER
+   -------------------------------------------------------------------------- */
+.tt-wa-modal-header {
+  position: relative;
+  background: var(--tt-wa-ivory-card);
+  padding: 1.6rem 2rem 1.25rem;
+  border-bottom: 1px solid var(--tt-wa-border);
+}
+
+.tt-wa-modal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--tt-wa-gold-dark);
+}
+
+.tt-wa-modal-title {
+  font-family: var(--tt-wa-font-serif);
+  font-size: 29px;
+  font-weight: 600;
+  color: var(--tt-wa-charcoal);
+  line-height: 1.18;
+  margin: 6px 0 6px;
+}
+
+.tt-wa-modal-desc {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 13.5px;
+  color: var(--tt-wa-charcoal-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.tt-wa-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(25, 28, 26, 0.05);
+  border: 1px solid var(--tt-wa-border);
+  color: var(--tt-wa-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tt-wa-modal-close:hover {
+  background: rgba(25, 28, 26, 0.12);
+  transform: rotate(90deg);
+}
+
+/* --------------------------------------------------------------------------
+   5. MODAL SCROLLABLE BODY
+   -------------------------------------------------------------------------- */
+.tt-wa-modal-body {
+  padding: 1.6rem 2rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tt-wa-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.tt-wa-modal-body::-webkit-scrollbar-track {
+  background: var(--tt-wa-ivory);
+}
+.tt-wa-modal-body::-webkit-scrollbar-thumb {
+  background: var(--tt-wa-gold);
+  border-radius: 3px;
+}
+
+.tt-wa-section {
+  margin-bottom: 1.4rem;
+}
+
+.tt-wa-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--tt-wa-charcoal);
+  margin-bottom: 8px;
+}
+
+.tt-wa-label-helper {
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--tt-wa-gold-dark);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* --------------------------------------------------------------------------
+   6. FORM INPUTS & CONTROLS
+   -------------------------------------------------------------------------- */
+.tt-wa-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tt-wa-input,
+.tt-wa-select,
+.tt-wa-textarea {
+  width: 100%;
+  background: var(--tt-wa-ivory-light);
+  border: 1.5px solid var(--tt-wa-border);
+  border-radius: 11px;
+  padding: 11px 14px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 14px;
+  color: var(--tt-wa-charcoal);
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.tt-wa-input:focus,
+.tt-wa-select:focus,
+.tt-wa-textarea:focus {
+  border-color: var(--tt-wa-gold);
+  box-shadow: 0 0 0 3px var(--tt-wa-gold-glow);
+  outline: none;
+  background: #FFFFFF;
+}
+
+.tt-wa-input::placeholder,
+.tt-wa-textarea::placeholder {
+  color: #929990;
+}
+
+.tt-wa-textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+
+/* --------------------------------------------------------------------------
+   7. VILLA SELECTION CARDS
+   -------------------------------------------------------------------------- */
+.tt-wa-villa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tt-wa-villa-card[data-villa="Both Villas"] {
+  grid-column: 1 / -1;
+}
+
+.tt-wa-villa-card {
+  position: relative;
+  background: var(--tt-wa-ivory-light);
+  border: 1.5px solid var(--tt-wa-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.tt-wa-villa-card:hover {
+  border-color: var(--tt-wa-gold);
+  transform: translateY(-2px);
+}
+
+.tt-wa-villa-card.selected {
+  background: #FAF3E6;
+  border-color: var(--tt-wa-gold);
+  box-shadow: 0 4px 16px rgba(200, 164, 93, 0.25);
+}
+
+.tt-wa-villa-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.tt-wa-villa-name {
+  font-family: var(--tt-wa-font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--tt-wa-charcoal);
+}
+
+.tt-wa-check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--tt-wa-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.2s ease;
+}
+
+.tt-wa-villa-card.selected .tt-wa-check-circle {
+  background: var(--tt-wa-gold);
+  border-color: var(--tt-wa-gold);
+  color: #FFFFFF;
+}
+
+.tt-wa-villa-features {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12px;
+  color: var(--tt-wa-charcoal-muted);
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   8. PACKAGE SELECTION TILES
+   -------------------------------------------------------------------------- */
+.tt-wa-pkg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.tt-wa-pkg-tile {
+  position: relative;
+  background: var(--tt-wa-ivory-light);
+  border: 1.5px solid var(--tt-wa-border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+}
+
+.tt-wa-pkg-tile:hover {
+  border-color: var(--tt-wa-gold);
+}
+
+.tt-wa-pkg-tile.selected {
+  background: #FAF3E6;
+  border-color: var(--tt-wa-gold);
+  box-shadow: 0 4px 16px rgba(200, 164, 93, 0.25);
+}
+
+.tt-wa-pkg-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--tt-wa-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.tt-wa-pkg-tile.selected .tt-wa-pkg-radio {
+  border-color: var(--tt-wa-gold);
+}
+
+.tt-wa-pkg-tile.selected .tt-wa-pkg-radio::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tt-wa-gold);
+}
+
+.tt-wa-pkg-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tt-wa-pkg-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tt-wa-pkg-name {
+  font-family: var(--tt-wa-font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--tt-wa-charcoal);
+}
+
+.tt-wa-pkg-badge {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: #E8D8BA;
+  color: #6C511B;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.tt-wa-pkg-meta {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12px;
+  color: var(--tt-wa-charcoal-muted);
+}
+
+.tt-wa-pkg-price-col {
+  text-align: right;
+}
+
+.tt-wa-pkg-price-lkr {
+  font-family: var(--tt-wa-font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tt-wa-charcoal);
+  white-space: nowrap;
+}
+
+.tt-wa-pkg-price-usd {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 11px;
+  color: var(--tt-wa-charcoal-muted);
+  white-space: nowrap;
+}
+
+/* Timing Options Selector for Day & Night */
+.tt-wa-timing-box {
+  display: none;
+  background: var(--tt-wa-ivory-card);
+  border: 1px dashed var(--tt-wa-gold);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+
+.tt-wa-timing-box.active {
+  display: block;
+}
+
+.tt-wa-timing-pills {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tt-wa-timing-pill {
+  flex: 1;
+  background: #FFFFFF;
+  border: 1px solid var(--tt-wa-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12px;
+  color: var(--tt-wa-charcoal);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tt-wa-timing-pill.selected {
+  background: var(--tt-wa-gold);
+  border-color: var(--tt-wa-gold);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   9. LIVE RATE ESTIMATE BOX
+   -------------------------------------------------------------------------- */
+.tt-wa-rate-box {
+  background: linear-gradient(135deg, #FAF3E6 0%, #F5ECDB 100%);
+  border: 1.5px solid var(--tt-wa-gold);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 1.4rem 0 1.25rem;
+  box-shadow: 0 4px 16px rgba(200, 164, 93, 0.18);
+}
+
+.tt-wa-rate-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(200, 164, 93, 0.35);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.tt-wa-rate-desc {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tt-wa-charcoal);
+}
+
+.tt-wa-rate-numbers {
+  text-align: right;
+}
+
+.tt-wa-rate-main {
+  font-family: var(--tt-wa-font-serif);
+  font-size: 27px;
+  font-weight: 700;
+  color: var(--tt-wa-charcoal);
+  line-height: 1;
+}
+
+.tt-wa-rate-sub {
+  font-family: var(--tt-wa-font-sans);
+  font-size: 12px;
+  color: var(--tt-wa-gold-dark);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.tt-wa-rate-perks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 11.5px;
+  color: var(--tt-wa-charcoal-muted);
+}
+
+.tt-wa-perk-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tt-wa-perk-item svg {
+  color: var(--tt-wa-green);
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   10. ACTION BUTTONS & WHATSAPP SUBMIT
+   -------------------------------------------------------------------------- */
+.tt-wa-submit-btn {
+  width: 100%;
+  height: 52px;
+  background: #25D366;
+  background: linear-gradient(145deg, #25D366 0%, #1EBD5A 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.42);
+  transition: all 0.28s var(--tt-wa-ease);
+}
+
+.tt-wa-submit-btn:hover {
+  background: #20BD5A;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(37, 211, 102, 0.55);
+}
+
+.tt-wa-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.tt-wa-submit-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tt-wa-direct-link {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-family: var(--tt-wa-font-sans);
+  font-size: 13px;
+  color: var(--tt-wa-charcoal-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.tt-wa-direct-link:hover {
+  color: var(--tt-wa-charcoal);
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   11. MOBILE BOTTOM SHEET & CLEARANCE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .tt-floating-wa,
+  .meta-floating-whatsapp {
+    bottom: 5.5rem !important; /* Clearance above mobile sticky booking bar */
+    right: 1.25rem !important;
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .tt-floating-wa svg,
+  .meta-floating-whatsapp svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .tt-wa-tooltip {
+    bottom: 5.8rem;
+    right: 5.4rem;
+    font-size: 11.5px;
+    padding: 6px 12px;
+  }
+
+  .tt-wa-modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .tt-wa-modal {
+    max-width: 100%;
+    border-radius: 22px 22px 0 0;
+    max-height: 90vh;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    transform: translateY(100%);
+  }
+
+  .tt-wa-modal-backdrop.open .tt-wa-modal {
+    transform: translateY(0);
+  }
+
+  .tt-wa-sheet-pill {
+    display: block;
+  }
+
+  .tt-wa-modal-header {
+    padding: 0.8rem 1.4rem 1.1rem;
+  }
+
+  .tt-wa-modal-body {
+    padding: 1.25rem 1.4rem 1.75rem;
+  }
+
+  .tt-wa-grid-2,
+  .tt-wa-villa-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .tt-wa-modal-title {
+    font-size: 24px;
+  }
+
+  .tt-wa-rate-main {
+    font-size: 24px;
+  }
+}

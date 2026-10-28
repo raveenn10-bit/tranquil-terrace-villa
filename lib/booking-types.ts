@@ -31,6 +31,8 @@ export type BookingRecord = {
   paidAmount: number;
   specialRequest: string;
   adminNotes: string;
+  packageId?: string;
+  timingOption?: string;
   createdAt: string;
   updatedAt: string;
 };

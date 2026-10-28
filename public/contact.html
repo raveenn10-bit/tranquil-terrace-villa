@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-  <meta content="#183d32" name="theme-color"/>
+  <meta content="#141615" name="theme-color"/>
   <title>Tranquil Terrace Galle · Contact &amp; Enquiry</title>
   <meta content="Tranquil Terrace Galle: two private villas, Araliya and Olu. Each has one king bedroom, one private bathroom, a private plunge pool and space for up to two guests." name="description"/>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -15,58 +15,330 @@
   <link href="booking.css" rel="stylesheet"/>
   <link href="motion.css" rel="stylesheet"/>
   <link href="cinematic-3d.css" rel="stylesheet"/>
+  <link href="meta-redesign.css" rel="stylesheet"/>
+  <link href="whatsapp-booking.css" rel="stylesheet"/>
 </head>
 <body class="page-inner page-contact" id="top">
   <a class="skip" href="#main">Skip to content</a>
   <div aria-hidden="true" class="progress"></div>
-  <header class="taru-header">
-  <div class="header-left">
-    <a aria-label="Tranquil Terrace Galle home" class="brand brand-logo" href="index.html">
-      <img src="assets/tranquil-terrace-logo.webp" alt="Tranquil Terrace Galle — Private Villa" width="1200" height="420"/>
-    </a>
+
+<header class="taru-header luxury-hotel-header" id="site-header">
+  <div class="luxury-header-grid">
+    <!-- 1. LEFT MENU (Desktop) -->
+    <nav class="luxury-nav luxury-nav-left" aria-label="Main menu left">
+      <ul class="luxury-menu-list">
+        <li><a class="luxury-nav-link " href="index.html" >HOME</a></li>
+        <li><a class="luxury-nav-link " href="villas.html" >OUR VILLAS</a></li>
+        <li><a class="luxury-nav-link" href="index.html#packages">PACKAGES</a></li>
+        <li><a class="luxury-nav-link " href="gallery.html" >GALLERY</a></li>
+      </ul>
+    </nav>
+
+    <!-- 2. MOBILE HAMBURGER BUTTON (Mobile only) -->
+    <div class="luxury-mobile-burger-wrap">
+      <button class="luxury-burger-btn" id="luxury-burger-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="luxury-mobile-drawer">
+        <span class="burger-line line-1"></span>
+        <span class="burger-line line-2"></span>
+        <span class="burger-line line-3"></span>
+      </button>
+    </div>
+
+    <!-- 3. CENTER EMBLEM / CREST -->
+    <div class="luxury-brand-center">
+      <a class="luxury-crest-link" href="index.html" aria-label="Tranquil Terrace Galle — Private Villa">
+        <svg class="luxury-crest-svg" viewBox="0 0 160 190" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tranquil Terrace Galle Crest">
+  <g stroke="#252824" stroke-linecap="round" stroke-linejoin="round">
+    <!-- TOP CELESTIAL RADIANCE & STARBURST -->
+    <g stroke-width="0.85" opacity="0.85">
+      <line x1="80" y1="6" x2="80" y2="13"/>
+      <line x1="80" y1="33" x2="80" y2="40"/>
+      <line x1="66" y1="23" x2="73" y2="23"/>
+      <line x1="87" y1="23" x2="94" y2="23"/>
+      <line x1="70" y1="13" x2="75" y2="18"/>
+      <line x1="85" y1="28" x2="90" y2="33"/>
+      <line x1="70" y1="33" x2="75" y2="28"/>
+      <line x1="85" y1="18" x2="90" y2="13"/>
+      <line x1="74" y1="9" x2="77" y2="15" stroke-width="0.5"/>
+      <line x1="86" y1="9" x2="83" y2="15" stroke-width="0.5"/>
+      <line x1="74" y1="37" x2="77" y2="31" stroke-width="0.5"/>
+      <line x1="86" y1="37" x2="83" y2="31" stroke-width="0.5"/>
+      <line x1="66" y1="17" x2="72" y2="20" stroke-width="0.5"/>
+      <line x1="94" y1="17" x2="88" y2="20" stroke-width="0.5"/>
+      <line x1="66" y1="29" x2="72" y2="26" stroke-width="0.5"/>
+      <line x1="94" y1="29" x2="88" y2="26" stroke-width="0.5"/>
+    </g>
+    <circle cx="80" cy="23" r="4" stroke-width="1.1" fill="#F8F5F0"/>
+    <circle cx="80" cy="23" r="1.5" fill="#252824"/>
+    <polygon points="80,4 81.2,7.5 84,8.5 81.2,9.5 80,13 78.8,9.5 76,8.5 78.8,7.5" fill="#252824" stroke="none"/>
+
+    <!-- CARTOUCHE TOP CROWN SCROLLS -->
+    <path d="M80 18 C72 13 65 18 62 25 C58 32 63 37 67 37 C61 43 59 51 60 58" stroke-width="1.1"/>
+    <path d="M80 18 C88 13 95 18 98 25 C102 32 97 37 93 37 C99 43 101 51 100 58" stroke-width="1.1"/>
+    <circle cx="62" cy="25" r="1.2" fill="#252824"/>
+    <circle cx="98" cy="25" r="1.2" fill="#252824"/>
+
+    <!-- BOTANICAL ACANTHUS & CINNAMON LEAVES (SYMMETRICAL FLANKS) -->
+    <path d="M58 28 C50 25 44 31 46 38 C48 44 55 45 59 42" stroke-width="1"/>
+    <path d="M46 38 C39 40 36 47 38 54 C40 60 48 61 52 56" stroke-width="1"/>
+    <path d="M38 54 C32 58 31 66 34 73 C37 79 44 80 48 76" stroke-width="1"/>
+    <path d="M34 73 C29 78 28 87 32 94 C35 100 43 100 47 96" stroke-width="1"/>
+    <path d="M32 94 C29 101 31 109 36 115 C41 120 48 119 51 113" stroke-width="1"/>
+    <path d="M36 115 C33 122 36 131 43 137 C49 141 56 138 58 131" stroke-width="1"/>
+    <path d="M43 137 C42 145 49 154 58 158 C65 161 72 157 74 150" stroke-width="1"/>
+
+    <path d="M102 28 C110 25 116 31 114 38 C112 44 105 45 101 42" stroke-width="1"/>
+    <path d="M114 38 C121 40 124 47 122 54 C120 60 112 61 108 56" stroke-width="1"/>
+    <path d="M122 54 C128 58 129 66 126 73 C123 79 116 80 112 76" stroke-width="1"/>
+    <path d="M126 73 C131 78 132 87 128 94 C125 100 117 100 113 96" stroke-width="1"/>
+    <path d="M128 94 C131 101 129 109 124 115 C119 120 112 119 109 113" stroke-width="1"/>
+    <path d="M124 115 C127 122 124 131 117 137 C111 141 104 138 102 131" stroke-width="1"/>
+    <path d="M117 137 C118 145 111 154 102 158 C95 161 88 157 86 150" stroke-width="1"/>
+
+    <!-- CARTOUCHE MAIN SHIELD CONTOUR -->
+    <path d="M80 34 C64 34 50 46 49 64 L49 116 C49 135 64 150 80 156 C96 150 111 135 111 116 L111 64 C110 46 96 34 80 34 Z" stroke-width="1.4"/>
+    <path d="M80 38 C66 38 53 49 53 66 L53 114 C53 131 66 145 80 151 C94 145 107 131 107 114 L107 66 C107 49 94 38 80 38 Z" stroke-width="0.7" stroke-dasharray="2 1.5"/>
+
+    <!-- CLASSICAL VILLA ARCH & ARCHITECTURAL MOTIF -->
+    <path d="M59 86 L59 66 C59 55 68 46 80 46 C92 46 101 55 101 66 L101 86" stroke-width="1.1"/>
+    <path d="M62 86 L62 67 C62 57 70 49 80 49 C90 49 98 57 98 67 L98 86" stroke-width="0.6"/>
+    <line x1="57" y1="65" x2="64" y2="65" stroke-width="1.2"/>
+    <line x1="96" y1="65" x2="103" y2="65" stroke-width="1.2"/>
+    <line x1="57" y1="86" x2="64" y2="86" stroke-width="1.2"/>
+    <line x1="96" y1="86" x2="103" y2="86" stroke-width="1.2"/>
+
+    <!-- CLASSICAL BALUSTRADE / PEDIMENT STEPS AT BOTTOM -->
+    <line x1="57" y1="127" x2="103" y2="127" stroke-width="1.2"/>
+    <line x1="59" y1="130" x2="101" y2="130" stroke-width="0.8"/>
+    <line x1="61" y1="127" x2="61" y2="122" stroke-width="1"/>
+    <line x1="68" y1="127" x2="68" y2="122" stroke-width="1"/>
+    <line x1="76" y1="127" x2="76" y2="122" stroke-width="1"/>
+    <line x1="84" y1="127" x2="84" y2="122" stroke-width="1"/>
+    <line x1="92" y1="127" x2="92" y2="122" stroke-width="1"/>
+    <line x1="99" y1="127" x2="99" y2="122" stroke-width="1"/>
+    <line x1="59" y1="122" x2="101" y2="122" stroke-width="0.9"/>
+
+    <!-- BOTTOM DROPLET / PENDANT -->
+    <path d="M80 156 L80 170 M73 162 C76 168 80 173 80 173 C80 173 84 168 87 162" stroke-width="1.1"/>
+    <circle cx="80" cy="175" r="2" fill="#252824"/>
+  </g>
+
+  <!-- ROMAN MONOGRAM 'TT' WITH CLASSICAL SERIFS -->
+  <path d="M68 60 L86 60 M77 60 L77 81 M73 81 L81 81" stroke="#252824" stroke-width="1.8" stroke-linecap="square"/>
+  <path d="M68 60 L68 63 M86 60 L86 63" stroke="#252824" stroke-width="1.2"/>
+  <path d="M75 65 L91 65 M83 65 L83 84 M79 84 L87 84" stroke="#252824" stroke-width="1.6" stroke-linecap="square"/>
+  <path d="M75 65 L75 68 M91 65 L91 68" stroke="#252824" stroke-width="1.1"/>
+  <path d="M66 79 C64 73 67 69 71 67" stroke="#252824" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+  <polygon points="66.5,74 65,71 68,72" fill="#252824"/>
+  <polygon points="69,70 67.5,67 70.5,68" fill="#252824"/>
+
+  <!-- TYPOGRAPHY -->
+  <text x="80" y="98" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="8.5" font-weight="700" letter-spacing="2.2" fill="#252824">TRANQUIL</text>
+  <text x="80" y="107" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="8" font-weight="700" letter-spacing="2.5" fill="#252824">TERRACE</text>
+  <text x="80" y="116" text-anchor="middle" font-family="'Manrope', -apple-system, sans-serif" font-size="5.5" font-weight="600" letter-spacing="3.2" fill="#252824">GALLE</text>
+
+  <!-- EST. 2024 -->
+  <text x="80" y="142" text-anchor="middle" font-family="'Manrope', -apple-system, sans-serif" font-size="4.6" font-weight="600" letter-spacing="1.8" fill="#252824">EST. 2024</text>
+</svg>
+      </a>
+    </div>
+
+    <!-- 4. RIGHT MENU (Desktop) -->
+    <nav class="luxury-nav luxury-nav-right" aria-label="Main menu right">
+      <ul class="luxury-menu-list">
+        <li><a class="luxury-nav-link " href="experiences.html" >ABOUT</a></li>
+        <li><a class="luxury-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li><a class="luxury-nav-link active" href="contact.html" aria-current="page">CONTACT</a></li>
+        <li><a class="luxury-nav-link luxury-book-link" href="#booking-card" data-book="" aria-label="Book your escape">BOOK NOW</a></li>
+      </ul>
+
+      <span class="luxury-nav-sep" aria-hidden="true">|</span>
+
+      <div class="luxury-currency-toggle currency-toggle" role="group" aria-label="Currency toggle">
+        <button type="button" class="luxury-curr-btn active" data-curr="LKR" aria-pressed="true">LKR</button>
+        <span class="luxury-curr-slash">/</span>
+        <button type="button" class="luxury-curr-btn" data-curr="USD" aria-pressed="false">USD</button>
+      </div>
+
+      <span class="luxury-nav-sep luxury-nav-sep-status" aria-hidden="true">|</span>
+
+      <div class="luxury-nav-status" aria-label="Location and weather: 29 degrees Celsius in Galle">
+        <span class="status-sun" aria-hidden="true">☀</span>
+        <span class="status-text">29°C GALLE</span>
+      </div>
+    </nav>
+
+    <!-- 5. MOBILE BOOK BUTTON (Mobile only) -->
+    <div class="luxury-mobile-book-wrap">
+      <a class="luxury-mobile-book-btn" href="#booking-card" data-book="" aria-label="Book your escape">
+        <span>BOOK</span>
+      </a>
+    </div>
   </div>
-  <div class="header-actions">
-    <button class="nav-action-btn btn-menu menu-toggle" aria-expanded="false" aria-label="Toggle navigation menu">
-      <svg class="nav-action-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-        <circle cx="4" cy="4" r="1.8"/><circle cx="10" cy="4" r="1.8"/><circle cx="16" cy="4" r="1.8"/>
-        <circle cx="4" cy="10" r="1.8"/><circle cx="10" cy="10" r="1.8"/><circle cx="16" cy="10" r="1.8"/>
-        <circle cx="4" cy="16" r="1.8"/><circle cx="10" cy="16" r="1.8"/><circle cx="16" cy="16" r="1.8"/>
-      </svg>
-      <span>MENU</span>
-    </button>
-    <button class="nav-action-btn btn-book-now" data-book="" aria-label="Book your escape">
-      <svg class="nav-action-icon gold-icon" viewBox="0 0 24 24" fill="none" stroke="#c8a45d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-        <line x1="16" y1="2" x2="16" y2="6"/>
-        <line x1="8" y1="2" x2="8" y2="6"/>
-        <line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-      <span>BOOK NOW</span>
-    </button>
-    <a class="nav-action-btn btn-call" href="tel:+94770682366" aria-label="Call Tranquil Terrace">
-      <svg class="nav-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-      </svg>
-      <span>CALL</span>
-    </a>
-    <a class="nav-action-btn btn-whatsapp" href="https://wa.me/94770682366" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-      <svg class="nav-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-      </svg>
-      <span>WHATSAPP</span>
-    </a>
-  </div>
-  <nav class="header-nav" aria-label="Main navigation">
-    <a  href="index.html">Home</a>
-    <a  href="villas.html">The Villas</a>
-    <a  href="experiences.html">Experiences</a>
-    <a  href="gallery.html">Gallery</a>
-    <a  href="explore-galle.html">Explore Galle</a>
-    <a aria-current="page" href="contact.html">Contact Us</a>
-  </nav>
 </header>
 
-  <main id="main">
+<!-- MOBILE DRAWER / FULLSCREEN OVERLAY -->
+<div class="luxury-mobile-drawer" id="luxury-mobile-drawer" role="dialog" aria-modal="true" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="drawer-scroller">
+    <!-- Top Bar with Close Button -->
+    <div class="drawer-top-bar">
+      <span class="drawer-eyebrow">TRANQUIL TERRACE · GALLE</span>
+      <button class="drawer-close-btn" id="luxury-drawer-close" aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Centered Mini Crest -->
+    <div class="drawer-crest-center">
+      <a href="index.html" aria-label="Tranquil Terrace Galle home" class="drawer-crest-link">
+        <svg class="luxury-crest-svg" viewBox="0 0 160 190" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tranquil Terrace Galle Crest">
+  <g stroke="#252824" stroke-linecap="round" stroke-linejoin="round">
+    <!-- TOP CELESTIAL RADIANCE & STARBURST -->
+    <g stroke-width="0.85" opacity="0.85">
+      <line x1="80" y1="6" x2="80" y2="13"/>
+      <line x1="80" y1="33" x2="80" y2="40"/>
+      <line x1="66" y1="23" x2="73" y2="23"/>
+      <line x1="87" y1="23" x2="94" y2="23"/>
+      <line x1="70" y1="13" x2="75" y2="18"/>
+      <line x1="85" y1="28" x2="90" y2="33"/>
+      <line x1="70" y1="33" x2="75" y2="28"/>
+      <line x1="85" y1="18" x2="90" y2="13"/>
+      <line x1="74" y1="9" x2="77" y2="15" stroke-width="0.5"/>
+      <line x1="86" y1="9" x2="83" y2="15" stroke-width="0.5"/>
+      <line x1="74" y1="37" x2="77" y2="31" stroke-width="0.5"/>
+      <line x1="86" y1="37" x2="83" y2="31" stroke-width="0.5"/>
+      <line x1="66" y1="17" x2="72" y2="20" stroke-width="0.5"/>
+      <line x1="94" y1="17" x2="88" y2="20" stroke-width="0.5"/>
+      <line x1="66" y1="29" x2="72" y2="26" stroke-width="0.5"/>
+      <line x1="94" y1="29" x2="88" y2="26" stroke-width="0.5"/>
+    </g>
+    <circle cx="80" cy="23" r="4" stroke-width="1.1" fill="#F8F5F0"/>
+    <circle cx="80" cy="23" r="1.5" fill="#252824"/>
+    <polygon points="80,4 81.2,7.5 84,8.5 81.2,9.5 80,13 78.8,9.5 76,8.5 78.8,7.5" fill="#252824" stroke="none"/>
+
+    <!-- CARTOUCHE TOP CROWN SCROLLS -->
+    <path d="M80 18 C72 13 65 18 62 25 C58 32 63 37 67 37 C61 43 59 51 60 58" stroke-width="1.1"/>
+    <path d="M80 18 C88 13 95 18 98 25 C102 32 97 37 93 37 C99 43 101 51 100 58" stroke-width="1.1"/>
+    <circle cx="62" cy="25" r="1.2" fill="#252824"/>
+    <circle cx="98" cy="25" r="1.2" fill="#252824"/>
+
+    <!-- BOTANICAL ACANTHUS & CINNAMON LEAVES (SYMMETRICAL FLANKS) -->
+    <path d="M58 28 C50 25 44 31 46 38 C48 44 55 45 59 42" stroke-width="1"/>
+    <path d="M46 38 C39 40 36 47 38 54 C40 60 48 61 52 56" stroke-width="1"/>
+    <path d="M38 54 C32 58 31 66 34 73 C37 79 44 80 48 76" stroke-width="1"/>
+    <path d="M34 73 C29 78 28 87 32 94 C35 100 43 100 47 96" stroke-width="1"/>
+    <path d="M32 94 C29 101 31 109 36 115 C41 120 48 119 51 113" stroke-width="1"/>
+    <path d="M36 115 C33 122 36 131 43 137 C49 141 56 138 58 131" stroke-width="1"/>
+    <path d="M43 137 C42 145 49 154 58 158 C65 161 72 157 74 150" stroke-width="1"/>
+
+    <path d="M102 28 C110 25 116 31 114 38 C112 44 105 45 101 42" stroke-width="1"/>
+    <path d="M114 38 C121 40 124 47 122 54 C120 60 112 61 108 56" stroke-width="1"/>
+    <path d="M122 54 C128 58 129 66 126 73 C123 79 116 80 112 76" stroke-width="1"/>
+    <path d="M126 73 C131 78 132 87 128 94 C125 100 117 100 113 96" stroke-width="1"/>
+    <path d="M128 94 C131 101 129 109 124 115 C119 120 112 119 109 113" stroke-width="1"/>
+    <path d="M124 115 C127 122 124 131 117 137 C111 141 104 138 102 131" stroke-width="1"/>
+    <path d="M117 137 C118 145 111 154 102 158 C95 161 88 157 86 150" stroke-width="1"/>
+
+    <!-- CARTOUCHE MAIN SHIELD CONTOUR -->
+    <path d="M80 34 C64 34 50 46 49 64 L49 116 C49 135 64 150 80 156 C96 150 111 135 111 116 L111 64 C110 46 96 34 80 34 Z" stroke-width="1.4"/>
+    <path d="M80 38 C66 38 53 49 53 66 L53 114 C53 131 66 145 80 151 C94 145 107 131 107 114 L107 66 C107 49 94 38 80 38 Z" stroke-width="0.7" stroke-dasharray="2 1.5"/>
+
+    <!-- CLASSICAL VILLA ARCH & ARCHITECTURAL MOTIF -->
+    <path d="M59 86 L59 66 C59 55 68 46 80 46 C92 46 101 55 101 66 L101 86" stroke-width="1.1"/>
+    <path d="M62 86 L62 67 C62 57 70 49 80 49 C90 49 98 57 98 67 L98 86" stroke-width="0.6"/>
+    <line x1="57" y1="65" x2="64" y2="65" stroke-width="1.2"/>
+    <line x1="96" y1="65" x2="103" y2="65" stroke-width="1.2"/>
+    <line x1="57" y1="86" x2="64" y2="86" stroke-width="1.2"/>
+    <line x1="96" y1="86" x2="103" y2="86" stroke-width="1.2"/>
+
+    <!-- CLASSICAL BALUSTRADE / PEDIMENT STEPS AT BOTTOM -->
+    <line x1="57" y1="127" x2="103" y2="127" stroke-width="1.2"/>
+    <line x1="59" y1="130" x2="101" y2="130" stroke-width="0.8"/>
+    <line x1="61" y1="127" x2="61" y2="122" stroke-width="1"/>
+    <line x1="68" y1="127" x2="68" y2="122" stroke-width="1"/>
+    <line x1="76" y1="127" x2="76" y2="122" stroke-width="1"/>
+    <line x1="84" y1="127" x2="84" y2="122" stroke-width="1"/>
+    <line x1="92" y1="127" x2="92" y2="122" stroke-width="1"/>
+    <line x1="99" y1="127" x2="99" y2="122" stroke-width="1"/>
+    <line x1="59" y1="122" x2="101" y2="122" stroke-width="0.9"/>
+
+    <!-- BOTTOM DROPLET / PENDANT -->
+    <path d="M80 156 L80 170 M73 162 C76 168 80 173 80 173 C80 173 84 168 87 162" stroke-width="1.1"/>
+    <circle cx="80" cy="175" r="2" fill="#252824"/>
+  </g>
+
+  <!-- ROMAN MONOGRAM 'TT' WITH CLASSICAL SERIFS -->
+  <path d="M68 60 L86 60 M77 60 L77 81 M73 81 L81 81" stroke="#252824" stroke-width="1.8" stroke-linecap="square"/>
+  <path d="M68 60 L68 63 M86 60 L86 63" stroke="#252824" stroke-width="1.2"/>
+  <path d="M75 65 L91 65 M83 65 L83 84 M79 84 L87 84" stroke="#252824" stroke-width="1.6" stroke-linecap="square"/>
+  <path d="M75 65 L75 68 M91 65 L91 68" stroke="#252824" stroke-width="1.1"/>
+  <path d="M66 79 C64 73 67 69 71 67" stroke="#252824" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+  <polygon points="66.5,74 65,71 68,72" fill="#252824"/>
+  <polygon points="69,70 67.5,67 70.5,68" fill="#252824"/>
+
+  <!-- TYPOGRAPHY -->
+  <text x="80" y="98" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="8.5" font-weight="700" letter-spacing="2.2" fill="#252824">TRANQUIL</text>
+  <text x="80" y="107" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="8" font-weight="700" letter-spacing="2.5" fill="#252824">TERRACE</text>
+  <text x="80" y="116" text-anchor="middle" font-family="'Manrope', -apple-system, sans-serif" font-size="5.5" font-weight="600" letter-spacing="3.2" fill="#252824">GALLE</text>
+
+  <!-- EST. 2024 -->
+  <text x="80" y="142" text-anchor="middle" font-family="'Manrope', -apple-system, sans-serif" font-size="4.6" font-weight="600" letter-spacing="1.8" fill="#252824">EST. 2024</text>
+</svg>
+      </a>
+    </div>
+
+    <!-- Centered Navigation Links with Thin Dividers -->
+    <nav class="drawer-nav-menu" aria-label="Mobile menu links">
+      <ul class="drawer-links-list">
+        <li style="--stagger: 1;"><a class="drawer-nav-link " href="index.html" >HOME</a></li>
+        <li style="--stagger: 2;"><a class="drawer-nav-link " href="villas.html" >OUR VILLAS</a></li>
+        <li style="--stagger: 3;"><a class="drawer-nav-link" href="index.html#packages">PACKAGES</a></li>
+        <li style="--stagger: 4;"><a class="drawer-nav-link " href="gallery.html" >GALLERY</a></li>
+        <li style="--stagger: 5;"><a class="drawer-nav-link " href="experiences.html" >ABOUT</a></li>
+        <li style="--stagger: 6;"><a class="drawer-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li style="--stagger: 7;"><a class="drawer-nav-link active" href="contact.html" aria-current="page">CONTACT</a></li>
+      </ul>
+    </nav>
+
+    <!-- Drawer Actions & CTA -->
+    <div class="drawer-footer-actions" style="--stagger: 8;">
+      <a class="drawer-book-cta" href="#booking-card" data-book="" aria-label="Book your stay at Tranquil Terrace">
+        <span>BOOK YOUR STAY</span>
+        <span class="cta-arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <!-- Currency & Weather Row in Drawer -->
+      <div class="drawer-meta-row">
+        <div class="luxury-currency-toggle currency-toggle drawer-curr-toggle" role="group" aria-label="Mobile currency selector">
+          <button type="button" class="luxury-curr-btn active" data-curr="LKR" aria-pressed="true">LKR</button>
+          <span class="luxury-curr-slash">/</span>
+          <button type="button" class="luxury-curr-btn" data-curr="USD" aria-pressed="false">USD</button>
+        </div>
+        <span class="drawer-meta-dot">·</span>
+        <span class="drawer-weather">☀ 29°C GALLE</span>
+      </div>
+
+      <!-- Quick Contact Links -->
+      <div class="drawer-direct-contacts">
+        <a href="tel:+94770682366" class="drawer-contact-tel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>+94 77 068 2366</span>
+        </a>
+        <a href="https://wa.me/94770682366" target="_blank" rel="noopener" class="drawer-contact-wa" data-whatsapp-book="" aria-label="WhatsApp Concierge">
+          <svg class="official-wa-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z"/>
+            <path fill="#FFFFFF" fill-rule="evenodd" d="M17.51 14.38C17.21 14.23 15.74 13.51 15.47 13.41C15.19 13.31 15 13.26 14.8 13.56C14.6 13.86 14.04 14.52 13.86 14.72C13.69 14.92 13.52 14.94 13.22 14.79C12.92 14.64 11.96 14.33 10.82 13.31C9.94 12.52 9.34 11.55 9.17 11.25C9 10.95 9.15 10.79 9.3 10.64C9.43 10.51 9.6 10.29 9.75 10.12C9.9 9.94 9.95 9.82 10.05 9.62C10.15 9.42 10.1 9.24 10.02 9.09C9.95 8.94 9.35 7.47 9.1 6.86C8.86 6.27 8.61 6.35 8.43 6.34C8.26 6.33 8.06 6.33 7.86 6.33C7.66 6.33 7.34 6.41 7.06 6.71C6.79 7.01 6.02 7.73 6.02 9.19C6.02 10.65 7.08 12.06 7.23 12.26C7.38 12.46 9.32 15.46 12.3 16.74C13.01 17.05 13.57 17.23 14 17.37C14.71 17.6 15.36 17.57 15.87 17.49C16.44 17.4 17.63 16.77 17.88 16.06C18.13 15.36 18.13 14.75 18.05 14.63C17.98 14.5 17.81 14.43 17.51 14.28V14.38Z"/>
+          </svg>
+          <span>WhatsApp Concierge ↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div><!-- /luxury-mobile-drawer -->
+
+<main id="main">
     <section class="hero inner-hero">
       <div class="inner-copy">
         <p class="eyebrow enter">05 / SAY HELLO</p>
@@ -508,8 +780,8 @@
       <p class="footer-brand-desc">Two private pool villas set amidst lush cinnamon hills in Galle, Sri Lanka. Designed for stillness, curated comfort, and slow tropical living.</p>
       <div class="footer-badges">
         <a class="footer-badge" href="https://www.google.com/maps/place/Tranquil+Terrace+Galle/@6.0750215,80.2264243,17z/data=!4m11!3m10!1s0x3ae17190008d4b95:0x7d9bae152f119179!5m2!4m1!1i2!8m2!3d6.0750215!4d80.2264243!9m1!1b1!16s%2Fg%2F11xsjw9mts!18m1!1e1" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="#b79258" width="13" height="13"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <span><strong>4.8 / 5.0</strong> Google Reviews (49 verified stays) ↗</span>
+          <svg viewBox="0 0 24 24" fill="#C8A45D" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span><strong>4.6 / 5.0</strong> Google Reviews (49 verified reviews) ↗</span>
         </a>
         <a class="footer-badge" href="contact.html#stay-calendar">
           <span class="footer-sync-dot"></span>
@@ -538,8 +810,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           <span>+94 77 068 2366</span>
         </a>
-        <button class="footer-contact-link whatsapp-direct" data-book="" aria-label="Enquire on WhatsApp">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <button class="footer-contact-link whatsapp-direct" data-whatsapp-book="" aria-label="Enquire on WhatsApp">
+          <svg class="official-wa-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z"/>
+            <path fill="#FFFFFF" fill-rule="evenodd" d="M17.51 14.38C17.21 14.23 15.74 13.51 15.47 13.41C15.19 13.31 15 13.26 14.8 13.56C14.6 13.86 14.04 14.52 13.86 14.72C13.69 14.92 13.52 14.94 13.22 14.79C12.92 14.64 11.96 14.33 10.82 13.31C9.94 12.52 9.34 11.55 9.17 11.25C9 10.95 9.15 10.79 9.3 10.64C9.43 10.51 9.6 10.29 9.75 10.12C9.9 9.94 9.95 9.82 10.05 9.62C10.15 9.42 10.1 9.24 10.02 9.09C9.95 8.94 9.35 7.47 9.1 6.86C8.86 6.27 8.61 6.35 8.43 6.34C8.26 6.33 8.06 6.33 7.86 6.33C7.66 6.33 7.34 6.41 7.06 6.71C6.79 7.01 6.02 7.73 6.02 9.19C6.02 10.65 7.08 12.06 7.23 12.26C7.38 12.46 9.32 15.46 12.3 16.74C13.01 17.05 13.57 17.23 14 17.37C14.71 17.6 15.36 17.57 15.87 17.49C16.44 17.4 17.63 16.77 17.88 16.06C18.13 15.36 18.13 14.75 18.05 14.63C17.98 14.5 17.81 14.43 17.51 14.28V14.38Z"/>
+          </svg>
           <span>Enquire on WhatsApp ↗</span>
         </button>
         <a class="footer-contact-link map-link" href="https://maps.app.goo.gl/RJAmGePoCYyHsJYX8" target="_blank" rel="noopener">
@@ -550,60 +825,131 @@
       </div>
     </div>
 
-    <!-- Col 4: Booking Channels Cards -->
+    <!-- Col 4: Booking Channels Cards with Official Brand SVGs -->
     <div class="footer-col footer-col-booking footer-platforms">
       <span class="footer-col-title">BOOK YOUR STAY</span>
       <div class="footer-channel-cards">
-        <a class="footer-channel-card channel-booking" data-channel="booking" href="https://www.booking.com/hotel/lk/tranquil-terrace-galle-galle1.html?aid=356980" rel="noopener" target="_blank">
-          <div class="channel-card-left">
-            <span class="channel-card-name">Booking.com</span>
-            <span class="channel-card-sub">Preferred Partner · Instant Confirmation</span>
+        <!-- 1. Booking.com with authentic official B. icon in #003580 & #006CE4 -->
+        <a class="footer-channel-card channel-booking" data-channel="booking" href="https://www.booking.com/hotel/lk/tranquil-terrace-galle-galle1.html?aid=356980" rel="noopener" target="_blank" aria-label="Book on Booking.com">
+          <div class="channel-card-brand">
+            <svg class="channel-brand-svg booking-svg" viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Booking.com Logo">
+              <rect width="32" height="32" rx="7" fill="#003580"/>
+              <path d="M9.5 8h5.6c2.8 0 4.6 1.3 4.6 3.3 0 1.4-.9 2.5-2.2 2.9 1.7.4 2.7 1.7 2.7 3.3 0 2.3-2 3.8-5 3.8H9.5V8zm3.4 5.1h2c1.1 0 1.9-.4 1.9-1.4 0-.9-.7-1.4-1.8-1.4h-2.1v2.8zm0 5.7h2.2c1.3 0 2.2-.5 2.2-1.6 0-1-.8-1.6-2.2-1.6h-2.2v3.2z" fill="#FFFFFF"/>
+              <circle cx="23.2" cy="19.5" r="1.8" fill="#006CE4"/>
+            </svg>
+            <div class="channel-card-left">
+              <span class="channel-card-name">Booking.com</span>
+              <span class="channel-card-sub">Preferred Partner · Instant Confirmation</span>
+            </div>
           </div>
-          <span class="channel-card-arrow">↗</span>
+          <span class="channel-card-arrow" aria-hidden="true">↗</span>
         </a>
-        <a class="footer-channel-card channel-airbnb" data-channel="airbnb" href="https://www.airbnb.co.in/rooms/1493263628966005427" rel="noopener" target="_blank">
-          <div class="channel-card-left">
-            <span class="channel-card-name">Airbnb</span>
-            <span class="channel-card-sub">Superhost · Guest Favourite</span>
+
+        <!-- 2. Airbnb with authentic official Bélo icon in #FF5A5F coral-red -->
+        <a class="footer-channel-card channel-airbnb" data-channel="airbnb" href="https://www.airbnb.co.in/rooms/1493263628966005427" rel="noopener" target="_blank" aria-label="Book on Airbnb">
+          <div class="channel-card-brand">
+            <svg class="channel-brand-svg airbnb-svg" viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Airbnb Bélo Logo">
+              <rect width="32" height="32" rx="7" fill="#FF5A5F"/>
+              <path d="M16 4.5c-2.8 0-5.1 1.8-6.1 4.5-1.9 4.9-3.9 11.2-3.9 15.2 0 6 4.5 9.8 10 9.8s10-3.8 10-9.8c0-4-2-10.3-3.9-15.2-1-2.7-3.3-4.5-6.1-4.5zm0 2.5c1.8 0 3.3 1.2 4 2.9 1.8 4.7 3.5 10.4 3.5 14.3 0 4.4-3.2 7.3-7.5 7.3s-7.5-2.9-7.5-7.3c0-3.9 1.7-9.6 3.5-14.3.7-1.7 2.2-2.9 4-2.9zm0 6.5c-2.5 0-4.5 2-4.5 4.5 0 2.2 1.6 4.1 3.7 4.4.3 0 .5.1.8.1.3 0 .5 0 .8-.1 2.1-.3 3.7-2.2 3.7-4.4 0-2.5-2-4.5-4.5-4.5zm0 2c1.4 0 2.5 1.1 2.5 2.5s-1.1 2.5-2.5 2.5-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5z" fill="#FFFFFF"/>
+            </svg>
+            <div class="channel-card-left">
+              <span class="channel-card-name">Airbnb</span>
+              <span class="channel-card-sub">Superhost · Guest Favourite</span>
+            </div>
           </div>
-          <span class="channel-card-arrow">↗</span>
+          <span class="channel-card-arrow" aria-hidden="true">↗</span>
         </a>
-        <a class="footer-channel-card channel-agoda" data-channel="agoda" href="https://www.agoda.com/tranquil-terrace-galle-h79594102/hotel/galle-lk.html" rel="noopener" target="_blank">
-          <div class="channel-card-left">
-            <span class="channel-card-name">Agoda</span>
-            <span class="channel-card-sub">Top Villa Galle · Best Rates</span>
+
+        <!-- 3. Agoda with official colored circle logo or badge (#5392F9 / brand colors) -->
+        <a class="footer-channel-card channel-agoda" data-channel="agoda" href="https://www.agoda.com/tranquil-terrace-galle-h79594102/hotel/galle-lk.html" rel="noopener" target="_blank" aria-label="Book on Agoda">
+          <div class="channel-card-brand">
+            <svg class="channel-brand-svg agoda-svg" viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Agoda Logo">
+              <rect width="32" height="32" rx="7" fill="#FFFFFF"/>
+              <circle cx="10" cy="11" r="3.2" fill="#E1251B"/>
+              <circle cx="22" cy="11" r="3.2" fill="#F8A51D"/>
+              <circle cx="8" cy="21" r="2.8" fill="#5EAA22"/>
+              <circle cx="16" cy="16" r="3.8" fill="#5392F9"/>
+              <circle cx="24" cy="21" r="2.8" fill="#5C2D91"/>
+            </svg>
+            <div class="channel-card-left">
+              <span class="channel-card-name">Agoda</span>
+              <span class="channel-card-sub">Top Villa Galle · Best Rates</span>
+            </div>
           </div>
-          <span class="channel-card-arrow">↗</span>
+          <span class="channel-card-arrow" aria-hidden="true">↗</span>
         </a>
-        <a class="footer-channel-card footer-calendar-card" href="contact.html#stay-calendar">
-          <div class="channel-card-left">
-            <span class="channel-card-name">Live Stay Calendar</span>
-            <span class="channel-card-sub">Real-Time Synced Availability 2026/27</span>
+
+        <!-- 4. Live Stay Calendar -->
+        <a class="footer-channel-card footer-calendar-card" href="contact.html#stay-calendar" aria-label="Check Live Stay Calendar">
+          <div class="channel-card-brand">
+            <span class="calendar-icon-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <div class="channel-card-left">
+              <span class="channel-card-name">Live Stay Calendar</span>
+              <span class="channel-card-sub">Real-Time Synced Availability 2026/27</span>
+            </div>
           </div>
-          <span class="channel-card-arrow">↗</span>
+          <span class="channel-card-arrow" aria-hidden="true">↗</span>
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Social Media Community Bar -->
+  <!-- Social Media Community Bar with Official Brand SVGs -->
   <div class="footer-social-section">
     <span class="social-header">CONNECT WITH US</span>
     <div class="social-links-grid">
-      <a class="social-link" href="https://www.instagram.com/tranquil.terrace.galle/" target="_blank" rel="noopener" aria-label="Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      <!-- 1. Instagram with vibrant gradient badge & camera glyph -->
+      <a class="social-link social-link-ig" href="https://www.instagram.com/tranquil.terrace.galle/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg class="social-brand-svg instagram-svg" viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Instagram">
+          <defs>
+            <linearGradient id="ig-grad-footer" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FFD600"/>
+              <stop offset="25%" stop-color="#FF0069"/>
+              <stop offset="50%" stop-color="#D300C5"/>
+              <stop offset="100%" stop-color="#7638FA"/>
+            </linearGradient>
+          </defs>
+          <rect width="28" height="28" rx="7" fill="url(#ig-grad-footer)"/>
+          <rect x="6.5" y="6.5" width="15" height="15" rx="4" stroke="#FFFFFF" stroke-width="1.8"/>
+          <circle cx="14" cy="14" r="3.6" stroke="#FFFFFF" stroke-width="1.8"/>
+          <circle cx="18.2" cy="9.8" r="1.1" fill="#FFFFFF"/>
+        </svg>
         <span>Instagram</span>
       </a>
-      <a class="social-link" href="https://web.facebook.com/p/Tranquil-Terrace-Galle-61579428511398/?_rdc=1&_rdr#" target="_blank" rel="noopener" aria-label="Facebook">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+
+      <!-- 2. Facebook with official blue badge & 'f' logo -->
+      <a class="social-link social-link-fb" href="https://web.facebook.com/p/Tranquil-Terrace-Galle-61579428511398/?_rdc=1&_rdr#" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg class="social-brand-svg facebook-svg" viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Facebook">
+          <rect width="28" height="28" rx="7" fill="#1877F2"/>
+          <path d="M17.5 14.8l.6-4.1h-3.9v-2.7c0-1.1.5-2.2 2.3-2.2h1.8V2.3c-.3 0-1.4-.2-2.7-.2-2.8 0-4.6 1.7-4.6 4.8v3.8H7.5v4.1h3.5V28h4.4V14.8h2.1z" fill="#FFFFFF"/>
+        </svg>
         <span>Facebook</span>
       </a>
-      <a class="social-link" href="https://www.tiktok.com/@villa.tranquil.te?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" aria-label="TikTok">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v2a7 7 0 0 1-5-2.2V16a6 6 0 1 1-6-6v2z"/></svg>
+
+      <!-- 3. TikTok with authentic chromatic neon note icon on pitch black -->
+      <a class="social-link social-link-tiktok" href="https://www.tiktok.com/@villa.tranquil.te?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg class="social-brand-svg tiktok-svg" viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TikTok">
+          <rect width="28" height="28" rx="7" fill="#000000"/>
+          <path d="M17.2 6.5c.7 1.2 1.8 2.1 3.1 2.5v2.8c-1.3 0-2.5-.4-3.5-1.1v6.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.4 0 .7 0 1.1.1V14c-.3 0-.7-.1-1.1-.1-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V6.5h3.3z" fill="#FE2C55" transform="translate(0.6, 0.6)"/>
+          <path d="M17.2 6.5c.7 1.2 1.8 2.1 3.1 2.5v2.8c-1.3 0-2.5-.4-3.5-1.1v6.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.4 0 .7 0 1.1.1V14c-.3 0-.7-.1-1.1-.1-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V6.5h3.3z" fill="#25F4EE" transform="translate(-0.6, -0.6)"/>
+          <path d="M17.2 6.5c.7 1.2 1.8 2.1 3.1 2.5v2.8c-1.3 0-2.5-.4-3.5-1.1v6.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.4 0 .7 0 1.1.1V14c-.3 0-.7-.1-1.1-.1-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V6.5h3.3z" fill="#FFFFFF"/>
+        </svg>
         <span>TikTok</span>
       </a>
-      <a class="social-link" href="https://wa.me/94770682366" target="_blank" rel="noopener" aria-label="WhatsApp">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+
+      <!-- 4. WhatsApp with official green badge & white speech bubble handset -->
+      <a class="social-link social-link-wa" href="https://wa.me/94770682366" target="_blank" rel="noopener" data-whatsapp-book="" aria-label="WhatsApp Concierge">
+        <svg class="social-brand-svg whatsapp-svg" viewBox="0 0 28 28" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="WhatsApp">
+          <rect width="28" height="28" rx="7" fill="#25D366"/>
+          <path d="M14 6C9.6 6 6 9.6 6 14c0 1.5.4 3 1.2 4.3L6 22l3.8-1.2C11 21.6 12.5 22 14 22c4.4 0 8-3.6 8-8s-3.6-8-8-8zm4.6 11.3c-.2.6-1.1 1.1-1.6 1.2-.5.1-1.1.1-3.3-.8-2.6-1.1-4.2-3.8-4.3-4-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.2.6-.4.9-.4.1 0 .2 0 .3.1.3 0 .4.1.6.5.2.5.7 1.7.8 1.8.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.1.1-.3.3-.4.4-.1.1-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.5 1.6.3.1.5.1.7-.1.2-.2.8-1 1-1.3.2-.3.4-.3.7-.2.3.1 1.8.8 2.1 1 .3.2.5.3.6.4.1.2.1.8-.1 1.4z" fill="#FFFFFF"/>
+        </svg>
         <span>WhatsApp</span>
       </a>
     </div>
@@ -689,7 +1035,7 @@
       <h3>Your request is ready.</h3>
       <p>Review your details below, then open WhatsApp and press send.</p>
       <pre id="request-preview"></pre>
-      <a class="button" id="whatsapp-link" rel="noopener" target="_blank">Open WhatsApp <span>↗</span></a>
+      <a class="button" id="whatsapp-link" rel="noopener" target="_blank"><svg class="official-wa-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="margin-right:6px;"><path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z"/><path fill="#FFFFFF" fill-rule="evenodd" d="M17.51 14.38C17.21 14.23 15.74 13.51 15.47 13.41C15.19 13.31 15 13.26 14.8 13.56C14.6 13.86 14.04 14.52 13.86 14.72C13.69 14.92 13.52 14.94 13.22 14.79C12.92 14.64 11.96 14.33 10.82 13.31C9.94 12.52 9.34 11.55 9.17 11.25C9 10.95 9.15 10.79 9.3 10.64C9.43 10.51 9.6 10.29 9.75 10.12C9.9 9.94 9.95 9.82 10.05 9.62C10.15 9.42 10.1 9.24 10.02 9.09C9.95 8.94 9.35 7.47 9.1 6.86C8.86 6.27 8.61 6.35 8.43 6.34C8.26 6.33 8.06 6.33 7.86 6.33C7.66 6.33 7.34 6.41 7.06 6.71C6.79 7.01 6.02 7.73 6.02 9.19C6.02 10.65 7.08 12.06 7.23 12.26C7.38 12.46 9.32 15.46 12.3 16.74C13.01 17.05 13.57 17.23 14 17.37C14.71 17.6 15.36 17.57 15.87 17.49C16.44 17.4 17.63 16.77 17.88 16.06C18.13 15.36 18.13 14.75 18.05 14.63C17.98 14.5 17.81 14.43 17.51 14.28V14.38Z"/></svg>Open WhatsApp <span>↗</span></a>
       <button class="text-link" id="edit-request">Edit my details</button>
     </div>
   </dialog>
@@ -704,7 +1050,32 @@
     <button aria-label="Next photograph" class="next-photo">→</button>
   </dialog>
 
+  <!-- Mobile Sticky Bottom Bar -->
+  <aside class="meta-mobile-sticky-bar" aria-label="Mobile booking action">
+    <div class="meta-sticky-bar-inner">
+      <div class="meta-sticky-price-col">
+        <span>TWO PRIVATE VILLAS</span>
+        <div>From <strong data-price-lkr="12500">LKR 12,500</strong></div>
+      </div>
+      <a class="meta-btn-sticky-book" id="meta-sticky-book-btn" href="#booking-card" data-whatsapp-book="" aria-label="Book your stay on WhatsApp">
+        <span>Book Now ↗</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Official Floating WhatsApp Concierge Button (#25D366) -->
+  <button type="button" class="meta-floating-whatsapp" id="floating-whatsapp" data-whatsapp-book="" aria-label="Chat or Book on WhatsApp">
+    <svg viewBox="0 0 36 36" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="36" height="36" rx="18" fill="#25D366"/>
+      <path d="M18 8.5C12.8 8.5 8.5 12.8 8.5 18C8.5 19.7 9 21.4 9.9 22.8L8.5 27.5L13.4 26.2C14.8 27 16.4 27.5 18 27.5C23.2 27.5 27.5 23.2 27.5 18C27.5 12.8 23.2 8.5 18 8.5ZM22.8 21.9C22.6 22.4 21.8 22.9 21.2 23C20.8 23.1 20.2 23.1 18.2 22.3C15.7 21.3 14 18.7 13.9 18.5C13.8 18.3 12.9 17.1 12.9 15.9C12.9 14.7 13.5 14.1 13.7 13.8C13.9 13.6 14.2 13.5 14.5 13.5C14.6 13.5 14.7 13.5 14.8 13.5C15.1 13.5 15.2 13.5 15.4 13.9C15.6 14.4 16.1 15.7 16.2 15.8C16.3 16 16.3 16.1 16.2 16.3C16.1 16.5 16 16.6 15.9 16.7C15.8 16.9 15.6 17 15.5 17.2C15.3 17.3 15.2 17.5 15.4 17.8C15.6 18.1 16.2 19.1 17.1 19.9C18.2 20.9 19.1 21.2 19.4 21.4C19.7 21.5 19.9 21.5 20.1 21.3C20.3 21 20.8 20.4 21 20.1C21.2 19.8 21.4 19.9 21.7 20C22 20.1 23.6 20.9 23.9 21.1C24.2 21.2 24.4 21.3 24.5 21.5C24.6 21.8 24.6 22.3 22.8 21.9Z" fill="#FFFFFF"/>
+    </svg>
+  </button>
+  <div class="tt-wa-tooltip" id="tt-wa-tooltip" aria-hidden="true"><span class="tt-wa-pulse-dot"></span><span>Chat or Book on WhatsApp</span></div>
+
+  <!-- Core Scripts -->
   <script src="app.js"></script>
   <script src="cinematic-3d.js"></script>
+  <script src="meta-redesign.js"></script>
+  <script defer src="whatsapp-booking.js"></script>
 </body>
 </html>

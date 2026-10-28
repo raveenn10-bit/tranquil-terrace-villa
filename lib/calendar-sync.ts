@@ -118,17 +118,19 @@ export function toIsoDate(val: string): string | null {
 /**
  * Calculates all individual date strings between start (inclusive) and end (exclusive - checkout day)
  */
-export function getDatesBetween(start: string, end: string): string[] {
+export function getDatesBetween(startRaw: string, endRaw: string): string[] {
+  const start = toIsoDate(startRaw);
+  const end = toIsoDate(endRaw);
+  if (!start || !end) return [];
   const dates: string[] = [];
   try {
-    const curr = new Date(`${start}T12:00:00Z`);
-    const stop = new Date(`${end}T12:00:00Z`);
+    const curr = new Date(start + 'T12:00:00Z');
+    const stop = new Date(end + 'T12:00:00Z');
     while (curr < stop) {
       dates.push(curr.toISOString().slice(0, 10));
       curr.setUTCDate(curr.getUTCDate() + 1);
     }
   } catch {
-    // If parsing fails, fall back to start
     dates.push(start);
   }
   return dates;

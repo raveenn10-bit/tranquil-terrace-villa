@@ -1,0 +1,388 @@
+/* ========================================================
+   TRANQUIL TERRACE GALLE — 5-STAR LUXURY MOBILE CAROUSELS
+   Smooth 60fps auto-scroll, native touch swipe, 1.2 preview
+   ======================================================== */
+
+/* Prevent page-level horizontal overflow across all mobile screens */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  position: relative;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure no form input auto-zooms on iOS Safari */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ----------------------------------------------------
+   MOBILE CAROUSELS (Active on mobile screens <= 768px)
+   ---------------------------------------------------- */
+@media (max-width: 768px) {
+  /* 1. Amenities Carousel */
+  .meta-amenities-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    padding: 10px 16px 20px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    scrollbar-width: none !important;
+  }
+  .meta-amenities-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  .meta-amenity-card {
+    flex: 0 0 82vw !important;
+    max-width: 310px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  /* 2. Packages Carousel */
+  .meta-packages-list {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding: 10px 16px 20px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    scrollbar-width: none !important;
+  }
+  .meta-packages-list::-webkit-scrollbar {
+    display: none !important;
+  }
+  .meta-package-card {
+    flex: 0 0 84vw !important;
+    max-width: 325px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 16px !important;
+  }
+
+  /* 3. Reviews Carousel */
+  .meta-reviews-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding: 10px 16px 20px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    scrollbar-width: none !important;
+  }
+  .meta-reviews-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  .meta-review-card {
+    flex: 0 0 84vw !important;
+    max-width: 330px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 16px !important;
+  }
+
+  /* 4. Villa Photo Galleries */
+  .villa-gallery-track,
+  .gallery-scroll-mobile {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 14px !important;
+    padding: 10px 16px 20px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    scrollbar-width: none !important;
+  }
+  .villa-gallery-track::-webkit-scrollbar,
+  .gallery-scroll-mobile::-webkit-scrollbar {
+    display: none !important;
+  }
+  .villa-gallery-track > *,
+  .gallery-scroll-mobile > * {
+    flex: 0 0 84vw !important;
+    max-width: 340px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Pagination Indicators container */
+  .carousel-dots-indicator {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 12px 0 20px !important;
+    width: 100% !important;
+  }
+  .carousel-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: rgba(200, 164, 93, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    cursor: pointer !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .carousel-dot.active {
+    width: 22px !important;
+    border-radius: 4px !important;
+    background: #C8A45D !important;
+    box-shadow: 0 0 8px rgba(200, 164, 93, 0.5) !important;
+  }
+
+  /* Responsive Spacing & Headline Typography at 320px - 430px */
+  .meta-section-title, .meta-hero-title, .meta-reviews-title {
+    font-size: clamp(26px, 7.5vw, 38px) !important;
+    line-height: 1.15 !important;
+  }
+  .meta-section-sub {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+  }
+  .meta-hero {
+    min-height: 80svh !important;
+    padding: 70px 16px 40px !important;
+  }
+  .meta-hero-container {
+    padding: 0 !important;
+  }
+  .meta-hero-copy {
+    max-width: 100% !important;
+  }
+  .meta-hero-cta-group {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 12px !important;
+  }
+  .meta-hero-cta-group a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .video-control-pill {
+    max-width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Search strip on mobile */
+  .meta-search-strip-bar {
+    flex-direction: column !important;
+    padding: 14px !important;
+    gap: 12px !important;
+  }
+  .search-strip-segment {
+    width: 100% !important;
+  }
+  .search-strip-divider {
+    width: 100% !important;
+    height: 1px !important;
+    margin: 4px 0 !important;
+  }
+  .search-strip-action {
+    width: 100% !important;
+  }
+  .search-strip-cta-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Subnav strip scroll on mobile */
+  .meta-subnav-strip {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .meta-subnav-strip::-webkit-scrollbar {
+    display: none !important;
+  }
+  .meta-subnav-list {
+    display: flex !important;
+    white-space: nowrap !important;
+    padding: 10px 16px !important;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .villa-gallery-track {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================================
+   UNIVERSAL OVERFLOW TERMINATION & RESPONSIVE POLISH
+   Fixes for 320px, 375px, 390px, 430px screens
+   ======================================================== */
+
+/* Constrain all media elements */
+img, video, iframe, picture {
+  max-width: 100% !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* SVG responsiveness */
+svg {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Footer brand logo */
+.footer-logo,
+.footer-col-brand .footer-logo,
+.brand-logo,
+.footer-logo img,
+.brand img {
+  max-width: 160px !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Landscape wrap in footer */
+.landscape-wrap,
+.villa-landscape {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Footer channel cards */
+.footer-channel-cards {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.footer-channel-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+.channel-card-brand {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+.channel-card-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+}
+.channel-card-name,
+.channel-card-sub {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+  max-width: 100% !important;
+}
+
+/* Availability form */
+form.availability,
+.availability {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Reviews header row and Google badge */
+@media (max-width: 768px) {
+  .meta-reviews-header-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  .meta-google-badge {
+    max-width: 100% !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+  }
+  .new-footer {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ========================================================
+   SECTION OVERFLOW CLIPPING & TICKER ENCAPSULATION
+   ======================================================== */
+
+main, section, .section, header, footer, .hero, .meta-hero {
+  max-width: 100vw !important;
+  overflow-x: clip !important;
+  box-sizing: border-box !important;
+}
+
+/* Luxury ticker and marquee must never cause page scroll */
+.luxury-ticker-wrap,
+.luxury-ticker,
+.ticker-wrap,
+.ticker,
+.platform-marquee-strip,
+.review-marquee-strip {
+  overflow: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+}
+
+/* Villa comparison table on mobile */
+.comparison {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-bottom: 12px !important;
+}
+.comparison table {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Availability form resets */
+form.availability,
+.availability {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Header & drawer container fixes */
+.taru-header,
+.luxury-header-grid {
+  max-width: 100vw !important;
+  overflow: hidden !important;
+}

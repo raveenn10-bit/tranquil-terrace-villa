@@ -17,7 +17,7 @@ html {
 html, body {
   width: 100%;
   max-width: 100vw;
-  overflow-x: clip;
+  overflow-x: hidden;
   position: relative;
 }
 body {
@@ -39,137 +39,593 @@ body:before {
 }
 
 /* ========================================================
-   HEADER & NAVIGATION
+   TRANQUIL TERRACE GALLE — LUXURY CENTERED-LOGO HEADER
+   Matches 5-Star Hotel Reference (Villa Aurelia)
    ======================================================== */
-header.taru-header, header {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  height: 84px;
-  padding: 0 3.2%;
-  background: rgba(253,251,247,.97);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  border-bottom: 1px solid rgba(23,59,48,.13);
+header.taru-header,
+header.luxury-hotel-header,
+header {
+  display: block;
+  height: 104px;
+  background: #F8F5F0;
+  color: #252824;
   position: sticky;
   top: 0;
-  z-index: 100;
-  transition: all .35s ease;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(37, 40, 36, 0.08);
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease,
+              box-shadow 0.3s ease,
+              backdrop-filter 0.3s ease,
+              border-color 0.3s ease;
 }
+
+header.taru-header.compact,
+header.taru-header.scrolled,
+header.luxury-hotel-header.compact,
+header.luxury-hotel-header.scrolled,
 header.compact {
-  height: 68px;
-  box-shadow: 0 14px 40px rgba(23,59,48,.09);
+  height: 72px;
+  background: rgba(248, 245, 240, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(37, 40, 36, 0.06);
+  border-bottom-color: rgba(37, 40, 36, 0.12);
 }
-.header-left {
-  display: flex;
+
+.luxury-header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding-right: 20px;
-}
-.header-left .brand-logo {
-  height: 54px;
-  width: auto;
-  max-width: 215px;
-  display: flex;
-  align-items: center;
-}
-.header-left .brand-logo img {
   height: 100%;
-  width: auto;
-  object-fit: contain;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(1.2rem, 3.2vw, 3.5rem);
+  box-sizing: border-box;
 }
-.header-actions {
+
+/* LEFT NAVIGATION MENU (Desktop) */
+.luxury-nav-left {
   display: flex;
-  align-items: stretch;
-  border-left: 1px solid rgba(23,59,48,.14);
-  border-right: 1px solid rgba(23,59,48,.14);
-  margin-right: auto;
-  margin-left: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: clamp(1rem, 2.5vw, 3rem);
 }
-.nav-action-btn {
+
+.luxury-menu-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: clamp(1rem, 1.8vw, 2.4rem);
+}
+
+.luxury-menu-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.luxury-nav-link {
+  color: #252824;
+  text-decoration: none;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  position: relative;
+  padding: 8px 0;
+  display: inline-block;
+  white-space: nowrap;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.luxury-nav-link:hover,
+.luxury-nav-link.active,
+.luxury-nav-link[aria-current="page"] {
+  color: #141615;
+}
+
+.luxury-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1.2px;
+  background: #252824;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-nav-link:hover::after,
+.luxury-nav-link.active::after,
+.luxury-nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* CENTER BRAND LOGO / CREST */
+.luxury-brand-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 clamp(0.5rem, 1.5vw, 1.5rem);
+  flex-shrink: 0;
+}
+
+.luxury-crest-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.luxury-crest-link:hover {
+  transform: scale(1.02);
+}
+
+.luxury-crest-svg {
+  height: 78px;
+  width: auto;
+  max-width: 90px;
+  display: block;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease;
+}
+
+header.taru-header.compact .luxury-crest-svg,
+header.taru-header.scrolled .luxury-crest-svg,
+header.luxury-hotel-header.compact .luxury-crest-svg,
+header.luxury-hotel-header.scrolled .luxury-crest-svg,
+header.compact .luxury-crest-svg {
+  height: 50px;
+}
+
+/* RIGHT NAVIGATION MENU (Desktop) */
+.luxury-nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: clamp(1rem, 2.5vw, 3rem);
+  gap: clamp(0.7rem, 1.2vw, 1.8rem);
+}
+
+.luxury-book-link {
+  font-weight: 600;
+  color: #141615;
+}
+
+.luxury-nav-sep {
+  color: rgba(37, 40, 36, 0.28);
+  font-size: 13px;
+  font-weight: 300;
+  user-select: none;
+  line-height: 1;
+}
+
+/* CURRENCY TOGGLE (LKR / USD) */
+.luxury-currency-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}
+
+.luxury-curr-btn {
+  background: transparent;
+  border: none;
+  color: rgba(37, 40, 36, 0.45);
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  font-weight: 500;
+  padding: 4px 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.luxury-curr-btn:hover {
+  color: #252824;
+}
+
+.luxury-curr-btn.active,
+.luxury-curr-btn[aria-pressed="true"] {
+  color: #252824;
+  font-weight: 700;
+}
+
+.luxury-curr-slash {
+  color: rgba(37, 40, 36, 0.3);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* WEATHER & CONCIERGE STATUS */
+.luxury-nav-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  color: rgba(37, 40, 36, 0.72);
+  white-space: nowrap;
+}
+
+.luxury-nav-status .status-sun {
+  color: #C8A45D;
+  font-size: 12px;
+}
+
+/* MOBILE WRAPPERS HIDDEN ON DESKTOP */
+.luxury-mobile-burger-wrap,
+.luxury-mobile-book-wrap {
+  display: none;
+}
+
+/* ========================================================
+   MOBILE DRAWER & RESPONSIVE BREAKPOINT (< 992px)
+   ======================================================== */
+@media (max-width: 1180px) {
+  .luxury-nav-status {
+    display: none;
+  }
+  .luxury-nav-sep-status {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  header.taru-header,
+  header.luxury-hotel-header,
+  header {
+    height: 72px;
+  }
+
+  header.taru-header.compact,
+  header.taru-header.scrolled,
+  header.luxury-hotel-header.compact,
+  header.luxury-hotel-header.scrolled,
+  header.compact {
+    height: 64px;
+  }
+
+  .luxury-header-grid {
+    grid-template-columns: 1fr auto 1fr;
+    padding: 0 1.25rem;
+  }
+
+  .luxury-nav-left,
+  .luxury-nav-right {
+    display: none !important;
+  }
+
+  .luxury-mobile-burger-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .luxury-burger-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: -8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5.5px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .burger-line {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: #252824;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  }
+
+  .luxury-burger-btn.is-active .line-1 {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .luxury-burger-btn.is-active .line-2 {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .luxury-burger-btn.is-active .line-3 {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .luxury-brand-center {
+    padding: 0;
+  }
+
+  .luxury-crest-svg {
+    height: 46px;
+    max-width: 60px;
+  }
+
+  header.taru-header.compact .luxury-crest-svg,
+  header.taru-header.scrolled .luxury-crest-svg,
+  header.luxury-hotel-header.compact .luxury-crest-svg,
+  header.luxury-hotel-header.scrolled .luxury-crest-svg,
+  header.compact .luxury-crest-svg {
+    height: 40px;
+  }
+
+  .luxury-mobile-book-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .luxury-mobile-book-btn {
+    background: #252824;
+    color: #F8F5F0;
+    border: 1px solid #C8A45D;
+    font-family: 'Manrope', -apple-system, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 9999px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .luxury-mobile-book-btn:hover {
+    background: #141615;
+    transform: translateY(-1px);
+  }
+}
+
+/* ========================================================
+   LUXURY MOBILE FULLSCREEN DRAWER OVERLAY
+   ======================================================== */
+.luxury-mobile-drawer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #F8F5F0;
+  color: #252824;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-20px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.35s ease;
+  overflow: hidden;
+}
+
+.luxury-mobile-drawer.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.drawer-scroller {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.5rem 1.5rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 0 20px;
-  min-width: 80px;
-  min-height: 44px;
-  font-family: var(--sans,'Manrope',sans-serif);
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  color: #173b30;
-  background: transparent;
-  border: 0;
-  border-right: 1px solid rgba(23,59,48,.14);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all .3s cubic-bezier(.2,.8,.2,1);
-  position: relative;
+  justify-content: space-between;
+  min-height: 100%;
+  box-sizing: border-box;
 }
-.nav-action-btn:last-child {
-  border-right: 0;
-}
-.nav-action-icon {
-  transition: transform .3s ease;
-  display: block;
-}
-.nav-action-btn:hover .nav-action-icon {
-  transform: translateY(-2px);
-}
-.nav-action-btn:hover {
-  background: rgba(23,59,48,.04);
-  color: #173b30;
-}
-.nav-action-btn.btn-book-now {
-  background: #173b30;
-  color: #f7f4ee;
-  border-color: #173b30;
-}
-.nav-action-btn.btn-book-now .gold-icon {
-  stroke: #d4af37;
-}
-.nav-action-btn.btn-book-now:hover {
-  background: #0e2820;
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(212,175,55,.4);
-}
-.header-nav {
+
+.drawer-top-bar {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 26px;
-  margin-left: 24px;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(37, 40, 36, 0.08);
 }
-.header-nav a {
-  font-family: var(--sans,'Manrope',sans-serif);
-  font-size: 11px;
+
+.drawer-eyebrow {
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: .08em;
-  color: #173b30;
-  text-decoration: none;
-  position: relative;
-  padding: 6px 0;
-  transition: color .3s ease;
+  letter-spacing: 0.22em;
+  color: rgba(37, 40, 36, 0.65);
+  text-transform: uppercase;
 }
-.header-nav a:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 1.5px;
-  background: #c8a45d;
-  transition: width .35s cubic-bezier(.2,.8,.2,1);
+
+.drawer-close-btn {
+  background: transparent;
+  border: 1px solid rgba(37, 40, 36, 0.15);
+  color: #252824;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease;
 }
-.header-nav a:hover:after, .header-nav a[aria-current=page]:after {
+
+.drawer-close-btn:hover {
+  background: rgba(37, 40, 36, 0.06);
+  border-color: #252824;
+}
+
+.drawer-crest-center {
+  margin: 1.5rem 0 1rem;
+  text-align: center;
+}
+
+.drawer-crest-link {
+  display: inline-block;
+}
+
+.drawer-crest-center .luxury-crest-svg {
+  height: 60px;
+  width: auto;
+}
+
+.drawer-nav-menu {
   width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
 }
-.header-nav a:hover {
-  color: #8c703b;
+
+.drawer-links-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
-.header-book {
-  display: none;
+
+.drawer-links-list li {
+  border-bottom: 1px solid rgba(37, 40, 36, 0.07);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--stagger, 0) * 45ms);
 }
+
+.luxury-mobile-drawer.is-open .drawer-links-list li,
+.luxury-mobile-drawer.is-open .drawer-footer-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.drawer-nav-link {
+  display: block;
+  padding: 1rem 0;
+  color: #252824;
+  text-decoration: none;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.drawer-nav-link:hover,
+.drawer-nav-link.active,
+.drawer-nav-link[aria-current="page"] {
+  color: #8C703B;
+  font-style: italic;
+}
+
+.drawer-footer-actions {
+  width: 100%;
+  max-width: 380px;
+  margin: 1.8rem auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+}
+
+.drawer-book-cta {
+  width: 100%;
+  background: #252824;
+  color: #F8F5F0;
+  border: 1px solid #C8A45D;
+  text-decoration: none;
+  padding: 0.95rem 1.8rem;
+  border-radius: 9999px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(37, 40, 36, 0.15);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.drawer-book-cta:hover {
+  background: #141615;
+  transform: translateY(-2px);
+}
+
+.drawer-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(37, 40, 36, 0.7);
+}
+
+.drawer-meta-dot {
+  color: rgba(37, 40, 36, 0.3);
+}
+
+.drawer-direct-contacts {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.drawer-contact-tel,
+.drawer-contact-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 11px;
+  color: rgba(37, 40, 36, 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.drawer-contact-tel:hover,
+.drawer-contact-wa:hover {
+  color: #8C703B;
+}
+
+html.luxury-drawer-open,
+body.luxury-drawer-open {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
 
 /* ========================================================
    HERO SECTION
@@ -1428,76 +1884,13 @@ header.compact {
    RESPONSIVE MEDIA QUERIES (MOBILE & PORTRAIT OPTIMIZATION)
    ======================================================== */
 
-@media(max-width: 960px) {
-  header.taru-header, header {
-    padding: 0 4%;
-  }
-  .header-nav {
-    position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc(100vh - 72px);
-    height: calc(100dvh - 72px);
-    background: rgba(247, 244, 238, 0.98);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    flex-direction: column;
-    padding: 30px 24px 60px;
-    gap: 14px;
-    align-items: stretch;
-    border-bottom: 0;
-    box-shadow: 0 24px 60px rgba(0,0,0,.15);
-    transform: translateY(-110%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform .4s cubic-bezier(.16,1,.3,1), opacity .3s ease;
-    z-index: 999;
-    overflow-y: auto;
-  }
-  .header-nav.open {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .header-nav a {
-    font-family: var(--serif,'Cormorant Garamond',Georgia,serif);
-    font-size: 24px;
-    color: var(--cinematic-forest);
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(23,59,48,.08);
-    letter-spacing: .02em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .header-nav a:after {
-    display: none;
-  }
-  .header-nav a[aria-current=page] {
-    color: var(--cinematic-bronze);
-    font-style: italic;
-  }
-  .header-actions {
-    margin-right: 0;
-  }
-  .nav-action-btn {
-    padding: 0 12px;
-    min-width: 62px;
-    font-size: 7.5px;
-  }
-}
+
 
 @media(max-width: 800px) {
   body:before {
     opacity: .09;
   }
-  header.taru-header, header {
-    display: flex;
-    padding: 0 4%;
-    height: 68px;
-  }
+  
   .split-hero {
     height: auto;
     min-height: auto;
@@ -1654,34 +2047,7 @@ header.compact {
 
 /* Portrait Phones and Compact Mobile screens */
 @media(max-width: 580px) {
-  header.taru-header, header {
-    height: 64px;
-    padding: 0 10px;
-  }
-  .header-left {
-    padding-right: 6px;
-  }
-  .header-left .brand-logo {
-    max-width: 130px;
-    height: 34px;
-  }
-  .header-left .brand-logo img {
-    height: 34px;
-    width: auto;
-  }
-  .header-actions {
-    margin-left: auto;
-    margin-right: 0;
-    border: 0;
-  }
-  .nav-action-btn {
-    padding: 0 8px;
-    min-width: 44px;
-    min-height: 44px;
-    font-size: 7px;
-    gap: 3px;
-    border-right: 1px solid rgba(23,59,48,.1);
-  }
+  
   .nav-action-btn:first-child {
     border-left: 1px solid rgba(23,59,48,.1);
   }
@@ -1917,5 +2283,2108 @@ header.compact {
   .hero-right, .inner-photo, .moment-image, .collection-card .frame, .journal-strip button {
     transform: none !important;
     transition: none !important;
+  }
+}
+
+
+/* ========================================================
+   OFFICIAL BRAND SVGS, FOOTER ANIMATIONS & INNER PAGES LUXURY
+   Unified 5-Star Luxury Styling for Tranquil Terrace Galle
+   ======================================================== */
+
+/* Booking Channels Cards */
+.footer-channel-cards {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+.footer-channel-card {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(183,146,88,.24) !important;
+  border-radius: 10px !important;
+  color: #f6f2e8 !important;
+  text-decoration: none !important;
+  transition: all .25s ease !important;
+  min-height: 52px !important;
+  box-sizing: border-box !important;
+}
+.footer-channel-card:hover {
+  background: rgba(183,146,88,.14) !important;
+  border-color: #b79258 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.28) !important;
+}
+.channel-card-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.channel-brand-svg {
+  width: 28px !important;
+  height: 28px !important;
+  flex-shrink: 0 !important;
+  border-radius: 7px !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+  transition: transform 0.25s ease !important;
+}
+.footer-channel-card:hover .channel-brand-svg {
+  transform: scale(1.08) !important;
+}
+.calendar-icon-badge {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 7px !important;
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #10b981 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  border: 1px solid rgba(16, 185, 129, 0.45) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+  transition: transform 0.25s ease !important;
+}
+.footer-channel-card:hover .calendar-icon-badge {
+  transform: scale(1.08) !important;
+  background: rgba(16, 185, 129, 0.3) !important;
+}
+.channel-card-left {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+.channel-card-name {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  letter-spacing: .01em !important;
+}
+.channel-card-sub {
+  font-size: 10px !important;
+  color: #a8b59e !important;
+  line-height: 1.3 !important;
+  display: block !important;
+}
+.channel-card-arrow {
+  font-size: 14px !important;
+  color: #b79258 !important;
+  transition: transform .2s ease !important;
+  flex-shrink: 0 !important;
+  margin-left: 10px !important;
+}
+.footer-channel-card:hover .channel-card-arrow {
+  transform: translate(2px, -2px) !important;
+  color: #ffffff !important;
+}
+.footer-calendar-card {
+  border-color: rgba(16,185,129,.35) !important;
+  background: rgba(16,185,129,.06) !important;
+}
+.footer-calendar-card:hover {
+  background: rgba(16,185,129,.14) !important;
+  border-color: #10b981 !important;
+}
+
+/* Social Media Section */
+.footer-social-section {
+  padding: 26px 0 22px !important;
+  border-top: 1px solid rgba(183,146,88,.18) !important;
+  border-bottom: 1px solid rgba(183,146,88,.18) !important;
+  margin: 15px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  flex-wrap: wrap !important;
+}
+.social-header {
+  font-size: 9px !important;
+  letter-spacing: .24em !important;
+  color: #b79258 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+.social-links-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+.social-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 8px 18px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  border-radius: 40px !important;
+  background: rgba(255,255,255,.04) !important;
+  color: #f0ece2 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all .25s ease !important;
+  min-height: 42px !important;
+}
+.social-brand-svg {
+  width: 22px !important;
+  height: 22px !important;
+  flex-shrink: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25) !important;
+  transition: transform 0.25s ease !important;
+}
+.social-link:hover {
+  background: rgba(183,146,88,.2) !important;
+  border-color: #b79258 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+}
+.social-link:hover .social-brand-svg {
+  transform: scale(1.15) !important;
+}
+
+/* Landscape Interactive Animation Elements */
+.palm-left,
+.palm-right {
+  transform-box: fill-box !important;
+  transform-origin: center bottom !important;
+  animation: palm-breeze 9s ease-in-out infinite alternate !important;
+}
+.palm-right {
+  animation-duration: 12s !important;
+  animation-delay: -5s !important;
+}
+
+.curtain {
+  transform-origin: 50% 50% !important;
+  animation: curtain-drift 7s ease-in-out infinite alternate !important;
+}
+
+.pool-line {
+  stroke-dasharray: 12 5 35 8 !important;
+  animation: water-ripple 5s linear infinite !important;
+}
+.wave-delay {
+  animation-direction: reverse !important;
+  animation-duration: 7s !important;
+}
+
+.lamp-glow {
+  transform-origin: 435px 205px !important;
+  animation: lamp-breathe 6s ease-in-out infinite alternate !important;
+}
+
+.bird {
+  transform-box: fill-box !important;
+  animation: bird-drift 22s linear infinite !important;
+}
+.bird-two {
+  animation-duration: 29s !important;
+  animation-delay: -10s !important;
+}
+
+.reserve-orbit i {
+  position: absolute !important;
+  inset: -8px !important;
+  border: 1px dashed rgba(183,146,88,.4) !important;
+  border-radius: 50% !important;
+  animation: slow-spin 45s linear infinite !important;
+}
+
+.footer-sync-dot {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16,185,129,.25) !important;
+  animation: sync-glow 2.2s infinite ease-in-out !important;
+  flex-shrink: 0 !important;
+}
+
+@keyframes slow-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes palm-breeze {
+  0% { transform: rotate(-2.5deg); }
+  100% { transform: rotate(3deg); }
+}
+
+@keyframes curtain-drift {
+  0% { transform: skewX(-2deg); }
+  100% { transform: skewX(2.5deg); }
+}
+
+@keyframes water-ripple {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -120; }
+}
+
+@keyframes lamp-breathe {
+  0% { opacity: 0.35; transform: scale(0.96); }
+  100% { opacity: 0.95; transform: scale(1.05); }
+}
+
+@keyframes bird-drift {
+  0% { transform: translateX(-60px); opacity: 0; }
+  15%, 85% { opacity: 0.85; }
+  100% { transform: translateX(160px); opacity: 0; }
+}
+
+@keyframes sync-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    opacity: 0.75;
+  }
+}
+
+/* ========================================================
+   INNER PAGES LUXURY REDESIGN HARMONIZATION
+   ======================================================== */
+body.page-inner {
+  background: #F8F5F0 !important;
+  color: #141615 !important;
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+}
+
+/* Inner Page Hero Sections */
+.page-inner .inner-hero {
+  background: linear-gradient(135deg, #F8F5F0 0%, #EFE9DF 100%) !important;
+  color: #141615 !important;
+  border-bottom: 1px solid rgba(200, 164, 93, 0.2) !important;
+  position: relative !important;
+  padding: 60px 8% 70px !important;
+  display: grid !important;
+  grid-template-columns: 1.1fr 1fr !important;
+  gap: 8% !important;
+  align-items: center !important;
+  min-height: 480px !important;
+}
+
+.page-inner .inner-hero h1 {
+  font-family: var(--font-editorial, "Cormorant Garamond", Georgia, serif) !important;
+  font-size: clamp(48px, 5.2vw, 76px) !important;
+  line-height: 1.05 !important;
+  color: #141615 !important;
+  margin: 18px 0 20px !important;
+  letter-spacing: -0.03em !important;
+  font-weight: 500 !important;
+}
+
+.page-inner .inner-hero h1 em {
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: #141615 !important;
+}
+
+.page-inner .inner-copy .eyebrow {
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.22em !important;
+  color: #C8A45D !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+.page-inner .inner-copy .body-copy {
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+  color: #4A4E49 !important;
+  max-width: 440px !important;
+  margin: 0 !important;
+}
+
+.page-inner .inner-photo {
+  position: relative !important;
+  border-radius: 200px 200px 18px 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 60px rgba(20, 22, 21, 0.12) !important;
+  border: 1px solid rgba(200, 164, 93, 0.3) !important;
+  height: 380px !important;
+}
+
+.page-inner .inner-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.page-inner .inner-back {
+  position: absolute !important;
+  left: 8% !important;
+  bottom: 22px !important;
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: #8C7B65 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+.page-inner .inner-back:hover {
+  color: #C8A45D !important;
+}
+
+/* Floating Luxury Availability Strip on Inner Pages */
+.page-inner .availability {
+  background: #FFFFFF !important;
+  color: #141615 !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 40px rgba(20, 22, 21, 0.06) !important;
+  margin: -35px 8% 50px !important;
+  position: relative !important;
+  z-index: 20 !important;
+  padding: 24px 30px !important;
+  display: grid !important;
+  grid-template-columns: 1.3fr repeat(3, 1fr) 1.2fr !important;
+  gap: 18px !important;
+  align-items: center !important;
+}
+
+.page-inner .availability-intro span.eyebrow {
+  color: #C8A45D !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+
+.page-inner .availability-intro span:last-child {
+  font-family: var(--font-editorial, "Cormorant Garamond", serif) !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  color: #141615 !important;
+  display: block !important;
+  margin-top: 2px !important;
+}
+
+.page-inner .availability label {
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+  color: #6B7267 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  border-left: 1px solid rgba(20, 22, 21, 0.08) !important;
+  padding-left: 16px !important;
+}
+
+.page-inner .availability input,
+.page-inner .availability select {
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #141615 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+}
+
+.page-inner .availability .button {
+  background: #C8A45D !important;
+  color: #141615 !important;
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  border-radius: 9999px !important;
+  padding: 14px 24px !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(200, 164, 93, 0.35) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+.page-inner .availability .button:hover {
+  background: #D7B56E !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(200, 164, 93, 0.45) !important;
+}
+
+/* Sections & Typography on Inner Pages */
+.page-inner .section {
+  padding: 80px 8% !important;
+  position: relative !important;
+}
+
+.page-inner .section-head {
+  border-top: 1px solid rgba(200, 164, 93, 0.25) !important;
+  padding-top: 24px !important;
+  margin-bottom: 35px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.page-inner .section-head .eyebrow {
+  color: #C8A45D !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+.page-inner .section-head .tiny {
+  color: #8C7B65 !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.15em !important;
+}
+
+.page-inner .title-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 30px !important;
+  margin-bottom: 50px !important;
+}
+
+.page-inner .title-row h2,
+.page-inner .section h2 {
+  font-family: var(--font-editorial, "Cormorant Garamond", Georgia, serif) !important;
+  font-size: clamp(38px, 4.2vw, 60px) !important;
+  color: #141615 !important;
+  line-height: 1.1 !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+}
+
+.page-inner .title-row h2 em,
+.page-inner .section h2 em {
+  font-style: italic !important;
+  color: #141615 !important;
+}
+
+.page-inner .title-row .body-copy {
+  font-size: 0.98rem !important;
+  line-height: 1.8 !important;
+  color: #4A4E49 !important;
+  max-width: 420px !important;
+  margin: 0 !important;
+}
+
+/* Villa Showcase on villas.html */
+.page-inner .named-villa {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.22) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 16px 45px rgba(20, 22, 21, 0.05) !important;
+  margin-bottom: 55px !important;
+  display: grid !important;
+  grid-template-columns: 1.1fr 1fr !important;
+  overflow: hidden !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.page-inner .named-villa:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 24px 60px rgba(20, 22, 21, 0.09) !important;
+}
+
+.page-inner .named-villa.reverse {
+  grid-template-columns: 1fr 1.1fr !important;
+}
+.page-inner .named-villa.reverse .villa-photo {
+  order: 2 !important;
+}
+.page-inner .named-villa.reverse .villa-details {
+  order: 1 !important;
+}
+
+.page-inner .villa-photo {
+  height: 520px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+
+.page-inner .villa-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 1.2s ease !important;
+}
+.page-inner .named-villa:hover .villa-photo img {
+  transform: scale(1.04) !important;
+}
+
+.page-inner .villa-details {
+  padding: 50px 10% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 16px !important;
+}
+
+.page-inner .villa-details .eyebrow {
+  color: #C8A45D !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+}
+
+.page-inner .villa-details h3 {
+  font-family: var(--font-editorial, "Cormorant Garamond", serif) !important;
+  font-size: clamp(42px, 4vw, 56px) !important;
+  color: #141615 !important;
+  line-height: 1.05 !important;
+  margin: 0 !important;
+  font-weight: 500 !important;
+}
+
+.page-inner .villa-details h3 em {
+  font-style: italic !important;
+}
+
+.page-inner .villa-details p {
+  color: #4A4E49 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.8 !important;
+  margin: 0 !important;
+}
+
+.page-inner .villa-facts {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px 20px !important;
+  list-style: none !important;
+  padding: 16px 0 !important;
+  margin: 8px 0 !important;
+  border-top: 1px solid rgba(20, 22, 21, 0.08) !important;
+  border-bottom: 1px solid rgba(20, 22, 21, 0.08) !important;
+}
+
+.page-inner .villa-facts li {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  color: #252824 !important;
+}
+
+.page-inner .villa-facts li span {
+  font-family: var(--font-editorial, "Cormorant Garamond", serif) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #C8A45D !important;
+}
+
+.page-inner .villa-details .button {
+  align-self: flex-start !important;
+  background: #141615 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #141615 !important;
+  border-radius: 9999px !important;
+  padding: 14px 26px !important;
+  font-family: var(--font-ui) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  margin-top: 8px !important;
+}
+
+.page-inner .villa-details .button:hover {
+  background: #C8A45D !important;
+  border-color: #C8A45D !important;
+  color: #141615 !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Comparison Table on villas.html */
+.page-inner .stay-details {
+  background: #F1ECE5 !important;
+}
+
+.page-inner .comparison {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  border-radius: 18px !important;
+  padding: 36px 40px !important;
+  box-shadow: 0 16px 40px rgba(20, 22, 21, 0.05) !important;
+}
+
+.page-inner .comparison table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-family: var(--font-ui) !important;
+  font-size: 0.95rem !important;
+}
+
+.page-inner .comparison thead th {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: #C8A45D !important;
+  padding-bottom: 16px !important;
+  border-bottom: 2px solid rgba(200, 164, 93, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.page-inner .comparison tbody td,
+.page-inner .comparison tbody th {
+  padding: 18px 12px 18px 0 !important;
+  border-bottom: 1px solid rgba(20, 22, 21, 0.06) !important;
+  color: #333832 !important;
+}
+
+.page-inner .comparison tbody th {
+  font-weight: 700 !important;
+  color: #141615 !important;
+}
+
+/* Calendar Section on contact.html & villas.html */
+.page-inner .stay-calendar {
+  background: #F8F5F0 !important;
+  border-top: 1px solid rgba(200, 164, 93, 0.2) !important;
+}
+
+.page-inner .calendar-right {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 16px 45px rgba(20, 22, 21, 0.06) !important;
+}
+
+.page-inner .cal-day.chosen {
+  background: #C8A45D !important;
+  color: #141615 !important;
+  font-weight: 700 !important;
+}
+
+/* Experience Cards on experiences.html */
+.page-inner .experience {
+  background: #F8F5F0 !important;
+}
+
+.page-inner .experience-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 32px !important;
+}
+
+.page-inner .experience-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.22) !important;
+  border-radius: 18px !important;
+  padding: 20px !important;
+  box-shadow: 0 14px 38px rgba(20, 22, 21, 0.05) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.page-inner .experience-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 22px 50px rgba(20, 22, 21, 0.09) !important;
+}
+
+.page-inner .experience-card .frame {
+  height: 380px !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+}
+
+.page-inner .experience-card h3 {
+  font-family: var(--font-editorial, "Cormorant Garamond", serif) !important;
+  font-size: 1.8rem !important;
+  color: #141615 !important;
+  margin: 18px 0 10px !important;
+  font-weight: 600 !important;
+}
+
+.page-inner .experience-card p {
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+  color: #4A4E49 !important;
+}
+
+/* Gallery on gallery.html */
+.page-inner .gallery {
+  background: #F8F5F0 !important;
+}
+
+.page-inner .filters {
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.page-inner .filters button {
+  font-family: var(--font-ui) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  padding: 8px 18px !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(200, 164, 93, 0.3) !important;
+  background: transparent !important;
+  color: #4A4E49 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.page-inner .filters button.active,
+.page-inner .filters button:hover {
+  background: #C8A45D !important;
+  border-color: #C8A45D !important;
+  color: #141615 !important;
+}
+
+.page-inner .gallery-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-auto-rows: 280px !important;
+  gap: 22px !important;
+}
+
+.page-inner .gallery-item {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 12px 35px rgba(20, 22, 21, 0.08) !important;
+  border: 1px solid rgba(200, 164, 93, 0.2) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.page-inner .gallery-item:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* Explore Galle Guide on explore-galle.html */
+.page-inner .galle-guide {
+  background: #F1ECE5 !important;
+}
+
+.page-inner .guide-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 30px !important;
+  margin-top: 45px !important;
+}
+
+.page-inner .guide-grid article {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.22) !important;
+  border-radius: 18px !important;
+  padding: 32px 28px !important;
+  box-shadow: 0 14px 38px rgba(20, 22, 21, 0.05) !important;
+}
+
+.page-inner .guide-grid article > span {
+  font-family: var(--font-editorial) !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  color: #C8A45D !important;
+  display: block !important;
+  margin-bottom: 12px !important;
+}
+
+.page-inner .guide-grid article h3 {
+  font-family: var(--font-editorial) !important;
+  font-size: 1.8rem !important;
+  color: #141615 !important;
+  margin: 0 0 12px !important;
+}
+
+.page-inner .guide-grid article p {
+  color: #4A4E49 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Contact Page on contact.html */
+.page-inner .contact-layout {
+  background: #F8F5F0 !important;
+}
+
+.page-inner .contact-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  border-radius: 18px !important;
+  padding: 40px !important;
+  box-shadow: 0 16px 45px rgba(20, 22, 21, 0.06) !important;
+}
+
+.page-inner .contact-number {
+  font-family: var(--font-editorial) !important;
+  font-size: 2.2rem !important;
+  color: #141615 !important;
+  font-weight: 600 !important;
+  margin: 24px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+.page-inner .faq {
+  background: #F1ECE5 !important;
+}
+
+.page-inner .faq-list details {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.2) !important;
+  border-radius: 14px !important;
+  margin-bottom: 14px !important;
+  padding: 20px 26px !important;
+  box-shadow: 0 4px 15px rgba(20, 22, 21, 0.03) !important;
+  transition: all 0.2s ease !important;
+}
+
+.page-inner .faq-list details[open] {
+  border-color: #C8A45D !important;
+  box-shadow: 0 8px 25px rgba(200, 164, 93, 0.15) !important;
+}
+
+.page-inner .faq-list summary {
+  font-family: var(--font-editorial, "Cormorant Garamond", serif) !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  color: #141615 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.page-inner .faq-list summary span {
+  font-size: 1.4rem !important;
+  color: #C8A45D !important;
+  font-weight: 400 !important;
+}
+
+.page-inner .faq-list p {
+  color: #4A4E49 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.8 !important;
+  margin: 14px 0 0 !important;
+}
+
+/* Responsive Overrides for Inner Pages */
+@media (max-width: 1080px) {
+  .page-inner .availability {
+    grid-template-columns: repeat(2, 1fr) !important;
+    margin: 20px 5% 40px !important;
+  }
+  .page-inner .availability-intro {
+    grid-column: 1 / -1 !important;
+  }
+  .page-inner .availability .button {
+    grid-column: 1 / -1 !important;
+  }
+  .page-inner .named-villa,
+  .page-inner .named-villa.reverse {
+    grid-template-columns: 1fr !important;
+  }
+  .page-inner .experience-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .page-inner .guide-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-inner .inner-hero {
+    grid-template-columns: 1fr !important;
+    padding: 40px 6% 50px !important;
+    min-height: auto !important;
+  }
+  .page-inner .inner-photo {
+    height: 280px !important;
+    order: -1 !important;
+    border-radius: 140px 140px 14px 14px !important;
+  }
+  .page-inner .availability {
+    grid-template-columns: 1fr !important;
+    padding: 20px !important;
+  }
+  .page-inner .availability label {
+    border-left: none !important;
+    border-top: 1px solid rgba(20, 22, 21, 0.08) !important;
+    padding: 12px 0 0 !important;
+  }
+  .page-inner .gallery-grid {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: 240px !important;
+  }
+}
+
+
+/* ========================================================
+   TRANQUIL TERRACE — MOBILE RESPONSIVENESS & CAROUSEL SUITE
+   Verified 5-Star Luxury Standards (Mobile <= 768px)
+   ======================================================== */
+
+/* Global Strict Page-Level Overflow Elimination */
+html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure all media and flex containers respect viewport boundaries */
+img, video, iframe, canvas, picture {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.meta-hero-video {
+  width: 100% !important;
+  max-width: 100% !important;
+  object-fit: cover !important;
+}
+
+.brand.brand-logo, .brand.brand-logo img,
+.footer-logo, .footer-logo img,
+.brand-icon {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Footer Channel Cards Containment on Mobile */
+.footer-channel-cards {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.footer-channel-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.channel-card-brand {
+  min-width: 0 !important;
+  max-width: calc(100% - 24px) !important;
+  overflow: hidden !important;
+}
+
+.channel-card-left {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.channel-card-name, .channel-card-sub {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+}
+
+/* Availability Form & Badge Containment */
+form.availability, .availability {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.meta-google-badge,
+.meta-reviews-summary-badge,
+.google-score,
+.verified-property-facts {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.review-marquee-wrap {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+}
+
+/* Tables, Comparisons, Maps */
+.comparison, .page-inner .comparison {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+.comparison table, .page-inner .comparison table {
+  width: 100% !important;
+  min-width: 280px !important;
+  box-sizing: border-box !important;
+}
+
+.map-frame, .meta-map-frame {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.map-frame iframe, .meta-map-frame iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+}
+
+/* Mobile Sticky Bottom Bar & Floating WhatsApp Containment */
+.meta-mobile-sticky-bar {
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+.meta-sticky-bar-inner {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Prevent iOS Safari auto-zoom on form focus: 16px font-size */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  .search-strip-select,
+  .search-strip-date,
+  .search-strip-segment input,
+  .search-strip-segment select,
+  .page-inner input,
+  .page-inner select,
+  .page-inner textarea,
+  .meta-cal-input,
+  .form-grid input,
+  .form-grid select,
+  .form-grid textarea,
+  #booking-form input,
+  #booking-form select,
+  #booking-form textarea,
+  .availability input,
+  .availability select,
+  .availability textarea,
+  .dialog-platforms input,
+  .dialog-platforms select,
+  #booking input,
+  #booking select,
+  #booking textarea {
+    font-size: 16px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 3. Fluid Responsive Typography with clamp() */
+@media (max-width: 768px) {
+  h1, .hero h1, .inner-hero h1, .meta-hero-title {
+    font-size: clamp(2rem, 7.5vw, 3.4rem) !important;
+    line-height: 1.08 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  h2, .meta-section-title, .meta-calendar-title, .review-heading h2, .villas h2, .title-row h2, .stay-details h2, .contact h2, .faq h2, .footer-invite h2 {
+    font-size: clamp(1.75rem, 6.2vw, 2.6rem) !important;
+    line-height: 1.14 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  h3, .card-heading h3, .villa-details h3, .booking-heading h2 {
+    font-size: clamp(1.4rem, 5vw, 2rem) !important;
+    line-height: 1.2 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .footer-word {
+    font-size: clamp(34px, 12vw, 110px) !important;
+    line-height: 1 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  .meta-section-sub, .hero-copy, .body-copy {
+    font-size: clamp(0.95rem, 3.8vw, 1.1rem) !important;
+    line-height: 1.65 !important;
+  }
+}
+
+/* 4. Desktop Protection (> 768px) */
+@media (min-width: 769px) {
+  .meta-amenities-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-packages-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-reviews-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.75rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-villas-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2.25rem !important;
+    overflow-x: visible !important;
+  }
+
+  .dual-villas-carousel {
+    display: block !important;
+  }
+
+  .carousel-pagination-dots {
+    display: none !important;
+  }
+
+  .villa-gallery-track {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .villa-gallery-slide {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .villa-gallery-slide:not(:first-child) {
+    display: none !important;
+  }
+}
+
+/* 5. Mobile Horizontal Scroll Carousels (<= 768px Only) */
+@media (max-width: 768px) {
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .meta-villas-grid,
+  .dual-villas-carousel {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-padding: 0 16px !important;
+    padding: 12px 16px 20px 16px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    width: calc(100% + 32px) !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 16px !important;
+  }
+
+  .meta-amenities-grid::-webkit-scrollbar,
+  .meta-packages-list::-webkit-scrollbar,
+  .meta-reviews-grid::-webkit-scrollbar,
+  .meta-villas-grid::-webkit-scrollbar,
+  .dual-villas-carousel::-webkit-scrollbar,
+  .villa-gallery-track::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* 1.15 to 1.25 cards per screen: flex: 0 0 80vw; max-width: 320px */
+  .meta-amenities-grid > .meta-amenity-card {
+    flex: 0 0 78vw !important;
+    max-width: 300px !important;
+    min-width: 250px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(200, 164, 93, 0.22) !important;
+    padding: 24px 20px !important;
+    box-shadow: 0 8px 24px rgba(20, 22, 21, 0.05) !important;
+  }
+
+  .meta-packages-list > .meta-package-card {
+    flex: 0 0 82vw !important;
+    max-width: 320px !important;
+    min-width: 270px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(200, 164, 93, 0.24) !important;
+    padding: 22px 20px !important;
+    box-shadow: 0 10px 28px rgba(20, 22, 21, 0.06) !important;
+  }
+
+  .meta-reviews-grid > .meta-review-card {
+    flex: 0 0 82vw !important;
+    max-width: 320px !important;
+    min-width: 270px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #1C1E1D !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(200, 164, 93, 0.26) !important;
+    padding: 24px 20px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .meta-villas-grid > .meta-villa-card,
+  .dual-villas-carousel > .named-villa {
+    flex: 0 0 85vw !important;
+    max-width: 340px !important;
+    min-width: 280px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(200, 164, 93, 0.22) !important;
+    box-shadow: 0 12px 36px rgba(20, 22, 21, 0.07) !important;
+    overflow: hidden !important;
+  }
+
+  /* Villa Photo Gallery Track (Mobile Swiping) */
+  .meta-villa-media,
+  .named-villa .villa-photo {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .villa-gallery-track {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    scrollbar-width: none !important;
+  }
+
+  .villa-gallery-slide {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    scroll-snap-align: start !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .villa-gallery-slide img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* 6. Carousel Pagination Indicators (Dots) */
+  .carousel-pagination-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 14px auto 8px auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    z-index: 5 !important;
+  }
+
+  .carousel-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: rgba(183, 146, 88, 0.3) !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  .carousel-dot.active {
+    width: 24px !important;
+    border-radius: 4px !important;
+    background: #B79258 !important;
+    box-shadow: 0 0 8px rgba(183, 146, 88, 0.5) !important;
+  }
+
+  .meta-reviews-section .carousel-dot {
+    background: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .meta-reviews-section .carousel-dot.active {
+    background: #E2CA92 !important;
+    box-shadow: 0 0 8px rgba(226, 202, 146, 0.6) !important;
+  }
+}
+
+
+/* Section and Container Level Containment for Mobile Carousels */
+@media (max-width: 768px) {
+  main, #main,
+  section, .section,
+  .meta-amenities-section,
+  .meta-packages-section,
+  .meta-reviews-section,
+  .meta-villas-section,
+  .dual-villas,
+  .villas.section,
+  .guest-reviews.section,
+  .galle-guide.section,
+  .location.section,
+  .stay-details.section,
+  .stay-calendar.section,
+  .faq.section,
+  .contact.section,
+  .meta-location-section,
+  .meta-calendar-section {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .meta-villas-grid,
+  .dual-villas-carousel {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* ========================================================
+   TRANQUIL TERRACE DEFINITIVE RESPONSIVE & CAROUSEL RULES
+   ======================================================== */
+
+/* Universal Strict Page-Level Overflow Elimination */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+main, #main, .page-wrapper {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  position: relative !important;
+}
+
+/* Media Max-Width Containment */
+img, video, iframe, canvas, picture {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.meta-hero-video {
+  width: 100% !important;
+  max-width: 100% !important;
+  object-fit: cover !important;
+}
+
+.brand.brand-logo, .brand.brand-logo img,
+.footer-logo, .footer-logo img,
+.brand-icon {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Footer Channel Cards Full Mobile Containment */
+.footer-channel-cards {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.footer-channel-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.channel-card-brand {
+  min-width: 0 !important;
+  max-width: calc(100% - 24px) !important;
+  overflow: hidden !important;
+}
+
+.channel-card-left {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.channel-card-name, .channel-card-sub {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+}
+
+/* Availability Form & Badge Containment */
+form.availability, .availability {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.meta-google-badge,
+.meta-reviews-summary-badge,
+.google-score,
+.verified-property-facts {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.review-marquee-wrap {
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  position: relative !important;
+}
+
+/* Tables, Comparisons, Maps */
+.comparison, .page-inner .comparison {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+.comparison table, .page-inner .comparison table {
+  width: 100% !important;
+  min-width: 280px !important;
+  box-sizing: border-box !important;
+}
+
+.map-frame, .meta-map-frame {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.map-frame iframe, .meta-map-frame iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+}
+
+/* STRICT 16PX FONT SIZE ON ALL MOBILE FORM INPUTS (No iOS Safari auto-zoom) */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  .page-inner input,
+  .page-inner select,
+  .page-inner textarea,
+  .availability input,
+  .availability select,
+  .availability textarea,
+  .page-inner .availability input,
+  .page-inner .availability select,
+  .page-inner .availability textarea,
+  .meta-cal-input,
+  .form-grid input,
+  .form-grid select,
+  .form-grid textarea,
+  #booking-form input,
+  #booking-form select,
+  #booking-form textarea,
+  .dialog-platforms input,
+  .dialog-platforms select,
+  #booking input,
+  #booking select,
+  #booking textarea {
+    font-size: 16px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* FLUID RESPONSIVE TYPOGRAPHY (clamp for 320px - 768px screens) */
+@media (max-width: 768px) {
+  h1, .hero h1, .inner-hero h1, .meta-hero-title {
+    font-size: clamp(2rem, 7.5vw, 3.4rem) !important;
+    line-height: 1.08 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  h2, .meta-section-title, .meta-calendar-title, .review-heading h2, .villas h2, .title-row h2, .stay-details h2, .contact h2, .faq h2, .footer-invite h2 {
+    font-size: clamp(1.75rem, 6.2vw, 2.6rem) !important;
+    line-height: 1.14 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  h3, .card-heading h3, .villa-details h3, .booking-heading h2 {
+    font-size: clamp(1.4rem, 5vw, 2rem) !important;
+    line-height: 1.2 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .footer-word {
+    font-size: clamp(34px, 12vw, 110px) !important;
+    line-height: 1 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  .meta-section-sub, .hero-copy, .body-copy {
+    font-size: clamp(0.95rem, 3.8vw, 1.1rem) !important;
+    line-height: 1.65 !important;
+  }
+}
+
+/* DESKTOP INTEGRITY (> 768px) */
+@media (min-width: 769px) {
+  .meta-amenities-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-packages-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-reviews-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.75rem !important;
+    overflow-x: visible !important;
+  }
+
+  .meta-villas-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2.25rem !important;
+    overflow-x: visible !important;
+  }
+
+  .dual-villas-carousel {
+    display: block !important;
+  }
+
+  .carousel-pagination-dots {
+    display: none !important;
+  }
+
+  .villa-gallery-track {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .villa-gallery-slide {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .villa-gallery-slide:not(:first-child) {
+    display: none !important;
+  }
+}
+
+/* MOBILE HORIZONTAL CAROUSEL ENGINE (<= 768px) */
+@media (max-width: 768px) {
+  /* Section & Container overflow containment */
+  section, .section,
+  .meta-amenities-section,
+  .meta-packages-section,
+  .meta-reviews-section,
+  .meta-villas-section,
+  .dual-villas,
+  .guest-reviews.section {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .meta-villas-grid,
+  .dual-villas-carousel {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-padding: 0 16px !important;
+    padding: 12px 16px 20px 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 16px !important;
+  }
+
+  .meta-amenities-grid::-webkit-scrollbar,
+  .meta-packages-list::-webkit-scrollbar,
+  .meta-reviews-grid::-webkit-scrollbar,
+  .meta-villas-grid::-webkit-scrollbar,
+  .dual-villas-carousel::-webkit-scrollbar,
+  .villa-gallery-track::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* 1.15 to 1.25 cards preview per screen */
+  .meta-amenities-grid > .meta-amenity-card {
+    flex: 0 0 78vw !important;
+    max-width: 300px !important;
+    min-width: 250px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(200, 164, 93, 0.22) !important;
+    padding: 24px 20px !important;
+    box-shadow: 0 8px 24px rgba(20, 22, 21, 0.05) !important;
+  }
+
+  .meta-packages-list > .meta-package-card {
+    flex: 0 0 82vw !important;
+    max-width: 320px !important;
+    min-width: 270px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(200, 164, 93, 0.24) !important;
+    padding: 22px 20px !important;
+    box-shadow: 0 10px 28px rgba(20, 22, 21, 0.06) !important;
+  }
+
+  .meta-reviews-grid > .meta-review-card {
+    flex: 0 0 82vw !important;
+    max-width: 320px !important;
+    min-width: 270px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #1C1E1D !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(200, 164, 93, 0.26) !important;
+    padding: 24px 20px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .meta-villas-grid > .meta-villa-card,
+  .dual-villas-carousel > .named-villa {
+    flex: 0 0 85vw !important;
+    max-width: 340px !important;
+    min-width: 280px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    background: #FFFFFF !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(200, 164, 93, 0.22) !important;
+    box-shadow: 0 12px 36px rgba(20, 22, 21, 0.07) !important;
+    overflow: hidden !important;
+  }
+
+  /* Villa Photo Gallery Tracks (Mobile Swiping) */
+  .meta-villa-media,
+  .named-villa .villa-photo {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 16px 16px 0 0 !important;
+    height: 250px !important;
+  }
+
+  .villa-gallery-track {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    scrollbar-width: none !important;
+  }
+
+  .villa-gallery-slide {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    scroll-snap-align: start !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .villa-gallery-slide img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* Pagination Dots */
+  .carousel-pagination-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 14px auto 8px auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    z-index: 5 !important;
+  }
+
+  .carousel-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: rgba(183, 146, 88, 0.3) !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  .carousel-dot.active {
+    width: 24px !important;
+    border-radius: 4px !important;
+    background: #B79258 !important;
+    box-shadow: 0 0 8px rgba(183, 146, 88, 0.5) !important;
+  }
+
+  .meta-reviews-section .carousel-dot {
+    background: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .meta-reviews-section .carousel-dot.active {
+    background: #E2CA92 !important;
+    box-shadow: 0 0 8px rgba(226, 202, 146, 0.6) !important;
+  }
+}
+
+
+/* ========================================================
+   5-STAR LUXURY MOBILE RESPONSIVENESS & CAROUSEL STANDARDS
+   Zero horizontal overflow, 16px iOS zoom prevention, 1.2 cards preview
+   ======================================================== */
+
+/* Strict Universal 16px Font Size on Mobile (<= 768px) to prevent iOS auto-zoom */
+@media (max-width: 768px) {
+  input, select, textarea, button,
+  .page-inner .availability input,
+  .page-inner .availability select,
+  .availability input,
+  .availability select,
+  .availability textarea,
+  #booking-form input,
+  #booking-form select,
+  #booking-form textarea,
+  .form-grid input,
+  .form-grid select,
+  .form-grid textarea,
+  #booking input,
+  #booking select,
+  #booking textarea,
+  .dialog-platforms select {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile Horizontal Carousels & Grid Display */
+@media (max-width: 768px) {
+  /* Global Page & Section Containment */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    position: relative !important;
+    margin: 0 !important;
+  }
+
+  main, #main,
+  section, .section,
+  .meta-amenities-section,
+  .meta-packages-section,
+  .meta-reviews-section,
+  .meta-villas-section,
+  .dual-villas,
+  .villas.section,
+  .guest-reviews.section,
+  .galle-guide.section,
+  .location.section,
+  .stay-details.section,
+  .stay-calendar.section,
+  .faq.section,
+  .contact.section,
+  .meta-location-section,
+  .meta-calendar-section {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Horizontal Scroll Carousels (~1.2 cards visible per screen) */
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .meta-villas-grid,
+  .dual-villas-carousel {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 16px !important;
+    padding: 12px 16px 20px !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+  }
+
+  .meta-amenities-grid::-webkit-scrollbar,
+  .meta-packages-list::-webkit-scrollbar,
+  .meta-reviews-grid::-webkit-scrollbar,
+  .meta-villas-grid::-webkit-scrollbar,
+  .dual-villas-carousel::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* 1.2 Card Sizing Preview on Mobile */
+  .meta-amenity-card {
+    flex: 0 0 82vw !important;
+    max-width: 310px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-package-card {
+    flex: 0 0 84vw !important;
+    max-width: 325px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-review-card {
+    flex: 0 0 84vw !important;
+    max-width: 330px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-villa-card,
+  .dual-villas-carousel .named-villa {
+    flex: 0 0 86vw !important;
+    max-width: 350px !important;
+    scroll-snap-align: start !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Villa Photo Gallery Horizontal Tracks */
+  .villa-gallery-track {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    scrollbar-width: none !important;
+  }
+
+  .villa-gallery-track::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .villa-gallery-slide {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+
+  .villa-gallery-slide img,
+  .villa-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* Form and Marquee containment */
+  form.availability, .availability {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .review-marquee-wrap, .review-marquee-strip, .luxury-ticker {
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    width: 100% !important;
+  }
+
+  /* Carousel Pagination Indicators (Visible on mobile) */
+  .carousel-pagination-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 12px auto 24px !important;
+    width: 100% !important;
+  }
+
+  .carousel-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: rgba(200, 164, 93, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    cursor: pointer !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .carousel-dot.active {
+    width: 20px !important;
+    border-radius: 4px !important;
+    background: #C8A45D !important;
+    box-shadow: 0 0 8px rgba(200, 164, 93, 0.5) !important;
+  }
+}
+
+/* Desktop & Tablet View (> 768px): Preserve elegant Multi-Column Grids */
+@media (min-width: 769px) {
+  .meta-amenities-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    overflow: visible !important;
+  }
+
+  .meta-reviews-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 24px !important;
+    overflow: visible !important;
+  }
+
+  .meta-villas-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 32px !important;
+    overflow: visible !important;
+  }
+
+  .carousel-pagination-dots {
+    display: none !important;
   }
 }

@@ -117,7 +117,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
             body: JSON.stringify({ ...feedsForm, forceSync: true }),
           })
         : await fetch(endpoint, { cache: "no-store" });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (res.ok) {
         setSyncData(data);
         if (data.feeds) {
@@ -152,7 +152,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ ...feedsForm, forceSync: true }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (!res.ok) throw new Error(data.error || "Could not save feeds.");
       setSyncData(data);
       showNotice("OTA Sync feeds saved and synchronized!");
@@ -338,7 +338,23 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
                   ["Upcoming stays", stats.upcoming, BedDouble, "Active arrivals"],
                   ["Need attention", stats.pending, Users, "Inquiry + pending"],
                   ["Payments received", money(stats.revenue), CircleDollarSign, "Recorded amount"],
-                ].map(([title,value,Icon,caption]) => <article key={String(title)} className="rounded-2xl border border-[#17392f]/10 bg-white/70 p-5 shadow-[0_12px_35px_rgba(23,57,47,.05)]"><div className="flex items-start justify-between"><div><p className="text-xs text-[#17392f]/55">{String(title)}</p><strong className="mt-2 block font-serif text-3xl font-medium">{String(value)}</strong></div><span className="rounded-xl bg-[#17392f]/7 p-2.5"><Icon size={19}/></span></div><p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#17392f]/35">{String(caption)}</p></article>)}
+                ].map(([title, value, IconComponent, caption]) => {
+                  const Icon = IconComponent as any;
+                  return (
+                    <article key={String(title)} className="rounded-2xl border border-[#17392f]/10 bg-white/70 p-5 shadow-[0_12px_35px_rgba(23,57,47,.05)]">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-xs text-[#17392f]/55">{String(title)}</p>
+                          <strong className="mt-2 block font-serif text-3xl font-medium">{String(value)}</strong>
+                        </div>
+                        <span className="rounded-xl bg-[#17392f]/7 p-2.5">
+                          <Icon size={19} />
+                        </span>
+                      </div>
+                      <p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#17392f]/35">{String(caption)}</p>
+                    </article>
+                  );
+                })}
               </section>
 
               <section className="mt-7 overflow-hidden rounded-2xl border border-[#17392f]/10 bg-white/75 shadow-[0_16px_45px_rgba(23,57,47,.05)]">

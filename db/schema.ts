@@ -20,6 +20,8 @@ export const bookings = sqliteTable(
     paidAmount: integer("paid_amount").notNull().default(0),
     specialRequest: text("special_request").notNull().default(""),
     adminNotes: text("admin_notes").notNull().default(""),
+    packageId: text("package_id").notNull().default(""),
+    timingOption: text("timing_option").notNull().default(""),
     createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   },
