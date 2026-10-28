@@ -17,6 +17,12 @@ function reference() {
   return `TTG-${stamp}-${crypto.randomUUID().slice(0, 6).toUpperCase()}`;
 }
 
+const publicPackages = {
+  day: { name: "Day Package", price: 12500, time: "10:00 AM - 3:00 PM", meals: "Lunch included" },
+  night: { name: "Night Package", price: 14500, time: "5:00 PM - 9:00 AM next day", meals: "Dinner and breakfast included" },
+  "day-night": { name: "Day & Night Package", price: 26000, time: "10:00 AM - 9:00 AM next day", meals: "Lunch, dinner and breakfast included" },
+} as const;
+
 function errorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : "Unexpected error";
   return message.includes("no such table")
@@ -59,7 +65,14 @@ export async function POST(request: Request) {
     const checkin = textValue(payload.checkin, 10);
     const checkout = textValue(payload.checkout, 10);
     const guests = Number(payload.guests);
-    const specialRequest = textValue(payload.specialRequest ?? payload.message, 1000);
+    const requestedPackage = typeof payload.package === "string" && payload.package in publicPackages
+      ? publicPackages[payload.package as keyof typeof publicPackages]
+      : null;
+    const guestRequest = textValue(payload.specialRequest ?? payload.message, 800);
+    const packageNote = requestedPackage
+      ? `[Package: ${requestedPackage.name} | ${requestedPackage.time} | ${requestedPackage.meals}]`
+      : "";
+    const specialRequest = [packageNote, guestRequest].filter(Boolean).join("\n").slice(0, 1000);
     const source = admin ? textValue(payload.source, 30) || "manual" : "website";
     const status = admin && bookingStatuses.includes(payload.status as never)
       ? (payload.status as (typeof bookingStatuses)[number])
@@ -67,7 +80,9 @@ export async function POST(request: Request) {
     const paymentStatus = admin && paymentStatuses.includes(payload.paymentStatus as never)
       ? (payload.paymentStatus as (typeof paymentStatuses)[number])
       : "unpaid";
-    const totalAmount = admin ? Math.max(0, Math.round(Number(payload.totalAmount) || 0)) : 0;
+    const totalAmount = admin
+      ? Math.max(0, Math.round(Number(payload.totalAmount) || 0))
+      : requestedPackage?.price ?? 0;
     const paidAmount = admin ? Math.max(0, Math.round(Number(payload.paidAmount) || 0)) : 0;
 
     if (guestName.length < 2) {

@@ -13,6 +13,15 @@ Confirmed and checked-in bookings cannot overlap another confirmed or checked-in
 
 Booking statuses: inquiry, pending, confirmed, checked in, checked out and cancelled. Payment statuses: unpaid, partial, paid and refunded.
 
+## Direct packages — 28 October 2026
+The public enquiry flow now offers three owner-supplied packages for a maximum of two guests:
+
+- Day Package — Rs. 12,500, 10:00 AM–3:00 PM, lunch included.
+- Night Package — Rs. 14,500, 5:00 PM–9:00 AM the next day, dinner and breakfast included.
+- Day & Night Package — Rs. 26,000, 10:00 AM–9:00 AM the next day, lunch, dinner and breakfast included.
+
+The chosen package, time slot and inclusions are saved with the request, the server applies the package price, and the WhatsApp handoff includes the full selection. A website request remains an enquiry until the villa team confirms availability and terms.
+
 ## Reservations and calendar
 Visible two-month calendar on Home, The Villa and Contact supports a choice of Araliya or Olu, arrival/departure selection, 1–2 guests, month navigation, past-date blocking, reset and direct enquiry. The calendar is a date selector; no dates are represented as confirmed available or sold out. There is no live iCal or channel-manager connection. Live inventory needs an owner-supplied feed or authenticated integration.
 
@@ -23,6 +32,8 @@ Airbnb: https://www.airbnb.com/rooms/1493263628966005427
 These public listings were found in search and checked for matching property identity on 22 October 2026. Booking.com content access was limited by a JavaScript verification page. Selected dates and guest count are appended to outgoing links; users must confirm the dates, the selected villa, availability and prices on the destination. Destination query-parameter acceptance has not been independently verified.
 
 Direct requests are first saved in the booking dashboard, then open a WhatsApp message preview to +94 77 068 2366 with the booking reference. Visitors must still press send in WhatsApp. A saved request is not a confirmed reservation. There is no automatic payment gateway or live third-party inventory sync.
+
+Calendar feed settings are owner-only. Public wording intentionally avoids claiming that Booking.com, Agoda or Airbnb feeds are connected unless the owner has supplied and configured those private iCal URLs.
 
 ## Google reviews and photographs
 Source: https://maps.app.goo.gl/RJAmGePoCYyHsJYX8
