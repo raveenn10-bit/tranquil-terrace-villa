@@ -6452,6 +6452,28 @@ form.availability, .availability {
   font-size: 0.76rem;
 }
 
+.tt-legal-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tt-legal-sep {
+  opacity: 0.45;
+}
+
+.tt-crafted {
+  color: #b9cabb;
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+}
+
+.tt-crafted strong {
+  color: var(--tt-gold);
+  font-weight: 600;
+}
+
 .tt-legal-links {
   display: flex;
   gap: 18px;
@@ -6655,6 +6677,16 @@ form.availability, .availability {
     gap: 10px !important;
     font-size: 0.72rem !important;
     line-height: 1.5 !important;
+  }
+
+  .tt-legal-copy {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .tt-legal-sep {
+    display: none !important;
   }
 
   .tt-legal-links {

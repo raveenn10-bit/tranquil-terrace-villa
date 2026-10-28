@@ -468,7 +468,11 @@ const taruFooterHtml = `<footer class="tt-footer" id="site-footer" aria-label="T
 
     <!-- Legal Bar -->
     <div class="tt-legal">
-      <span>© 2026 Tranquil Terrace Galle · All Rights Reserved</span>
+      <div class="tt-legal-copy">
+        <span>© 2026 Tranquil Terrace Galle · All Rights Reserved</span>
+        <span class="tt-legal-sep">·</span>
+        <span class="tt-crafted">Crafted by <strong style="color: var(--tt-gold); font-weight: 600;">Harsh Apex Digital Solutions</strong></span>
+      </div>
       <div class="tt-legal-links">
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="terms-and-conditions.html">Terms &amp; Conditions</a>
