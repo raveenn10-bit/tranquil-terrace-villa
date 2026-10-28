@@ -2135,14 +2135,22 @@ body.luxury-drawer-open {
   }
   .new-footer .footer-grid,
   .new-footer .footer-links {
-    grid-template-columns: 1fr !important;
-    gap: 34px !important;
-    padding: 30px 0 25px !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 26px 18px !important;
+    padding: 28px 0 20px !important;
   }
   .new-footer .footer-col,
   .new-footer .footer-links > div {
     width: 100% !important;
     align-items: flex-start !important;
+  }
+  /* Brand spans full width on mobile */
+  .new-footer .footer-col-brand {
+    grid-column: 1 / -1 !important;
+  }
+  /* Booking platforms spans full width on mobile */
+  .new-footer .footer-col-booking {
+    grid-column: 1 / -1 !important;
   }
   .new-footer .footer-platforms,
   .new-footer .footer-links > div:last-child {

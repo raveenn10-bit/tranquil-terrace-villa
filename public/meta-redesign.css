@@ -59,6 +59,14 @@
   z-index: 1001;
 }
 
+.notice-text-mobile {
+  display: none;
+}
+
+.notice-text-desktop {
+  display: inline;
+}
+
 .meta-notice-bar span.sparkle {
   color: #E2CA92;
   font-size: 0.85rem;
@@ -5795,9 +5803,84 @@ form.availability, .availability {
 
 /* 4. MOBILE LAYOUT & SIZING FIXES (@media (max-width: 768px)) */
 @media (max-width: 768px) {
+  /* Safe-Area Notice Bar (Clears iPhone Dynamic Island & Notch) */
+  .notice-text-desktop {
+    display: none !important;
+  }
+  .notice-text-mobile {
+    display: inline !important;
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+  }
+  .meta-notice-bar {
+    padding-top: max(env(safe-area-inset-top, 0px), 52px) !important;
+    padding-bottom: 9px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    min-height: calc(env(safe-area-inset-top, 0px) + 38px) !important;
+    box-sizing: border-box !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Tighten Spacing between Calendar & Packages on Mobile */
+  .meta-calendar-section {
+    padding: 2.25rem 1rem 1.25rem !important;
+  }
+  .meta-packages-section {
+    padding: 1.75rem 1rem 2.25rem !important;
+  }
+
+  /* Calendar Partner OTA Note (Clean Luxury Pills) */
+  .meta-cal-ota-note {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px 8px !important;
+    margin-top: 1rem !important;
+    padding-top: 0.75rem !important;
+    border-top: 1px dashed rgba(200, 164, 93, 0.25) !important;
+    font-size: 0.72rem !important;
+    text-align: center !important;
+  }
+  .meta-cal-ota-note span:first-child {
+    width: 100% !important;
+    display: block !important;
+    margin-bottom: 2px !important;
+    color: #666 !important;
+  }
+  .meta-cal-ota-note a {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    border-radius: 20px !important;
+    background: rgba(200, 164, 93, 0.08) !important;
+    border: 1px solid rgba(200, 164, 93, 0.25) !important;
+    color: #17392F !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+  }
+  .meta-cal-ota-note span:not(:first-child) {
+    display: none !important;
+  }
+
+  /* Packages Split: Title & Cards FIRST, Visual Closer SECOND */
+  .meta-packages-split {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  .meta-packages-content {
+    order: 1 !important;
+    width: 100% !important;
+  }
+
   /* Amenities: Strict 2-column Grid */
   .meta-amenities-section {
-    padding: 4.5rem 1.25rem 4rem !important;
+    padding: 3.5rem 1.25rem 3rem !important;
   }
 
   .meta-amenities-grid {

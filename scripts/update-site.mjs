@@ -363,10 +363,12 @@ const taruFooterHtml = `
     <div class="footer-col footer-col-nav">
       <span class="footer-col-title">EXPLORE</span>
       <ul class="footer-nav-list">
-        <li><a href="villas.html">The Private Villas</a></li>
-        <li><a href="experiences.html">Signature Experiences</a></li>
-        <li><a href="gallery.html">Visual Journal &amp; Film</a></li>
-        <li><a href="explore-galle.html">Explore Galle &amp; Fort</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="villas.html">Our Villas</a></li>
+        <li><a href="villas.html#araliya">— Villa Araliya</a></li>
+        <li><a href="villas.html#olu">— Villa Olu</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="index.html#packages">Packages &amp; Booking</a></li>
         <li><a href="contact.html">Contact &amp; Location</a></li>
       </ul>
     </div>
