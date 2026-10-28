@@ -156,7 +156,7 @@
 
   function initAllMobileCarousels() {
     const targets = [
-      { sel: ".meta-amenities-grid", itemSel: ".meta-amenity-card" },
+      { sel: ".meta-instagram-grid", itemSel: ".meta-insta-card" },
       { sel: ".meta-packages-list", itemSel: ".meta-package-card" },
       { sel: ".meta-reviews-grid", itemSel: ".meta-review-card" },
       { sel: ".meta-villas-grid", itemSel: ".meta-villa-card" },

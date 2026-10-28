@@ -8,7 +8,7 @@ const AGODA_URL = "https://www.agoda.com/tranquil-terrace-galle-h79594102/hotel/
 const AIRBNB_URL = "https://www.airbnb.co.in/rooms/1493263628966005427";
 const FB_URL = "https://web.facebook.com/p/Tranquil-Terrace-Galle-61579428511398/?_rdc=1&_rdr#";
 const TIKTOK_URL = "https://www.tiktok.com/@villa.tranquil.te?is_from_webapp=1&sender_device=pc";
-const IG_URL = "https://www.instagram.com/tranquil.terrace.galle/";
+const IG_URL = "https://www.instagram.com/tranquil_terrace_galle/";
 const WHATSAPP_URL = "https://wa.me/94770682366";
 const PHONE_NUMBER = "+94 77 068 2366";
 const TEL_URL = "tel:+94770682366";
@@ -27,6 +27,8 @@ for (const file of [
   "whatsapp-booking.js",
   "mobile-carousels.css",
   "mobile-carousels.js",
+  "robots.txt",
+  "sitemap.xml",
 ]) {
   const src = path.join(root, "public", file);
   const dst = path.join(root, "legacy-site", file);
@@ -458,7 +460,7 @@ const taruFooterHtml = `
               </svg>
             </span>
             <div class="channel-card-left">
-              <span class="channel-card-name">Live Stay Calendar</span>
+              <span class="channel-card-name">Live Calendar</span>
               <span class="channel-card-sub">Real-Time Synced Availability 2026/27</span>
             </div>
           </div>
@@ -546,14 +548,83 @@ const htmlFiles = [
   "contact.html",
 ];
 
+const pageMetadata = {
+  "index.html": {
+    url: "https://tranquilterracegalle.com/",
+    title: "Tranquil Terrace Galle · Luxury Boutique Villas in Galle, Sri Lanka",
+    description: "Two private boutique villas in Galle, Sri Lanka: Villa Araliya & Villa Olu. Each with 1 king bedroom, private plunge pool, and capacity for up to two guests. Guaranteed best rates and direct concierge.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  },
+  "villas.html": {
+    url: "https://tranquilterracegalle.com/villas.html",
+    title: "Our Private Villas · Tranquil Terrace Galle",
+    description: "Discover Villa Araliya and Villa Olu. Two private luxury villas in Galle, each with king bedroom suite, en-suite bathroom, and private plunge pool.",
+    image: "https://tranquilterracegalle.com/assets/villa-2.webp"
+  },
+  "experiences.html": {
+    url: "https://tranquilterracegalle.com/experiences.html",
+    title: "Signature Experiences · Tranquil Terrace Galle",
+    description: "Floating breakfasts, cinnamon grove walks, and curated Galle Fort explorations.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  },
+  "gallery.html": {
+    url: "https://tranquilterracegalle.com/gallery.html",
+    title: "Visual Journal · Tranquil Terrace Galle",
+    description: "Explore photographs and moments from Villa Araliya and Villa Olu in Galle, Sri Lanka.",
+    image: "https://tranquilterracegalle.com/assets/villa-1.webp"
+  },
+  "explore-galle.html": {
+    url: "https://tranquilterracegalle.com/explore-galle.html",
+    title: "Explore Galle & Fort · Tranquil Terrace Galle",
+    description: "A curated insider guide to Galle Fort, pristine southern beaches, and tropical gems.",
+    image: "https://tranquilterracegalle.com/assets/villa-3.webp"
+  },
+  "contact.html": {
+    url: "https://tranquilterracegalle.com/contact.html",
+    title: "Contact & Reservations · Tranquil Terrace Galle",
+    description: "Direct reservations, 24/7 WhatsApp concierge, location in Galle, Sri Lanka, and availability calendar.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  }
+};
+
 const processedPages = {};
 
 for (const fileName of htmlFiles) {
   const sourcePath = path.join(root, "public", fileName);
   let html = fs.readFileSync(sourcePath, "utf-8");
 
-  // A. Harmonize <head> with fonts, theme-color, and both cinematic-3d.css and meta-redesign.css
+  // A. Harmonize <head> with fonts, theme-color, stylesheets, canonical domain & Open Graph metadata
   html = html.replace(/<meta content="[^"]*?" name="theme-color"\/>/, '<meta content="#141615" name="theme-color"/>');
+
+  // Clean up any existing canonical, og, and twitter tags
+  html = html.replace(/<link[^>]*rel="canonical"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*property="og:[^"]*"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="twitter:[^"]*"[^>]*\/?>\s*/gi, "");
+
+  const meta = pageMetadata[fileName] || {
+    url: `https://tranquilterracegalle.com/${fileName}`,
+    title: "Tranquil Terrace Galle",
+    description: "Two private boutique villas in Galle, Sri Lanka.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  };
+
+  const seoTags = `  <link rel="canonical" href="${meta.url}"/>
+  <meta property="og:url" content="${meta.url}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="${meta.title}"/>
+  <meta property="og:description" content="${meta.description}"/>
+  <meta property="og:image" content="${meta.image}"/>
+  <meta property="og:site_name" content="Tranquil Terrace Galle"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="${meta.title}"/>
+  <meta name="twitter:description" content="${meta.description}"/>
+  <meta name="twitter:image" content="${meta.image}"/>`;
+
+  if (html.includes('name="description"')) {
+    html = html.replace(/(<meta[^>]*name="description"[^>]*\/>)/i, `$1\n${seoTags}`);
+  } else {
+    html = html.replace(/<head>/i, `<head>\n${seoTags}`);
+  }
 
   // Ensure Google Fonts Cormorant Garamond & Manrope are loaded
   if (!html.includes("family=Cormorant+Garamond")) {
@@ -582,6 +653,21 @@ for (const fileName of htmlFiles) {
       html = html.replace('</head>', '  <link href="whatsapp-booking.css" rel="stylesheet"/>\n</head>');
     }
   }
+
+  // Ensure mobile-carousels.css is linked in head
+  if (!html.includes('href="mobile-carousels.css"')) {
+    if (html.includes('href="whatsapp-booking.css"')) {
+      html = html.replace(
+        /<link[^>]*href="whatsapp-booking\.css"[^>]*\/>/i,
+        `<link href="whatsapp-booking.css" rel="stylesheet"/>\n  <link href="mobile-carousels.css" rel="stylesheet"/>`
+      );
+    } else {
+      html = html.replace('</head>', '  <link href="mobile-carousels.css" rel="stylesheet"/>\n</head>');
+    }
+  }
+
+  // Update Instagram URL in LodgingBusiness schema in index.html
+  html = html.replace(/https:\/\/www\.instagram\.com\/tranquil\.terrace\.galle\//g, "https://www.instagram.com/tranquil_terrace_galle/");
 
   // B. Clean up any existing header and any orphaned or duplicate mobile drawers
   html = html.replace(/<header[\s\S]*?<\/header>\s*/g, "");
@@ -653,6 +739,7 @@ for (const fileName of htmlFiles) {
   <script src="cinematic-3d.js"></script>
   <script src="meta-redesign.js"></script>
   <script defer src="whatsapp-booking.js"></script>
+  <script defer src="mobile-carousels.js"></script>
 </body>
 `.trim();
 

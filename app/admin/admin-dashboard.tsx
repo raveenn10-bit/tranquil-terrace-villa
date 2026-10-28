@@ -1,719 +1,3508 @@
 "use client";
 /* eslint-disable @next/next/no-html-link-for-pages, @next/next/no-img-element */
 
+import React, { FormEvent, useEffect, useMemo, useState, useRef } from "react";
 import {
+  AlertTriangle,
+  ArrowUpDown,
   BedDouble,
+  Calendar,
   CalendarDays,
   Check,
+  CheckCircle2,
+  ChevronLeft,
   ChevronRight,
   CircleDollarSign,
+  Clock,
   Copy,
+  CreditCard,
+  Database,
   Download,
   ExternalLink,
   Eye,
+  FileDown,
+  FileSpreadsheet,
+  FileText,
+  Filter,
   Globe,
+  HelpCircle,
+  Info,
   LayoutDashboard,
   Link2,
   LoaderCircle,
   LogOut,
+  Mail,
   Menu,
+  MessageCircle,
+  MessageSquare,
+  Phone,
   Plus,
+  Printer,
   RefreshCw,
   Search,
+  Share2,
+  ShieldAlert,
+  Trash2,
+  TrendingUp,
+  Upload,
+  UserCheck,
   Users,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import type { BookingRecord, BookingStatus, PaymentStatus } from "@/lib/booking-types";
+import type { BookingRecord, BookingStatus, PaymentStatus, VillaName } from "@/lib/booking-types";
 import { bookingStatuses, paymentStatuses, villaNames } from "@/lib/booking-types";
+import {
+  getAllBookings,
+  saveBooking as dbSaveBooking,
+  deleteBooking as dbDeleteBooking,
+  getAllGuests,
+  saveGuest as dbSaveGuest,
+  deleteGuest as dbDeleteGuest,
+  getStorageCounts,
+  clearAllData,
+  initialDemoBookings,
+  initialDemoGuests,
+  type GuestRecord,
+} from "@/lib/admin-db";
+import {
+  formatDateDisplay,
+  formatDateTimeDisplay,
+  calculateNights,
+  parseSafeDate,
+  toIsoDateString,
+  getTodayIsoDate,
+  addDaysToDate,
+  isRangeOverlapping,
+  detectConflicts,
+} from "@/lib/admin-date-utils";
+import {
+  parseIcsContent,
+  generateIcsCalendar,
+  downloadIcsFile,
+} from "@/lib/admin-ics";
+import {
+  exportBackupJson,
+  validateBackupJson,
+  exportBookingsCsv,
+  downloadFile,
+  calculateFinancialSummary,
+} from "@/lib/admin-backup";
 
 type Props = { live: boolean; displayName: string; authHref: string };
 
-const today = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Colombo",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-}).format(new Date());
+type DashboardTab =
+  | "reservations"
+  | "calendar"
+  | "ics-sync"
+  | "financials"
+  | "guests"
+  | "analytics"
+  | "backup";
 
-const demoBookings: BookingRecord[] = [
-  {
-    id: "demo-1", reference: "TTG-2410-A18F", guestName: "Sarah & Daniel", email: "sarah@example.com",
-    phone: "+44 7700 900123", villaName: "Araliya", checkin: "2026-10-24", checkout: "2026-10-27", guests: 2,
-    source: "website", status: "confirmed", paymentStatus: "partial", totalAmount: 75000, paidAmount: 37500,
-    specialRequest: "Airport pickup information, please.", adminNotes: "Arrival around 3.30 PM.",
-    createdAt: "2026-10-18 10:30:00", updatedAt: "2026-10-21 08:15:00",
-  },
-  {
-    id: "demo-2", reference: "TTG-2810-C92B", guestName: "Nimal Perera", email: "nimal@example.com",
-    phone: "+94 77 123 4567", villaName: "Olu", checkin: "2026-10-28", checkout: "2026-10-30", guests: 2,
-    source: "WhatsApp", status: "pending", paymentStatus: "unpaid", totalAmount: 50000, paidAmount: 0,
-    specialRequest: "Floating breakfast availability?", adminNotes: "Follow up this evening.",
-    createdAt: "2026-10-21 13:10:00", updatedAt: "2026-10-21 13:10:00",
-  },
-  {
-    id: "demo-3", reference: "TTG-0211-F71D", guestName: "Maya Chen", email: "maya@example.com",
-    phone: "+65 8123 4567", villaName: "Araliya", checkin: "2026-11-02", checkout: "2026-11-06", guests: 2,
-    source: "Airbnb", status: "inquiry", paymentStatus: "unpaid", totalAmount: 100000, paidAmount: 0,
-    specialRequest: "Late check-in after 8 PM.", adminNotes: "", createdAt: "2026-10-22 09:00:00", updatedAt: "2026-10-22 09:00:00",
-  },
-];
+type Currency = "LKR" | "USD";
 
-const blankForm = {
-  guestName: "", email: "", phone: "", villaName: "Araliya", checkin: "", checkout: "", guests: 2,
-  source: "manual", status: "pending" as BookingStatus, paymentStatus: "unpaid" as PaymentStatus,
-  totalAmount: 0, paidAmount: 0, specialRequest: "", adminNotes: "",
+const USD_EXCHANGE_RATE = 300; // 1 USD = 300 LKR
+
+const blankBookingForm = {
+  guestName: "",
+  email: "",
+  phone: "",
+  villaName: "Araliya" as VillaName,
+  checkin: "",
+  checkout: "",
+  guests: 2,
+  source: "direct",
+  status: "confirmed" as BookingStatus,
+  paymentStatus: "unpaid" as PaymentStatus,
+  totalAmount: 35000,
+  paidAmount: 0,
+  specialRequest: "",
+  adminNotes: "",
+  packageId: "night-package",
+  timingOption: "",
 };
 
-const label = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (m) => m.toUpperCase());
-const money = (value: number) => `Rs. ${new Intl.NumberFormat("en-LK").format(value)}`;
-const shortDate = (value: string) => new Date(`${value}T12:00:00`).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-const nights = (start: string, end: string) => Math.max(0, Math.round((Date.parse(`${end}T12:00:00Z`) - Date.parse(`${start}T12:00:00Z`)) / 86400000));
+const label = (value: string) =>
+  value.replaceAll("_", " ").replace(/\b\w/g, (m) => m.toUpperCase());
 
 export default function AdminDashboard({ live, displayName, authHref }: Props) {
-  const [activeTab, setActiveTab] = useState<"reservations" | "calendar-sync">("reservations");
-  const [bookings, setBookings] = useState<BookingRecord[]>(live ? [] : demoBookings);
-  const [loading, setLoading] = useState(live);
+  // Navigation & View state
+  const [activeTab, setActiveTab] = useState<DashboardTab>("reservations");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currency, setCurrency] = useState<Currency>("LKR");
+
+  // Core Data state
+  const [bookings, setBookings] = useState<BookingRecord[]>([]);
+  const [guests, setGuests] = useState<GuestRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
-  const [editing, setEditing] = useState<BookingRecord | null>(null);
-  const [form, setForm] = useState({ ...blankForm });
-  const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
-  // Calendar sync state
-  const [syncData, setSyncData] = useState<any>(null);
-  const [syncLoading, setSyncLoading] = useState(false);
-  const [syncSaving, setSyncSaving] = useState(false);
-  const [feedsForm, setFeedsForm] = useState({
-    Araliya: { bookingUrl: "", airbnbUrl: "", agodaUrl: "" },
-    Olu: { bookingUrl: "", airbnbUrl: "", agodaUrl: "" },
-  });
+  // Dismissible Notice Banner
+  const [noticeDismissed, setNoticeDismissed] = useState(false);
 
-  async function loadBookings() {
-    if (!live) return;
-    setLoading(true); setError("");
+  // Filter & Search state (Reservations Tab)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [villaFilter, setVillaFilter] = useState<"all" | "Araliya" | "Olu">("all");
+
+  // Booking Modal (Add / Edit)
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [editingBooking, setEditingBooking] = useState<BookingRecord | null>(null);
+  const [bookingForm, setBookingForm] = useState({ ...blankBookingForm });
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // Quick Payment Modal
+  const [paymentModalBooking, setPaymentModalBooking] = useState<BookingRecord | null>(null);
+  const [paymentAmountInput, setPaymentAmountInput] = useState<number>(0);
+  const [paymentStatusInput, setPaymentStatusInput] = useState<PaymentStatus>("paid");
+
+  // Invoice Modal
+  const [invoiceModalBooking, setInvoiceModalBooking] = useState<BookingRecord | null>(null);
+
+  // Message Generator Modal (WhatsApp & Email)
+  const [messageModalBooking, setMessageModalBooking] = useState<BookingRecord | null>(null);
+  const [messageTemplateType, setMessageTemplateType] = useState<"confirmation" | "reminder" | "arrival">("confirmation");
+  const [customMessageBody, setCustomMessageBody] = useState("");
+  const [copiedNotice, setCopiedNotice] = useState(false);
+
+  // Calendar View State
+  const [calendarVilla, setCalendarVilla] = useState<"All" | "Araliya" | "Olu">("All");
+  const todayDate = useMemo(() => new Date(), []);
+  const [calendarYear, setCalendarYear] = useState<number>(todayDate.getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState<number>(todayDate.getMonth()); // 0-indexed
+  const [selectedDayBookings, setSelectedDayBookings] = useState<{ date: string; bookings: BookingRecord[] } | null>(null);
+
+  // ICS Module State
+  const [icsImportVilla, setIcsImportVilla] = useState<VillaName>("Araliya");
+  const [icsImportSource, setIcsImportSource] = useState("Booking.com");
+  const [icsRawText, setIcsRawText] = useState("");
+  const [icsParsedEvents, setIcsParsedEvents] = useState<{ event: BookingRecord; conflicts: BookingRecord[]; selected: boolean }[]>([]);
+  const [icsParsing, setIcsParsing] = useState(false);
+
+  // Backup & Storage State
+  const [backupRestoreFile, setBackupRestoreFile] = useState<File | null>(null);
+  const [backupValidation, setBackupValidation] = useState<any>(null);
+  const [backupRestoreMode, setBackupRestoreMode] = useState<"merge" | "replace">("merge");
+  const [storageStats, setStorageStats] = useState<{ bookings: number; guests: number }>({ bookings: 0, guests: 0 });
+
+  // Guest Directory State
+  const [guestSearchQuery, setGuestSearchQuery] = useState("");
+  const [selectedGuestForHistory, setSelectedGuestForHistory] = useState<GuestRecord | null>(null);
+  const [editingGuestNotes, setEditingGuestNotes] = useState<GuestRecord | null>(null);
+  const [guestNotesInput, setGuestNotesInput] = useState("");
+
+  // ---------------------------------------------------------------------------
+  // IndexedDB Data Loading
+  // ---------------------------------------------------------------------------
+  async function loadDataFromStorage() {
+    setLoading(true);
+    setError("");
     try {
-      const response = await fetch("/api/bookings", { cache: "no-store" });
-      const data = await response.json() as { bookings?: BookingRecord[]; error?: string };
-      if (!response.ok) throw new Error(data.error || "Could not load bookings.");
-      setBookings(data.bookings ?? []);
+      const storedBookings = await getAllBookings();
+      setBookings(storedBookings);
+
+      const storedGuests = await getAllGuests();
+      setGuests(storedGuests);
+
+      const counts = await getStorageCounts();
+      setStorageStats(counts);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load bookings.");
-    } finally { setLoading(false); }
+      console.error("Storage error:", err);
+      setError("Failed to load local records from IndexedDB.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function loadCalendarSync(force = false) {
-    setSyncLoading(true);
-    try {
-      const endpoint = force ? "/api/calendar/settings" : "/api/calendar/settings";
-      const res = force
-        ? await fetch(endpoint, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ ...feedsForm, forceSync: true }),
-          })
-        : await fetch(endpoint, { cache: "no-store" });
-      const data = (await res.json()) as any;
-      if (res.ok) {
-        setSyncData(data);
-        if (data.feeds) {
-          setFeedsForm({
-            Araliya: {
-              bookingUrl: data.feeds.Araliya?.bookingUrl || "",
-              airbnbUrl: data.feeds.Araliya?.airbnbUrl || "",
-              agodaUrl: data.feeds.Araliya?.agodaUrl || "",
-            },
-            Olu: {
-              bookingUrl: data.feeds.Olu?.bookingUrl || "",
-              airbnbUrl: data.feeds.Olu?.airbnbUrl || "",
-              agodaUrl: data.feeds.Olu?.agodaUrl || "",
-            },
-          });
+  useEffect(() => {
+    void loadDataFromStorage();
+  }, []);
+
+  function showToast(msg: string) {
+    setToastMessage(msg);
+    window.setTimeout(() => setToastMessage(""), 3500);
+  }
+
+  // Currency Formatter
+  function formatMoney(amountLkr: number, curr = currency): string {
+    const safeAmount = Number(amountLkr) || 0;
+    if (curr === "USD") {
+      const usd = safeAmount / USD_EXCHANGE_RATE;
+      return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `Rs. ${new Intl.NumberFormat("en-LK").format(Math.round(safeAmount))}`;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Global Conflict Detection
+  // ---------------------------------------------------------------------------
+  const systemConflicts = useMemo(() => {
+    const list: { villa: string; a: BookingRecord; b: BookingRecord }[] = [];
+    const active = bookings.filter((b) => b.status !== "cancelled");
+    for (let i = 0; i < active.length; i++) {
+      for (let j = i + 1; j < active.length; j++) {
+        const b1 = active[i];
+        const b2 = active[j];
+        if (b1.villaName.toLowerCase() === b2.villaName.toLowerCase()) {
+          if (isRangeOverlapping(b1.checkin, b1.checkout, b2.checkin, b2.checkout)) {
+            list.push({ villa: b1.villaName, a: b1, b: b2 });
+          }
         }
-        if (force) showNotice("Calendar feeds resynced successfully!");
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load calendar sync.");
-    } finally {
-      setSyncLoading(false);
     }
-  }
+    return list;
+  }, [bookings]);
 
-  async function saveCalendarFeeds(event?: FormEvent) {
-    if (event) event.preventDefault();
-    setSyncSaving(true);
-    try {
-      const res = await fetch("/api/calendar/settings", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...feedsForm, forceSync: true }),
-      });
-      const data = (await res.json()) as any;
-      if (!res.ok) throw new Error(data.error || "Could not save feeds.");
-      setSyncData(data);
-      showNotice("OTA Sync feeds saved and synchronized!");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save calendar feeds.");
-    } finally {
-      setSyncSaving(false);
-    }
-  }
+  // Real-time conflict checking in active Booking modal
+  const formConflicts = useMemo(() => {
+    if (!bookingForm.checkin || !bookingForm.checkout) return [];
+    return detectConflicts(
+      bookings,
+      bookingForm.villaName,
+      bookingForm.checkin,
+      bookingForm.checkout,
+      editingBooking?.id
+    );
+  }, [bookings, bookingForm.villaName, bookingForm.checkin, bookingForm.checkout, editingBooking?.id]);
 
-  useEffect(() => {
-    if (!live) return;
-    let active = true;
-    fetch("/api/bookings", { cache: "no-store" })
-      .then(async (response) => {
-        const data = await response.json() as { bookings?: BookingRecord[]; error?: string };
-        if (!response.ok) throw new Error(data.error || "Could not load bookings.");
-        if (active) setBookings(data.bookings ?? []);
-      })
-      .catch((err: unknown) => {
-        if (active) setError(err instanceof Error ? err.message : "Could not load bookings.");
-      })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
-  }, [live]);
+  // ---------------------------------------------------------------------------
+  // Financial Summary Aggregations
+  // ---------------------------------------------------------------------------
+  const financialSummary = useMemo(() => {
+    return calculateFinancialSummary(bookings);
+  }, [bookings]);
 
-  useEffect(() => {
-    if (activeTab === "calendar-sync") {
-      void loadCalendarSync(false);
-    }
-  }, [activeTab]);
-
-  const filtered = useMemo(() => bookings.filter((booking) => {
-    const haystack = `${booking.reference} ${booking.guestName} ${booking.email} ${booking.phone} ${booking.villaName}`.toLowerCase();
-    return (filter === "all" || booking.status === filter) && haystack.includes(query.toLowerCase());
-  }), [bookings, filter, query]);
-
-  const stats = useMemo(() => ({
-    total: bookings.length,
-    upcoming: bookings.filter((b) => b.checkin >= today && !["cancelled", "checked_out"].includes(b.status)).length,
-    pending: bookings.filter((b) => ["inquiry", "pending"].includes(b.status)).length,
-    revenue: bookings.filter((b) => b.paymentStatus !== "refunded").reduce((sum, b) => sum + b.paidAmount, 0),
-  }), [bookings]);
-
-  function showNotice(message: string) {
-    setNotice(message); window.setTimeout(() => setNotice(""), 3000);
-  }
-
-  function copyText(text: string, title: string) {
-    navigator.clipboard.writeText(text);
-    showNotice(`${title} copied to clipboard!`);
-  }
-
-  function newBooking() {
-    setEditing(null); setForm({ ...blankForm }); setError(""); setOpen(true);
-  }
-
-  function editBooking(booking: BookingRecord) {
-    setEditing(booking);
-    setForm({
-      guestName: booking.guestName, email: booking.email, phone: booking.phone,
-      villaName: booking.villaName, checkin: booking.checkin, checkout: booking.checkout, guests: booking.guests,
-      source: booking.source, status: booking.status, paymentStatus: booking.paymentStatus,
-      totalAmount: booking.totalAmount, paidAmount: booking.paidAmount,
-      specialRequest: booking.specialRequest, adminNotes: booking.adminNotes,
+  // Filtered reservations
+  const filteredBookings = useMemo(() => {
+    return bookings.filter((b) => {
+      const matchesStatus = statusFilter === "all" || b.status === statusFilter;
+      const matchesVilla = villaFilter === "all" || b.villaName === villaFilter;
+      const query = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !query ||
+        b.guestName.toLowerCase().includes(query) ||
+        b.reference.toLowerCase().includes(query) ||
+        b.email.toLowerCase().includes(query) ||
+        b.phone.toLowerCase().includes(query) ||
+        b.villaName.toLowerCase().includes(query);
+      return matchesStatus && matchesVilla && matchesSearch;
     });
-    setError(""); setOpen(true);
+  }, [bookings, statusFilter, villaFilter, searchQuery]);
+
+  // Aggregated Guests list (syncing IndexedDB guests with bookings)
+  const aggregatedGuests = useMemo(() => {
+    const guestMap = new Map<string, GuestRecord>();
+
+    // Seed from stored guests
+    for (const g of guests) {
+      guestMap.set(g.id, { ...g });
+    }
+
+    // Accumulate from bookings
+    for (const b of bookings) {
+      const key = (b.email || b.phone || b.guestName).toLowerCase().trim();
+      const existing = guestMap.get(key) || {
+        id: `guest-${key.replace(/[^a-z0-9]/g, "-")}`,
+        name: b.guestName,
+        email: b.email,
+        phone: b.phone,
+        totalBookings: 0,
+        totalSpentLKR: 0,
+        lastStay: b.checkin,
+        notes: "",
+        createdAt: b.createdAt,
+        updatedAt: b.updatedAt,
+      };
+
+      if (b.status !== "cancelled") {
+        existing.totalBookings += 1;
+        existing.totalSpentLKR += b.totalAmount || 0;
+      }
+      if (!existing.lastStay || b.checkin > existing.lastStay) {
+        existing.lastStay = b.checkin;
+      }
+      if (!existing.email && b.email) existing.email = b.email;
+      if (!existing.phone && b.phone) existing.phone = b.phone;
+
+      guestMap.set(key, existing);
+    }
+
+    const result = Array.from(guestMap.values());
+    if (!guestSearchQuery) return result;
+
+    const q = guestSearchQuery.toLowerCase();
+    return result.filter(
+      (g) =>
+        g.name.toLowerCase().includes(q) ||
+        g.email.toLowerCase().includes(q) ||
+        g.phone.toLowerCase().includes(q)
+    );
+  }, [guests, bookings, guestSearchQuery]);
+
+  // ---------------------------------------------------------------------------
+  // Booking CRUD Handlers (IndexedDB)
+  // ---------------------------------------------------------------------------
+  function openNewBookingModal(defaultDate?: string) {
+    setEditingBooking(null);
+    const inDate = defaultDate || getTodayIsoDate();
+    const outDate = addDaysToDate(inDate, 2);
+    setBookingForm({
+      ...blankBookingForm,
+      checkin: inDate,
+      checkout: outDate,
+      totalAmount: 70000,
+    });
+    setBookingModalOpen(true);
   }
 
-  async function saveBooking(event: FormEvent) {
-    event.preventDefault();
-    if (!live) { showNotice("Demo preview — sign in as the owner to save changes."); setOpen(false); return; }
-    setSaving(true); setError("");
-    try {
-      const response = await fetch(editing ? `/api/bookings/${editing.id}` : "/api/bookings", {
-        method: editing ? "PATCH" : "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await response.json() as { booking?: BookingRecord; error?: string };
-      if (!response.ok || !data.booking) throw new Error(data.error || "Could not save booking.");
-      setBookings((rows) => editing ? rows.map((row) => row.id === data.booking!.id ? data.booking! : row) : [data.booking!, ...rows]);
-      setOpen(false); showNotice(editing ? "Booking updated." : "Manual booking added.");
-    } catch (err) { setError(err instanceof Error ? err.message : "Could not save booking."); }
-    finally { setSaving(false); }
+  function openEditBookingModal(booking: BookingRecord) {
+    setEditingBooking(booking);
+    setBookingForm({
+      guestName: booking.guestName,
+      email: booking.email,
+      phone: booking.phone,
+      villaName: booking.villaName,
+      checkin: booking.checkin,
+      checkout: booking.checkout,
+      guests: booking.guests,
+      source: booking.source,
+      status: booking.status,
+      paymentStatus: booking.paymentStatus,
+      totalAmount: booking.totalAmount,
+      paidAmount: booking.paidAmount,
+      specialRequest: booking.specialRequest,
+      adminNotes: booking.adminNotes,
+      packageId: booking.packageId || "night-package",
+      timingOption: booking.timingOption || "",
+    });
+    setBookingModalOpen(true);
   }
 
-  async function quickUpdate(booking: BookingRecord, changes: Partial<BookingRecord>) {
-    if (!live) { showNotice("Demo preview — live updates are owner-only."); return; }
-    const snapshot = bookings;
-    setBookings((rows) => rows.map((row) => row.id === booking.id ? { ...row, ...changes } : row));
+  async function handleSaveBooking(e: FormEvent) {
+    e.preventDefault();
+    if (!bookingForm.checkin || !bookingForm.checkout) {
+      setError("Please select both check-in and check-out dates.");
+      return;
+    }
+    if (bookingForm.checkout <= bookingForm.checkin) {
+      setError("Check-out date must be after check-in date.");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+
     try {
-      const response = await fetch(`/api/bookings/${booking.id}`, {
-        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(changes),
-      });
-      const data = await response.json() as { booking?: BookingRecord; error?: string };
-      if (!response.ok || !data.booking) throw new Error(data.error || "Update failed.");
-      setBookings((rows) => rows.map((row) => row.id === booking.id ? data.booking! : row));
-      showNotice("Booking updated.");
+      const nowIso = new Date().toISOString();
+      const reference =
+        editingBooking?.reference ||
+        `TTG-${Date.now().toString(36).toUpperCase().slice(-5)}`;
+
+      const recordToSave: BookingRecord = {
+        id: editingBooking?.id || `booking-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        reference,
+        guestName: bookingForm.guestName.trim(),
+        email: bookingForm.email.trim(),
+        phone: bookingForm.phone.trim(),
+        villaName: bookingForm.villaName,
+        checkin: toIsoDateString(bookingForm.checkin),
+        checkout: toIsoDateString(bookingForm.checkout),
+        guests: Number(bookingForm.guests) || 2,
+        source: bookingForm.source,
+        status: bookingForm.status,
+        paymentStatus: bookingForm.paymentStatus,
+        totalAmount: Math.max(0, Number(bookingForm.totalAmount) || 0),
+        paidAmount: Math.max(0, Number(bookingForm.paidAmount) || 0),
+        specialRequest: bookingForm.specialRequest.trim(),
+        adminNotes: bookingForm.adminNotes.trim(),
+        packageId: bookingForm.packageId,
+        timingOption: bookingForm.timingOption,
+        createdAt: editingBooking?.createdAt || nowIso,
+        updatedAt: nowIso,
+      };
+
+      await dbSaveBooking(recordToSave);
+
+      // Auto update guest record in DB
+      const guestKey = (recordToSave.email || recordToSave.phone || recordToSave.guestName).toLowerCase().trim();
+      if (guestKey) {
+        const guestId = `guest-${guestKey.replace(/[^a-z0-9]/g, "-")}`;
+        await dbSaveGuest({
+          id: guestId,
+          name: recordToSave.guestName,
+          email: recordToSave.email,
+          phone: recordToSave.phone,
+          totalBookings: 1,
+          totalSpentLKR: recordToSave.totalAmount,
+          lastStay: recordToSave.checkin,
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        });
+      }
+
+      await loadDataFromStorage();
+      setBookingModalOpen(false);
+      showToast(editingBooking ? "Reservation updated successfully." : "New reservation created.");
     } catch (err) {
-      setBookings(snapshot); setError(err instanceof Error ? err.message : "Update failed.");
+      console.error(err);
+      setError(err instanceof Error ? err.message : "Failed to save booking to IndexedDB.");
+    } finally {
+      setSaving(false);
     }
   }
 
-  function exportCsv() {
-    const header = ["Reference","Villa","Guest","Phone","Email","Check-in","Check-out","Guests","Status","Payment","Total","Paid","Source"];
-    const rows = filtered.map((b) => [b.reference,b.villaName,b.guestName,b.phone,b.email,b.checkin,b.checkout,b.guests,b.status,b.paymentStatus,b.totalAmount,b.paidAmount,b.source]);
-    const csv = [header,...rows].map((row) => row.map((cell) => `"${String(cell).replaceAll('"','""')}"`).join(",")).join("\n");
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    const anchor = document.createElement("a"); anchor.href = url; anchor.download = `tranquil-terrace-bookings-${today}.csv`; anchor.click(); URL.revokeObjectURL(url);
+  async function handleDeleteBooking(id: string) {
+    try {
+      await dbDeleteBooking(id);
+      await loadDataFromStorage();
+      setDeleteConfirmId(null);
+      showToast("Reservation deleted.");
+    } catch (err) {
+      setError("Failed to delete booking.");
+    }
   }
 
-  const originUrl = typeof window !== "undefined" ? window.location.origin : "https://tranquilterracevilla.com";
-  const araliyaIcsUrl = `${originUrl}/api/calendar/araliya.ics`;
-  const oluIcsUrl = `${originUrl}/api/calendar/olu.ics`;
+  async function handleQuickStatusChange(booking: BookingRecord, newStatus: BookingStatus) {
+    try {
+      const updated = { ...booking, status: newStatus, updatedAt: new Date().toISOString() };
+      await dbSaveBooking(updated);
+      await loadDataFromStorage();
+      showToast(`Status updated to ${label(newStatus)}.`);
+    } catch {
+      setError("Failed to update status.");
+    }
+  }
 
+  // Quick Payment Modal Handlers
+  function openPaymentModal(b: BookingRecord) {
+    setPaymentModalBooking(b);
+    setPaymentAmountInput(b.paidAmount);
+    setPaymentStatusInput(b.paymentStatus);
+  }
+
+  async function handleSavePayment() {
+    if (!paymentModalBooking) return;
+    try {
+      const updated: BookingRecord = {
+        ...paymentModalBooking,
+        paidAmount: Math.max(0, Number(paymentAmountInput) || 0),
+        paymentStatus: paymentStatusInput,
+        updatedAt: new Date().toISOString(),
+      };
+      await dbSaveBooking(updated);
+      await loadDataFromStorage();
+      setPaymentModalBooking(null);
+      showToast("Payment record updated successfully.");
+    } catch {
+      setError("Failed to update payment.");
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // WhatsApp & Email Message Generator
+  // ---------------------------------------------------------------------------
+  function openMessageGenerator(b: BookingRecord) {
+    setMessageModalBooking(b);
+    setMessageTemplateType("confirmation");
+    buildTemplateText(b, "confirmation");
+    setCopiedNotice(false);
+  }
+
+  function buildTemplateText(b: BookingRecord, type: "confirmation" | "reminder" | "arrival") {
+    const nightsCount = calculateNights(b.checkin, b.checkout);
+    const balanceLkr = Math.max(0, b.totalAmount - b.paidAmount);
+    const balanceFormatted = formatMoney(balanceLkr);
+    const totalFormatted = formatMoney(b.totalAmount);
+    const paidFormatted = formatMoney(b.paidAmount);
+    const inDateDisplay = formatDateDisplay(b.checkin, { monthFormat: "short", showDayOfWeek: true });
+    const outDateDisplay = formatDateDisplay(b.checkout, { monthFormat: "short", showDayOfWeek: true });
+
+    let text = "";
+    if (type === "confirmation") {
+      text =
+`Dear ${b.guestName},
+
+Warm greetings from Tranquil Terrace Galle!
+We are pleased to confirm your reservation.
+
+✦ RESERVATION DETAILS:
+• Booking Reference: ${b.reference}
+• Villa: Villa ${b.villaName}
+• Check-in: ${inDateDisplay} (from 1:00 PM)
+• Check-out: ${outDateDisplay} (by 11:00 AM)
+• Stay Duration: ${nightsCount} night(s)
+• Guests: ${b.guests}
+
+✦ PAYMENT SUMMARY:
+• Total Amount: ${totalFormatted}
+• Advance Received: ${paidFormatted}
+• Balance Due on Arrival: ${balanceFormatted}
+
+✦ LOCATION & ARRIVAL:
+Tranquil Terrace, Galle, Southern Province, Sri Lanka
+Google Maps Location: https://maps.app.goo.gl/tranquil-terrace-galle
+
+Should you require airport transfers or special dining arrangements, please do not hesitate to contact us.
+
+Warm regards,
+Tranquil Terrace Galle Concierge
++94 77 123 4567`;
+    } else if (type === "reminder") {
+      text =
+`Dear ${b.guestName},
+
+Greetings from Tranquil Terrace Galle!
+This is a gentle reminder regarding your upcoming stay at Villa ${b.villaName} (Ref: ${b.reference}) from ${inDateDisplay} to ${outDateDisplay}.
+
+✦ OUTSTANDING BALANCE:
+• Total Amount: ${totalFormatted}
+• Paid to Date: ${paidFormatted}
+• Outstanding Balance: ${balanceFormatted}
+
+Payment can be completed via bank transfer or settled in cash (LKR or USD) upon your arrival.
+
+Bank Transfer Details:
+Bank: Commercial Bank of Ceylon
+Account Name: Tranquil Terrace Galle (Pvt) Ltd
+Account No: 1000 8923 4410
+Branch: Galle Fort
+
+Please share the payment receipt once processed. Thank you!
+
+Warm regards,
+Tranquil Terrace Galle`;
+    } else {
+      text =
+`Dear ${b.guestName},
+
+We are excited to welcome you to Tranquil Terrace Galle!
+
+✦ ARRIVAL INFORMATION:
+• Check-in Time: 1:00 PM onwards
+• Villa: Villa ${b.villaName}
+• Wi-Fi Network: TranquilTerrace_Guest
+• Wi-Fi Password: GalleLuxury2026
+
+✦ DIRECTIONS:
+Our sanctuary is located just 10 minutes inland from the historic Galle Fort:
+Google Maps: https://maps.app.goo.gl/tranquil-terrace-galle
+
+Our Villa Host will greet you with a chilled king coconut welcome drink upon your arrival. If you need any assistance on the way, call us directly at +94 77 123 4567.
+
+Safe travels!
+Tranquil Terrace Galle Team`;
+    }
+
+    setCustomMessageBody(text);
+  }
+
+  function handleCopyMessage() {
+    navigator.clipboard.writeText(customMessageBody);
+    setCopiedNotice(true);
+    showToast("Message copied to clipboard!");
+    window.setTimeout(() => setCopiedNotice(false), 2500);
+  }
+
+  function handleSendWhatsApp(phone: string) {
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(customMessageBody)}`;
+    window.open(url, "_blank");
+  }
+
+  function handleSendEmail(email: string, ref: string) {
+    const subject = `Tranquil Terrace Galle - Reservation ${ref}`;
+    const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(customMessageBody)}`;
+    window.location.href = url;
+  }
+
+  // ---------------------------------------------------------------------------
+  // ICS Parser & Import Handlers
+  // ---------------------------------------------------------------------------
+  function handleParseIcs() {
+    if (!icsRawText.trim()) {
+      setError("Please paste ICS calendar content or upload a .ics file.");
+      return;
+    }
+    setIcsParsing(true);
+    setError("");
+
+    try {
+      const parsed = parseIcsContent(icsRawText, icsImportVilla, icsImportSource);
+      if (parsed.length === 0) {
+        setError("No valid VEVENT blocks found in the provided ICS content.");
+        setIcsParsedEvents([]);
+        return;
+      }
+
+      const eventsWithConflicts = parsed.map((item) => {
+        const conflicts = detectConflicts(bookings, icsImportVilla, item.checkin, item.checkout);
+        return {
+          event: item,
+          conflicts,
+          selected: true,
+        };
+      });
+
+      setIcsParsedEvents(eventsWithConflicts);
+      showToast(`Parsed ${parsed.length} reservations from calendar.`);
+    } catch (err) {
+      setError("Failed to parse ICS file. Please check RFC 5545 format.");
+    } finally {
+      setIcsParsing(false);
+    }
+  }
+
+  async function handleImportSelectedIcsEvents() {
+    const toImport = icsParsedEvents.filter((item) => item.selected);
+    if (toImport.length === 0) {
+      setError("Please select at least one event to import.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      for (const item of toImport) {
+        await dbSaveBooking(item.event);
+      }
+      await loadDataFromStorage();
+      setIcsParsedEvents([]);
+      setIcsRawText("");
+      showToast(`Successfully imported ${toImport.length} reservations into Villa ${icsImportVilla}!`);
+    } catch {
+      setError("Failed to save imported reservations into IndexedDB.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleFileUploadIcs(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setIcsRawText(content);
+      showToast(`Loaded ${file.name}`);
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Backup & Restore Handlers
+  // ---------------------------------------------------------------------------
+  function handleExportJsonBackup() {
+    exportBackupJson(bookings, guests, [], true);
+    showToast("JSON backup downloaded successfully.");
+  }
+
+  function handleExportCsv() {
+    exportBookingsCsv(bookings, true);
+    showToast("Bookings CSV downloaded successfully.");
+  }
+
+  function handleSelectBackupFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBackupRestoreFile(file);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      const validation = validateBackupJson(content);
+      setBackupValidation(validation);
+      if (!validation.valid) {
+        setError(`Backup validation failed: ${validation.error}`);
+      } else {
+        showToast(`Backup verified: ${validation.data?.bookings.length} bookings ready to restore.`);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  async function handleConfirmRestoreBackup() {
+    if (!backupValidation?.valid || !backupValidation.data) {
+      setError("Cannot restore an invalid backup payload.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      if (backupRestoreMode === "replace") {
+        await clearAllData();
+      }
+
+      for (const b of backupValidation.data.bookings) {
+        await dbSaveBooking(b);
+      }
+      for (const g of backupValidation.data.guests) {
+        await dbSaveGuest(g);
+      }
+
+      await loadDataFromStorage();
+      setBackupRestoreFile(null);
+      setBackupValidation(null);
+      showToast("Database restored successfully from backup.");
+    } catch {
+      setError("Failed to restore backup into IndexedDB.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleResetToDemoData() {
+    if (!confirm("Are you sure you want to reset all records to the original demo data? Any unsaved entries will be replaced.")) return;
+    setSaving(true);
+    try {
+      await clearAllData();
+      for (const b of initialDemoBookings) {
+        await dbSaveBooking(b);
+      }
+      for (const g of initialDemoGuests) {
+        await dbSaveGuest(g);
+      }
+      await loadDataFromStorage();
+      showToast("Reset to factory demo records.");
+    } catch {
+      setError("Failed to reset storage.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Calendar Grid Computations
+  // ---------------------------------------------------------------------------
+  const calendarDaysMatrix = useMemo(() => {
+    const firstDayDate = new Date(calendarYear, calendarMonth, 1);
+    // Convert Sunday=0 to Monday=0
+    const startDayIndex = (firstDayDate.getDay() + 6) % 7;
+    const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+    const days: { dateStr: string; dayNum: number; isCurrentMonth: boolean }[] = [];
+
+    // Leading days from previous month
+    const prevMonthDays = new Date(calendarYear, calendarMonth, 0).getDate();
+    for (let i = startDayIndex - 1; i >= 0; i--) {
+      const d = prevMonthDays - i;
+      const prevDate = new Date(calendarYear, calendarMonth - 1, d);
+      days.push({
+        dateStr: toIsoDateString(prevDate),
+        dayNum: d,
+        isCurrentMonth: false,
+      });
+    }
+
+    // Days in current month
+    for (let d = 1; d <= daysInMonth; d++) {
+      const currDate = new Date(calendarYear, calendarMonth, d);
+      days.push({
+        dateStr: toIsoDateString(currDate),
+        dayNum: d,
+        isCurrentMonth: true,
+      });
+    }
+
+    // Trailing days to complete weeks (multiples of 7)
+    const remaining = 7 - (days.length % 7);
+    if (remaining < 7) {
+      for (let d = 1; d <= remaining; d++) {
+        const nextDate = new Date(calendarYear, calendarMonth + 1, d);
+        days.push({
+          dateStr: toIsoDateString(nextDate),
+          dayNum: d,
+          isCurrentMonth: false,
+        });
+      }
+    }
+
+    return days;
+  }, [calendarYear, calendarMonth]);
+
+  function prevMonth() {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((y) => y - 1);
+    } else {
+      setCalendarMonth((m) => m - 1);
+    }
+  }
+
+  function nextMonth() {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((y) => y + 1);
+    } else {
+      setCalendarMonth((m) => m + 1);
+    }
+  }
+
+  function goToToday() {
+    const now = new Date();
+    setCalendarYear(now.getFullYear());
+    setCalendarMonth(now.getMonth());
+  }
+
+  // ---------------------------------------------------------------------------
+  // Analytics Dashboard Calculations
+  // ---------------------------------------------------------------------------
+  const analyticsData = useMemo(() => {
+    const total = bookings.length;
+    const confirmed = bookings.filter((b) => ["confirmed", "checked_in"].includes(b.status)).length;
+    const cancelled = bookings.filter((b) => b.status === "cancelled").length;
+    const cancelRate = total > 0 ? ((cancelled / total) * 100).toFixed(1) : "0.0";
+
+    const totalNights = bookings
+      .filter((b) => b.status !== "cancelled")
+      .reduce((sum, b) => sum + calculateNights(b.checkin, b.checkout), 0);
+
+    const avgStay = confirmed > 0 ? (totalNights / confirmed).toFixed(1) : "0.0";
+    const adrLkr = totalNights > 0 ? Math.round(financialSummary.totalRevenueLKR / totalNights) : 0;
+
+    // Villa comparison
+    const araliyaBookings = bookings.filter((b) => b.villaName === "Araliya" && b.status !== "cancelled");
+    const oluBookings = bookings.filter((b) => b.villaName === "Olu" && b.status !== "cancelled");
+
+    const araliyaNights = araliyaBookings.reduce((sum, b) => sum + calculateNights(b.checkin, b.checkout), 0);
+    const oluNights = oluBookings.reduce((sum, b) => sum + calculateNights(b.checkin, b.checkout), 0);
+    const araliyaRevenue = araliyaBookings.reduce((sum, b) => sum + b.totalAmount, 0);
+    const oluRevenue = oluBookings.reduce((sum, b) => sum + b.totalAmount, 0);
+
+    // Monthly revenue distribution (last 6 months)
+    const monthBuckets: Record<string, { label: string; revenue: number; nights: number }> = {};
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(calendarYear, calendarMonth - i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const labelStr = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      monthBuckets[key] = { label: labelStr, revenue: 0, nights: 0 };
+    }
+
+    for (const b of bookings) {
+      if (b.status === "cancelled") continue;
+      const ym = b.checkin.slice(0, 7);
+      if (monthBuckets[ym]) {
+        monthBuckets[ym].revenue += b.totalAmount;
+        monthBuckets[ym].nights += calculateNights(b.checkin, b.checkout);
+      }
+    }
+
+    const monthlyTrends = Object.values(monthBuckets);
+    const maxMonthlyRevenue = Math.max(...monthlyTrends.map((m) => m.revenue), 100000);
+
+    // Sources breakdown
+    const sourceCounts: Record<string, number> = {};
+    for (const b of bookings) {
+      const src = b.source ? label(b.source) : "Direct";
+      sourceCounts[src] = (sourceCounts[src] || 0) + 1;
+    }
+
+    return {
+      total,
+      confirmed,
+      cancelled,
+      cancelRate,
+      totalNights,
+      avgStay,
+      adrLkr,
+      araliyaNights,
+      oluNights,
+      araliyaRevenue,
+      oluRevenue,
+      monthlyTrends,
+      maxMonthlyRevenue,
+      sourceCounts,
+    };
+  }, [bookings, financialSummary, calendarYear, calendarMonth]);
+
+  // ---------------------------------------------------------------------------
+  // Luxury Print-Ready Invoice Styles
+  // ---------------------------------------------------------------------------
+  function triggerPrintInvoice() {
+    window.print();
+  }
+
+  // ---------------------------------------------------------------------------
+  // RENDER MAIN COMPONENT
+  // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#f4f1e8] text-[#17392f]">
-      {notice && <div className="fixed right-5 top-5 z-[80] flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-3 text-sm text-white shadow-2xl"><Check size={16}/>{notice}</div>}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-[250px] bg-[#183b31] p-6 text-[#f4f1e8] transition-transform lg:translate-x-0 ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <button className="absolute right-4 top-4 lg:hidden" onClick={() => setMenuOpen(false)} aria-label="Close menu"><X/></button>
-        <a href="/" className="block border-b border-white/15 pb-6"><img src="/assets/tranquil-terrace-logo.webp" alt="Tranquil Terrace Galle" width="1200" height="420" className="h-auto w-full rounded bg-[#f4f1e8] p-3"/></a>
-        <p className="mt-8 text-[10px] font-semibold uppercase tracking-[.24em] text-white/45">Management</p>
-        <nav className="mt-4 space-y-2">
+    <div className="min-h-screen bg-[#131514] text-[#F4F1E8] antialiased selection:bg-[#C8A45D]/30 selection:text-[#F4F1E8]">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed right-6 top-6 z-[100] flex items-center gap-3 rounded-xl border border-[#C8A45D]/40 bg-[#1A1D1B] px-5 py-3.5 text-sm text-[#F4F1E8] shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#C8A45D] text-[#131514]">
+            <Check size={13} strokeWidth={3} />
+          </span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Global Print Styling for Invoice Modal */}
+      <style jsx global>{`
+        @media print {
+          body {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+          .invoice-printable {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 15mm 20mm !important;
+            background: #ffffff !important;
+            color: #111111 !important;
+            box-shadow: none !important;
+            border: none !important;
+            z-index: 999999 !important;
+            display: block !important;
+          }
+          .invoice-printable * {
+            color: #111111 !important;
+          }
+          .invoice-gold-text {
+            color: #93712d !important;
+          }
+          .invoice-gold-bg {
+            background-color: #f7f3ea !important;
+            border-color: #d1b578 !important;
+          }
+        }
+      `}</style>
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* SIDEBAR NAVIGATION (Desktop & Mobile Drawer)                           */}
+      {/* ----------------------------------------------------------------------- */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col justify-between border-r border-[#2A2F2C] bg-[#161917] p-6 text-[#F4F1E8] transition-transform duration-300 lg:translate-x-0 ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div>
+          {/* Logo / Header */}
+          <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-5">
+            <a href="/" className="group block">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#C8A45D]/40 bg-[#C8A45D]/10 font-serif text-lg font-bold text-[#C8A45D]">
+                  TT
+                </span>
+                <div>
+                  <span className="block font-serif text-base tracking-wide text-[#F4F1E8]">
+                    Tranquil Terrace
+                  </span>
+                  <span className="block text-[10px] uppercase tracking-[0.25em] text-[#C8A45D]">
+                    Galle · Sri Lanka
+                  </span>
+                </div>
+              </div>
+            </a>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 lg:hidden"
+              aria-label="Close menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Local Storage Engine Badge */}
+          <div className="mt-5 rounded-xl border border-[#C8A45D]/20 bg-[#1A1D1B] p-3 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2 text-[11px] font-medium text-[#C8A45D]">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C8A45D] opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#C8A45D]"></span>
+                </span>
+                IndexedDB Local Engine
+              </span>
+              <span className="text-[10px] text-zinc-400">Offline-first</span>
+            </div>
+            <p className="mt-1.5 text-[10px] text-zinc-400">
+              {bookings.length} reservations · {aggregatedGuests.length} guests stored
+            </p>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="mt-6 space-y-1.5">
+            {[
+              { id: "reservations", name: "Reservations", icon: LayoutDashboard },
+              { id: "calendar", name: "Multi-View Calendar", icon: CalendarDays },
+              { id: "ics-sync", name: "OTA & ICS Sync", icon: RefreshCw },
+              { id: "financials", name: "Payment & Revenue", icon: CircleDollarSign },
+              { id: "guests", name: "Guest Directory", icon: Users },
+              { id: "analytics", name: "Villa Analytics", icon: TrendingUp },
+              { id: "backup", name: "Backup & Data", icon: Database },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id as DashboardTab);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                    isActive
+                      ? "border border-[#C8A45D]/30 bg-[#C8A45D]/15 text-[#C8A45D] shadow-[0_4px_20px_rgba(200,164,93,0.1)]"
+                      : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <Icon size={18} className={isActive ? "text-[#C8A45D]" : "text-zinc-400"} />
+                    {tab.name}
+                  </span>
+                  {tab.id === "calendar" && systemConflicts.length > 0 && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500/20 text-[10px] font-bold text-rose-400">
+                      !
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Sidebar Footer */}
+        <div className="space-y-3 pt-6 border-t border-[#2A2F2C]">
           <button
-            onClick={() => setActiveTab("reservations")}
-            className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm transition-colors ${activeTab === "reservations" ? "bg-white/10 font-medium text-white" : "text-white/70 hover:bg-white/5"}`}
+            onClick={() => openNewBookingModal()}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#C8A45D] to-[#DFBF7A] py-3 text-xs font-semibold text-[#131514] shadow-lg transition-transform hover:opacity-95 active:scale-95"
           >
-            <LayoutDashboard size={18}/> Reservations
+            <Plus size={16} /> New Reservation
           </button>
-          <button
-            onClick={() => setActiveTab("calendar-sync")}
-            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm transition-colors ${activeTab === "calendar-sync" ? "bg-white/10 font-medium text-white" : "text-white/70 hover:bg-white/5"}`}
+
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 rounded-xl border border-[#2A2F2C] py-2.5 text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
           >
-            <span className="flex items-center gap-3"><CalendarDays size={18}/> Calendar Sync</span>
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-          </button>
-          <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-white/70 hover:bg-white/5" onClick={newBooking}><Plus size={18}/> Add booking</button>
-          <a className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-white/70 hover:bg-white/5" href="/" target="_blank"><Eye size={18}/> View website</a>
-        </nav>
-        <div className="absolute bottom-6 left-6 right-6 rounded-xl border border-white/10 p-4">
-          <p className="text-xs text-white/50">Signed in as</p><p className="mt-1 truncate text-sm">{displayName}</p>
-          <a href={authHref} target="_top" className="mt-3 flex items-center gap-2 text-xs text-[#dbc991]"><LogOut size={14}/>{live ? "Sign out" : "Owner sign in"}</a>
+            <Eye size={15} /> View Guest Website
+          </a>
+
+          <div className="flex items-center justify-between pt-2 text-xs text-zinc-500">
+            <span className="truncate">Host: {displayName}</span>
+            <a
+              href={authHref}
+              className="flex items-center gap-1.5 text-xs text-[#C8A45D] hover:underline"
+            >
+              <LogOut size={13} /> Sign Out
+            </a>
+          </div>
         </div>
       </aside>
 
-      <main className="min-h-screen lg:ml-[250px]">
-        <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#17392f]/10 bg-[#f4f1e8]/90 px-5 backdrop-blur-xl sm:px-8">
+      {/* ----------------------------------------------------------------------- */}
+      {/* MAIN CONTENT AREA                                                      */}
+      {/* ----------------------------------------------------------------------- */}
+      <main className="min-h-screen lg:ml-[280px]">
+        {/* Top Sticky Header */}
+        <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#2A2F2C] bg-[#131514]/90 px-6 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-4">
-            <button className="lg:hidden" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu/></button>
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="rounded-xl border border-[#2A2F2C] p-2 text-zinc-300 hover:bg-zinc-800 lg:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu size={20} />
+            </button>
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-[#17392f]/45">Tranquil Terrace Galle</p>
-              <h1 className="font-serif text-2xl">{activeTab === "reservations" ? "Booking dashboard" : "OTA Calendar Synchronization"}</h1>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C8A45D]">
+                Tranquil Terrace Admin
+              </p>
+              <h1 className="font-serif text-xl sm:text-2xl text-[#F4F1E8]">
+                {activeTab === "reservations" && "Reservation Management"}
+                {activeTab === "calendar" && "Multi-View Calendar"}
+                {activeTab === "ics-sync" && "OTA & iCalendar Synchronization"}
+                {activeTab === "financials" && "Financial Overview & Balance"}
+                {activeTab === "guests" && "Guest Directory & CRM"}
+                {activeTab === "analytics" && "Villa Performance Analytics"}
+                {activeTab === "backup" && "Database Backup & Restore"}
+              </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {!live && <span className="hidden rounded-full bg-[#a58e56]/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#806b39] sm:block">Read-only demo</span>}
-            {activeTab === "reservations" ? (
-              <>
-                <button onClick={() => void loadBookings()} disabled={!live || loading} className="rounded-xl border border-[#17392f]/15 p-2.5 disabled:opacity-40" aria-label="Refresh bookings"><RefreshCw size={17} className={loading ? "animate-spin" : ""}/></button>
-                <button onClick={newBooking} className="flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-2.5 text-xs font-semibold text-white"><Plus size={16}/> <span className="hidden sm:inline">New booking</span></button>
-              </>
-            ) : (
-              <button onClick={() => void loadCalendarSync(true)} disabled={syncLoading} className="flex items-center gap-2 rounded-xl bg-[#17392f] px-4 py-2.5 text-xs font-semibold text-white disabled:opacity-60">
-                <RefreshCw size={15} className={syncLoading ? "animate-spin" : ""}/> <span>Sync OTAs Now</span>
+
+          <div className="flex items-center gap-3">
+            {/* Currency Toggle */}
+            <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#1A1D1B] p-1">
+              <button
+                onClick={() => setCurrency("LKR")}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                  currency === "LKR"
+                    ? "bg-[#C8A45D] text-[#131514] shadow"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                LKR
               </button>
-            )}
+              <button
+                onClick={() => setCurrency("USD")}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                  currency === "USD"
+                    ? "bg-[#C8A45D] text-[#131514] shadow"
+                    : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                USD
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <button
+              onClick={handleExportJsonBackup}
+              title="Download JSON Backup"
+              className="hidden sm:flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#1A1D1B] px-3 py-2 text-xs text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+            >
+              <Download size={15} /> Backup
+            </button>
+
+            <button
+              onClick={() => openNewBookingModal()}
+              className="flex items-center gap-2 rounded-xl bg-[#C8A45D] px-4 py-2 text-xs font-semibold text-[#131514] hover:bg-[#DFBF7A] transition-colors"
+            >
+              <Plus size={16} /> <span className="hidden sm:inline">Add Booking</span>
+            </button>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1500px] p-5 sm:p-8">
-          {!live && <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[#a58e56]/25 bg-[#fffaf0] p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-serif text-xl">Client preview mode</p><p className="mt-1 text-sm text-[#17392f]/60">Sample data is shown. Real guest information and editing controls remain owner-only.</p></div><a href={authHref} target="_top" className="text-sm font-semibold text-[#806b39]">Owner sign in <ChevronRight className="inline" size={16}/></a></div>}
-          {error && <div role="alert" className="mb-6 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"><span>{error}</span><button onClick={() => setError("")}><X size={17}/></button></div>}
+        {/* Content Container */}
+        <div className="mx-auto max-w-7xl p-5 sm:p-8">
+          {/* Module 11/10: Prominent Local Browser Storage Disclosure Banner */}
+          {!noticeDismissed && (
+            <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[#C8A45D]/30 bg-[#1A1D1B] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
+              <div className="flex items-start gap-3.5">
+                <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#C8A45D]/15 text-[#C8A45D]">
+                  <ShieldAlert size={18} />
+                </span>
+                <div>
+                  <p className="text-sm font-medium text-[#F4F1E8]">
+                    ✦ LOCAL BROWSER STORAGE NOTICE:
+                  </p>
+                  <p className="mt-0.5 text-xs text-zinc-400">
+                    Bookings and records are securely stored in this device&apos;s browser (IndexedDB). No external servers or databases are used. Please export a JSON backup regularly to keep your data safe across devices.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
+                <button
+                  onClick={handleExportJsonBackup}
+                  className="rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-3.5 py-1.5 text-xs font-medium text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                >
+                  Export Backup
+                </button>
+                <button
+                  onClick={() => setNoticeDismissed(true)}
+                  className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  aria-label="Dismiss notice"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+          )}
 
-          {activeTab === "reservations" ? (
-            <>
-              <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {[
-                  ["Total bookings", stats.total, CalendarDays, "All records"],
-                  ["Upcoming stays", stats.upcoming, BedDouble, "Active arrivals"],
-                  ["Need attention", stats.pending, Users, "Inquiry + pending"],
-                  ["Payments received", money(stats.revenue), CircleDollarSign, "Recorded amount"],
-                ].map(([title, value, IconComponent, caption]) => {
-                  const Icon = IconComponent as any;
-                  return (
-                    <article key={String(title)} className="rounded-2xl border border-[#17392f]/10 bg-white/70 p-5 shadow-[0_12px_35px_rgba(23,57,47,.05)]">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-xs text-[#17392f]/55">{String(title)}</p>
-                          <strong className="mt-2 block font-serif text-3xl font-medium">{String(value)}</strong>
-                        </div>
-                        <span className="rounded-xl bg-[#17392f]/7 p-2.5">
-                          <Icon size={19} />
+          {/* Conflict Alert Banner if any detected */}
+          {systemConflicts.length > 0 && (
+            <div className="mb-6 rounded-2xl border border-rose-500/30 bg-rose-950/20 p-5 shadow-lg">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-500/20 text-rose-400">
+                    <AlertTriangle size={18} />
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-rose-300">
+                      ⚠️ Overlapping Reservation Conflicts Detected ({systemConflicts.length})
+                    </h3>
+                    <p className="mt-1 text-xs text-rose-200/80">
+                      Two or more reservations overlap on the same villa dates. Please review and resolve.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {systemConflicts.slice(0, 3).map((item, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-2 rounded-lg bg-rose-900/40 px-3 py-1 text-xs text-rose-200 border border-rose-700/40"
+                        >
+                          Villa {item.villa}: Ref {item.a.reference} ↔ {item.b.reference}
                         </span>
-                      </div>
-                      <p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#17392f]/35">{String(caption)}</p>
-                    </article>
-                  );
-                })}
-              </section>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveTab("calendar")}
+                  className="rounded-xl bg-rose-500/20 px-3.5 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/30 transition-colors"
+                >
+                  View on Calendar
+                </button>
+              </div>
+            </div>
+          )}
 
-              <section className="mt-7 overflow-hidden rounded-2xl border border-[#17392f]/10 bg-white/75 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
-                <div className="flex flex-col gap-4 border-b border-[#17392f]/10 p-5 lg:flex-row lg:items-center lg:justify-between">
-                  <div><h2 className="font-serif text-2xl">Reservations</h2><p className="text-xs text-[#17392f]/45">{filtered.length} booking{filtered.length === 1 ? "" : "s"} shown</p></div>
-                  <div className="flex flex-col gap-2 sm:flex-row">
-                    <label className="flex items-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-3"><Search size={16}/><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Guest, phone or reference" className="h-10 w-full bg-transparent text-sm outline-none sm:w-56"/></label>
-                    <select value={filter} onChange={(e) => setFilter(e.target.value)} className="h-11 rounded-xl border border-[#17392f]/15 bg-white px-3 text-sm"><option value="all">All statuses</option>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select>
-                    <button onClick={exportCsv} className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#17392f]/15 bg-white px-4 text-xs font-semibold"><Download size={16}/> Export CSV</button>
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 flex items-center justify-between rounded-xl border border-red-500/40 bg-red-950/30 p-4 text-sm text-red-200">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={18} className="text-red-400" />
+                <span>{error}</span>
+              </div>
+              <button onClick={() => setError("")} className="text-red-400 hover:text-red-200">
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 1: RESERVATIONS MODULE                                         */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "reservations" && (
+            <div className="space-y-6">
+              {/* Summary Cards */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="text-xs uppercase tracking-wider">Total Bookings</span>
+                    <CalendarDays size={18} className="text-[#C8A45D]" />
+                  </div>
+                  <div className="mt-3 font-serif text-3xl font-medium text-[#F4F1E8]">
+                    {bookings.length}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">All registered stays</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="text-xs uppercase tracking-wider">Active Bookings</span>
+                    <BedDouble size={18} className="text-emerald-400" />
+                  </div>
+                  <div className="mt-3 font-serif text-3xl font-medium text-emerald-400">
+                    {bookings.filter((b) => ["confirmed", "checked_in"].includes(b.status)).length}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Confirmed & Checked-in</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="text-xs uppercase tracking-wider">Pending Balances</span>
+                    <CreditCard size={18} className="text-amber-400" />
+                  </div>
+                  <div className="mt-3 font-serif text-3xl font-medium text-amber-400">
+                    {formatMoney(financialSummary.pendingRevenueLKR)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Awaiting guest settlement</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-zinc-400">
+                    <span className="text-xs uppercase tracking-wider">Total Collected</span>
+                    <CircleDollarSign size={18} className="text-[#C8A45D]" />
+                  </div>
+                  <div className="mt-3 font-serif text-3xl font-medium text-[#C8A45D]">
+                    {formatMoney(financialSummary.paidRevenueLKR)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Gross advance payments</p>
+                </div>
+              </div>
+
+              {/* Reservations Table Box */}
+              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+                {/* Search & Filter Header */}
+                <div className="flex flex-col gap-4 border-b border-[#2A2F2C] p-5 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <h2 className="font-serif text-xl text-[#F4F1E8]">Reservation Records</h2>
+                    <p className="text-xs text-zinc-400">
+                      Showing {filteredBookings.length} of {bookings.length} reservations
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    {/* Search */}
+                    <div className="flex items-center gap-2 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-1.5">
+                      <Search size={15} className="text-zinc-400" />
+                      <input
+                        type="text"
+                        placeholder="Search guest, phone, ref..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-48 bg-transparent text-xs text-[#F4F1E8] placeholder-zinc-500 outline-none"
+                      />
+                    </div>
+
+                    {/* Villa Filter */}
+                    <select
+                      value={villaFilter}
+                      onChange={(e) => setVillaFilter(e.target.value as any)}
+                      className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-300 outline-none"
+                    >
+                      <option value="all">All Villas</option>
+                      <option value="Araliya">Villa Araliya</option>
+                      <option value="Olu">Villa Olu</option>
+                    </select>
+
+                    {/* Status Filter */}
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-300 outline-none"
+                    >
+                      <option value="all">All Statuses</option>
+                      {bookingStatuses.map((s) => (
+                        <option key={s} value={s}>
+                          {label(s)}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* CSV Export */}
+                    <button
+                      onClick={handleExportCsv}
+                      className="flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+                    >
+                      <Download size={14} /> CSV
+                    </button>
                   </div>
                 </div>
 
+                {/* Table */}
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[1050px] text-left text-sm">
-                    <thead className="bg-[#17392f]/[.035] text-[10px] uppercase tracking-[.13em] text-[#17392f]/50"><tr><th className="px-5 py-4">Guest</th><th className="px-4 py-4">Villa</th><th className="px-4 py-4">Stay</th><th className="px-4 py-4">Guests</th><th className="px-4 py-4">Status</th><th className="px-4 py-4">Payment</th><th className="px-4 py-4">Value</th><th className="px-4 py-4">Source</th><th className="px-5 py-4 text-right">Action</th></tr></thead>
-                    <tbody className="divide-y divide-[#17392f]/8">
-                      {loading ? <tr><td colSpan={9} className="p-14 text-center"><LoaderCircle className="mx-auto animate-spin"/><p className="mt-3 text-xs text-[#17392f]/45">Loading bookings…</p></td></tr> : filtered.length === 0 ? <tr><td colSpan={9} className="p-14 text-center"><CalendarDays className="mx-auto text-[#17392f]/25"/><p className="mt-3 text-sm">No matching bookings yet.</p></td></tr> : filtered.map((booking) => (
-                        <tr key={booking.id} className="hover:bg-[#17392f]/[.025]">
-                          <td className="px-5 py-4"><button onClick={() => editBooking(booking)} className="text-left"><span className="block font-semibold">{booking.guestName}</span><span className="text-[11px] text-[#17392f]/45">{booking.reference} · {booking.phone}</span></button></td>
-                          <td className="px-4 py-4"><span className="rounded-full bg-[#a58e56]/12 px-3 py-2 text-[11px] font-semibold text-[#806b39]">{booking.villaName}</span></td>
-                          <td className="px-4 py-4"><span className="block">{shortDate(booking.checkin)} → {shortDate(booking.checkout)}</span><span className="text-[11px] text-[#17392f]/45">{nights(booking.checkin, booking.checkout)} nights</span></td>
-                          <td className="px-4 py-4">{booking.guests}</td>
-                          <td className="px-4 py-4"><select value={booking.status} onChange={(e) => void quickUpdate(booking, { status: e.target.value as BookingStatus })} className={`rounded-full border-0 px-3 py-2 text-[11px] font-semibold ${booking.status === "confirmed" ? "bg-emerald-100 text-emerald-800" : booking.status === "cancelled" ? "bg-red-100 text-red-700" : booking.status === "checked_in" ? "bg-blue-100 text-blue-800" : "bg-amber-100 text-amber-800"}`}>{bookingStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
-                          <td className="px-4 py-4"><select value={booking.paymentStatus} onChange={(e) => void quickUpdate(booking, { paymentStatus: e.target.value as PaymentStatus })} className="rounded-full border border-[#17392f]/10 bg-white px-3 py-2 text-[11px]">{paymentStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}</select></td>
-                          <td className="px-4 py-4"><span className="block font-medium">{money(booking.totalAmount)}</span><span className="text-[11px] text-[#17392f]/45">Paid {money(booking.paidAmount)}</span></td>
-                          <td className="px-4 py-4 capitalize">{booking.source}</td>
-                          <td className="px-5 py-4 text-right"><button onClick={() => editBooking(booking)} className="rounded-lg border border-[#17392f]/15 p-2" aria-label={`Open ${booking.reference}`}><ChevronRight size={16}/></button></td>
+                  <table className="w-full min-w-[980px] text-left text-xs">
+                    <thead className="border-b border-[#2A2F2C] bg-[#131514]/60 text-[10px] uppercase tracking-wider text-zinc-400">
+                      <tr>
+                        <th className="px-5 py-4">Guest & Ref</th>
+                        <th className="px-4 py-4">Villa</th>
+                        <th className="px-4 py-4">Stay Dates</th>
+                        <th className="px-4 py-4">Status</th>
+                        <th className="px-4 py-4">Payment</th>
+                        <th className="px-4 py-4">Total / Balance</th>
+                        <th className="px-4 py-4">Source</th>
+                        <th className="px-5 py-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                      {loading ? (
+                        <tr>
+                          <td colSpan={8} className="p-16 text-center text-zinc-400">
+                            <LoaderCircle className="mx-auto animate-spin" size={24} />
+                            <p className="mt-2 text-xs">Loading IndexedDB records...</p>
+                          </td>
                         </tr>
-                      ))}
+                      ) : filteredBookings.length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="p-16 text-center text-zinc-500">
+                            <Calendar className="mx-auto text-zinc-600 mb-2" size={28} />
+                            <p className="text-sm font-medium">No matching reservations found.</p>
+                            <p className="text-xs text-zinc-500 mt-1">
+                              Try clearing filters or add a new booking.
+                            </p>
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredBookings.map((b) => {
+                          const nightsCount = calculateNights(b.checkin, b.checkout);
+                          const balanceDue = Math.max(0, b.totalAmount - b.paidAmount);
+
+                          // Check if this booking has an overlap conflict
+                          const hasConflict = detectConflicts(
+                            bookings,
+                            b.villaName,
+                            b.checkin,
+                            b.checkout,
+                            b.id
+                          ).length > 0;
+
+                          return (
+                            <tr
+                              key={b.id}
+                              className={`hover:bg-zinc-800/30 transition-colors ${
+                                hasConflict ? "bg-rose-950/10" : ""
+                              }`}
+                            >
+                              {/* Guest info */}
+                              <td className="px-5 py-4">
+                                <button
+                                  onClick={() => openEditBookingModal(b)}
+                                  className="text-left group"
+                                >
+                                  <span className="block font-medium text-[#F4F1E8] group-hover:text-[#C8A45D] transition-colors">
+                                    {b.guestName}
+                                  </span>
+                                  <span className="block text-[11px] text-zinc-500">
+                                    Ref: {b.reference} · {b.phone || b.email || "No contact"}
+                                  </span>
+                                </button>
+                                {hasConflict && (
+                                  <span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-rose-400">
+                                    <AlertTriangle size={11} /> Overlapping Stay
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Villa */}
+                              <td className="px-4 py-4">
+                                <span className="inline-flex rounded-lg border border-[#C8A45D]/30 bg-[#C8A45D]/10 px-2.5 py-1 text-[11px] font-medium text-[#C8A45D]">
+                                  Villa {b.villaName}
+                                </span>
+                              </td>
+
+                              {/* Stay Dates */}
+                              <td className="px-4 py-4">
+                                <span className="block text-[#F4F1E8]">
+                                  {formatDateDisplay(b.checkin)} → {formatDateDisplay(b.checkout)}
+                                </span>
+                                <span className="block text-[11px] text-zinc-500">
+                                  {nightsCount} night{nightsCount === 1 ? "" : "s"} · {b.guests} guest{b.guests === 1 ? "" : "s"}
+                                </span>
+                              </td>
+
+                              {/* Status Dropdown */}
+                              <td className="px-4 py-4">
+                                <select
+                                  value={b.status}
+                                  onChange={(e) =>
+                                    handleQuickStatusChange(b, e.target.value as BookingStatus)
+                                  }
+                                  className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium outline-none ${
+                                    b.status === "confirmed"
+                                      ? "border-emerald-500/30 bg-emerald-950/60 text-emerald-300"
+                                      : b.status === "checked_in"
+                                      ? "border-indigo-500/30 bg-indigo-950/60 text-indigo-300"
+                                      : b.status === "cancelled"
+                                      ? "border-rose-500/30 bg-rose-950/60 text-rose-300"
+                                      : b.status === "inquiry"
+                                      ? "border-sky-500/30 bg-sky-950/60 text-sky-300"
+                                      : "border-amber-500/30 bg-amber-950/60 text-amber-300"
+                                  }`}
+                                >
+                                  {bookingStatuses.map((s) => (
+                                    <option key={s} value={s} className="bg-[#161917] text-white">
+                                      {label(s)}
+                                    </option>
+                                  ))}
+                                </select>
+                              </td>
+
+                              {/* Payment Status */}
+                              <td className="px-4 py-4">
+                                <button
+                                  onClick={() => openPaymentModal(b)}
+                                  className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-medium ${
+                                    b.paymentStatus === "paid"
+                                      ? "border-emerald-500/30 bg-emerald-950/50 text-emerald-300"
+                                      : b.paymentStatus === "partial"
+                                      ? "border-amber-500/30 bg-amber-950/50 text-amber-300"
+                                      : b.paymentStatus === "refunded"
+                                      ? "border-zinc-700 bg-zinc-800 text-zinc-400"
+                                      : "border-rose-500/30 bg-rose-950/50 text-rose-300"
+                                  }`}
+                                >
+                                  {label(b.paymentStatus)}
+                                </button>
+                              </td>
+
+                              {/* Total & Balance */}
+                              <td className="px-4 py-4">
+                                <span className="block font-medium text-[#F4F1E8]">
+                                  {formatMoney(b.totalAmount)}
+                                </span>
+                                <span
+                                  className={`block text-[11px] ${
+                                    balanceDue > 0 ? "text-amber-400" : "text-zinc-500"
+                                  }`}
+                                >
+                                  {balanceDue > 0 ? `Due: ${formatMoney(balanceDue)}` : "Fully Paid"}
+                                </span>
+                              </td>
+
+                              {/* Source */}
+                              <td className="px-4 py-4">
+                                <span className="capitalize text-zinc-400">{b.source}</span>
+                              </td>
+
+                              {/* Actions */}
+                              <td className="px-5 py-4 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  {/* WhatsApp / Email Generator */}
+                                  <button
+                                    onClick={() => openMessageGenerator(b)}
+                                    title="Open WhatsApp & Email Generator"
+                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
+                                  >
+                                    <MessageSquare size={14} />
+                                  </button>
+
+                                  {/* Branded PDF Invoice */}
+                                  <button
+                                    onClick={() => setInvoiceModalBooking(b)}
+                                    title="Generate 5-Star PDF Invoice"
+                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
+                                  >
+                                    <Printer size={14} />
+                                  </button>
+
+                                  {/* Edit Booking */}
+                                  <button
+                                    onClick={() => openEditBookingModal(b)}
+                                    title="Edit Reservation"
+                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                                  >
+                                    <ChevronRight size={14} />
+                                  </button>
+
+                                  {/* Delete */}
+                                  <button
+                                    onClick={() => setDeleteConfirmId(b.id)}
+                                    title="Delete Reservation"
+                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-rose-500/40 hover:text-rose-400 transition-colors"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
-              </section>
-            </>
-          ) : (
-            <div className="space-y-8">
-              {/* Sync Overview Banner */}
-              <div className="rounded-2xl border border-[#17392f]/10 bg-white/80 p-6 shadow-[0_12px_35px_rgba(23,57,47,.05)]">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      2-Way iCal Calendar Sync Active
-                    </div>
-                    <h2 className="mt-3 font-serif text-2xl">Connect Booking.com, Airbnb & Agoda</h2>
-                    <p className="mt-1 max-w-2xl text-xs text-[#17392f]/60 leading-relaxed">
-                      Prevent double-bookings effortlessly. Export your Tranquil Terrace availability to OTAs and automatically import reservations made on Booking.com, Airbnb, and Agoda.
-                    </p>
-                  </div>
+              </div>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 2: ADVANCED MULTI-VIEW CALENDAR MODULE                         */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "calendar" && (
+            <div className="space-y-6">
+              {/* Calendar Controls Bar */}
+              <div className="flex flex-col gap-4 rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
+                {/* Villa Filter Tabs */}
+                <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#131514] p-1">
+                  {(["All", "Araliya", "Olu"] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setCalendarVilla(v)}
+                      className={`rounded-lg px-4 py-1.5 text-xs font-semibold transition-all ${
+                        calendarVilla === v
+                          ? "bg-[#C8A45D] text-[#131514] shadow"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      {v === "All" ? "All Villas" : `Villa ${v}`}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Month Navigation */}
+                <div className="flex items-center gap-3">
                   <button
-                    onClick={() => void loadCalendarSync(true)}
-                    disabled={syncLoading}
-                    className="flex items-center gap-2 rounded-xl bg-[#17392f] px-5 py-3 text-xs font-semibold text-white shadow-md transition-all hover:bg-[#0f2821] disabled:opacity-60"
+                    onClick={prevMonth}
+                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                    aria-label="Previous Month"
                   >
-                    <RefreshCw size={15} className={syncLoading ? "animate-spin" : ""}/>
-                    <span>{syncLoading ? "Checking OTAs…" : "Sync All Channels Now"}</span>
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="font-serif text-lg font-medium text-[#F4F1E8] min-w-44 text-center">
+                    {new Date(calendarYear, calendarMonth, 1).toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                  <button
+                    onClick={nextMonth}
+                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                    aria-label="Next Month"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                  <button
+                    onClick={goToToday}
+                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs font-semibold text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                  >
+                    Today
                   </button>
                 </div>
               </div>
 
-              {/* Section 1: Outbound Feeds (Export to OTAs) */}
-              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
-                <div className="border-b border-[#17392f]/10 pb-4">
-                  <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#a58e56]">Step 1 · Outbound Export</span>
-                  <h3 className="mt-1 font-serif text-xl">Export Your Tranquil Terrace Calendars to OTAs</h3>
-                  <p className="text-xs text-[#17392f]/60">Copy these dedicated iCal feed URLs and paste them into your Airbnb, Booking.com Extranet, and Agoda YCS Extranets.</p>
+              {/* Status Color Legend */}
+              <div className="flex flex-wrap items-center gap-4 text-[11px] text-zinc-400">
+                <span className="font-semibold text-zinc-500 uppercase tracking-wider text-[10px]">
+                  Status Guide:
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span> Confirmed
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span> Pending
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-indigo-500"></span> Checked-in
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-sky-500"></span> Inquiry
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500"></span> Conflict Warning
+                </span>
+              </div>
+
+              {/* Calendar Month Grid */}
+              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+                {/* Day Headers (Mon to Sun) */}
+                <div className="grid grid-cols-7 border-b border-[#2A2F2C] bg-[#131514]/70 text-center text-xs font-semibold uppercase tracking-wider text-zinc-400 py-3">
+                  <span>Mon</span>
+                  <span>Tue</span>
+                  <span>Wed</span>
+                  <span>Thu</span>
+                  <span>Fri</span>
+                  <span>Sat</span>
+                  <span>Sun</span>
                 </div>
 
-                <div className="mt-6 grid gap-6 md:grid-cols-2">
-                  {/* Villa Araliya Export */}
-                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-lg bg-[#a58e56]/15 px-2.5 py-1 text-xs font-bold text-[#806b39]">Villa Araliya</span>
-                        <span className="text-[11px] text-[#17392f]/50">Export Feed</span>
-                      </div>
-                      <a href="/api/calendar/araliya.ics" target="_blank" className="text-xs text-[#806b39] hover:underline flex items-center gap-1">
-                        Download .ics <ExternalLink size={12}/>
-                      </a>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#17392f]/15 bg-white p-2 text-xs">
-                      <input readOnly value={araliyaIcsUrl} className="w-full bg-transparent font-mono text-[11px] text-[#17392f]/80 outline-none"/>
-                      <button
-                        onClick={() => copyText(araliyaIcsUrl, "Villa Araliya iCal link")}
-                        className="flex items-center gap-1 rounded bg-[#17392f]/8 px-2.5 py-1.5 font-sans font-semibold text-[#17392f] hover:bg-[#17392f]/15"
+                {/* Day Cells */}
+                <div className="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-[#2A2F2C]/60 bg-[#161917]">
+                  {calendarDaysMatrix.map((cell, idx) => {
+                    const isToday = cell.dateStr === getTodayIsoDate();
+
+                    // Find bookings occupying this date
+                    const dayBookings = bookings.filter((b) => {
+                      if (b.status === "cancelled") return false;
+                      if (calendarVilla !== "All" && b.villaName !== calendarVilla) return false;
+                      // Occupied if checkin <= dateStr < checkout
+                      return b.checkin <= cell.dateStr && b.checkout > cell.dateStr;
+                    });
+
+                    // Detect if multiple active bookings exist for same villa on this date
+                    const araliyaCount = dayBookings.filter((b) => b.villaName === "Araliya").length;
+                    const oluCount = dayBookings.filter((b) => b.villaName === "Olu").length;
+                    const hasDayConflict = araliyaCount > 1 || oluCount > 1;
+
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => {
+                          if (dayBookings.length > 0) {
+                            setSelectedDayBookings({ date: cell.dateStr, bookings: dayBookings });
+                          } else {
+                            openNewBookingModal(cell.dateStr);
+                          }
+                        }}
+                        className={`group relative min-h-[110px] p-2 transition-colors cursor-pointer ${
+                          !cell.isCurrentMonth
+                            ? "bg-[#131514]/40 text-zinc-600"
+                            : "hover:bg-zinc-800/40"
+                        } ${isToday ? "ring-1 ring-[#C8A45D]/60 bg-[#C8A45D]/5" : ""}`}
                       >
-                        <Copy size={13}/> Copy
+                        {/* Day Number Header */}
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
+                              isToday
+                                ? "bg-[#C8A45D] font-bold text-[#131514]"
+                                : cell.isCurrentMonth
+                                ? "text-zinc-300"
+                                : "text-zinc-600"
+                            }`}
+                          >
+                            {cell.dayNum}
+                          </span>
+
+                          {hasDayConflict && (
+                            <span
+                              title="Double Booking Conflict on this date!"
+                              className="flex items-center gap-1 rounded bg-rose-500/20 px-1 py-0.5 text-[9px] font-bold text-rose-400 border border-rose-500/30"
+                            >
+                              <AlertTriangle size={10} /> Conflict
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Booking Badges */}
+                        <div className="mt-1.5 space-y-1">
+                          {dayBookings.map((b) => (
+                            <div
+                              key={b.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openEditBookingModal(b);
+                              }}
+                              className={`truncate rounded px-1.5 py-0.5 text-[10px] font-medium border transition-transform hover:scale-[1.02] ${
+                                b.status === "confirmed"
+                                  ? "border-emerald-500/40 bg-emerald-950/80 text-emerald-200"
+                                  : b.status === "checked_in"
+                                  ? "border-indigo-500/40 bg-indigo-950/80 text-indigo-200"
+                                  : b.status === "inquiry"
+                                  ? "border-sky-500/40 bg-sky-950/80 text-sky-200"
+                                  : "border-amber-500/40 bg-amber-950/80 text-amber-200"
+                              }`}
+                            >
+                              <span className="font-semibold text-[#C8A45D] mr-1">
+                                {b.villaName[0]}:
+                              </span>
+                              {b.guestName}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Day Click Popover Modal */}
+              {selectedDayBookings && (
+                <div
+                  className="fixed inset-0 z-[70] grid place-items-center bg-[#070908]/75 p-4 backdrop-blur-sm"
+                  onMouseDown={(e) => {
+                    if (e.target === e.currentTarget) setSelectedDayBookings(null);
+                  }}
+                >
+                  <div className="w-full max-w-lg rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+                      <div>
+                        <span className="text-[10px] uppercase tracking-wider text-[#C8A45D]">
+                          Daily Schedule
+                        </span>
+                        <h3 className="font-serif text-xl text-[#F4F1E8]">
+                          {formatDateDisplay(selectedDayBookings.date, {
+                            monthFormat: "long",
+                            showDayOfWeek: true,
+                          })}
+                        </h3>
+                      </div>
+                      <button
+                        onClick={() => setSelectedDayBookings(null)}
+                        className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                      >
+                        <X size={18} />
                       </button>
                     </div>
-                    <div className="mt-4 text-[11px] text-[#17392f]/65 space-y-1">
-                      <p>✓ Blocks dates on OTAs when a booking is confirmed on your website or WhatsApp.</p>
-                      <p>✓ Updates in real-time as soon as you add reservations.</p>
-                    </div>
-                  </div>
 
-                  {/* Villa Olu Export */}
-                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-lg bg-[#a58e56]/15 px-2.5 py-1 text-xs font-bold text-[#806b39]">Villa Olu</span>
-                        <span className="text-[11px] text-[#17392f]/50">Export Feed</span>
-                      </div>
-                      <a href="/api/calendar/olu.ics" target="_blank" className="text-xs text-[#806b39] hover:underline flex items-center gap-1">
-                        Download .ics <ExternalLink size={12}/>
-                      </a>
+                    <div className="mt-4 space-y-3">
+                      {selectedDayBookings.bookings.map((b) => (
+                        <div
+                          key={b.id}
+                          className="rounded-xl border border-[#2A2F2C] bg-[#161917] p-4 flex flex-col gap-2"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-serif text-base text-[#F4F1E8]">
+                              {b.guestName}
+                            </span>
+                            <span className="rounded-md border border-[#C8A45D]/30 bg-[#C8A45D]/10 px-2 py-0.5 text-xs text-[#C8A45D]">
+                              Villa {b.villaName}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-400">
+                            Stay: {formatDateDisplay(b.checkin)} → {formatDateDisplay(b.checkout)} (
+                            {calculateNights(b.checkin, b.checkout)} nights)
+                          </p>
+                          <div className="flex items-center justify-between text-xs text-zinc-400 pt-2 border-t border-[#2A2F2C]">
+                            <span>
+                              Total: {formatMoney(b.totalAmount)} · {b.paymentStatus}
+                            </span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setSelectedDayBookings(null);
+                                  openMessageGenerator(b);
+                                }}
+                                className="text-xs text-[#C8A45D] hover:underline"
+                              >
+                                WhatsApp
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedDayBookings(null);
+                                  openEditBookingModal(b);
+                                }}
+                                className="text-xs text-zinc-200 hover:underline"
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#17392f]/15 bg-white p-2 text-xs">
-                      <input readOnly value={oluIcsUrl} className="w-full bg-transparent font-mono text-[11px] text-[#17392f]/80 outline-none"/>
+
+                    <div className="mt-5 flex justify-end gap-2">
                       <button
-                        onClick={() => copyText(oluIcsUrl, "Villa Olu iCal link")}
-                        className="flex items-center gap-1 rounded bg-[#17392f]/8 px-2.5 py-1.5 font-sans font-semibold text-[#17392f] hover:bg-[#17392f]/15"
+                        onClick={() => {
+                          const dt = selectedDayBookings.date;
+                          setSelectedDayBookings(null);
+                          openNewBookingModal(dt);
+                        }}
+                        className="flex items-center gap-1.5 rounded-xl bg-[#C8A45D] px-4 py-2 text-xs font-semibold text-[#131514]"
                       >
-                        <Copy size={13}/> Copy
+                        <Plus size={14} /> Add Another Booking
                       </button>
                     </div>
-                    <div className="mt-4 text-[11px] text-[#17392f]/65 space-y-1">
-                      <p>✓ Blocks dates on OTAs when a booking is confirmed on your website or WhatsApp.</p>
-                      <p>✓ Updates in real-time as soon as you add reservations.</p>
-                    </div>
                   </div>
                 </div>
+              )}
+            </div>
+          )}
 
-                {/* Setup Instructions Accordion */}
-                <div className="mt-6 rounded-xl bg-[#17392f]/[0.03] p-4 text-xs text-[#17392f]/75">
-                  <strong className="block font-medium text-sm text-[#17392f] mb-2">Where to paste these links in OTA extranets:</strong>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
-                      <span className="font-bold text-[#073b80]">Booking.com Extranet</span>
-                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Rates & Availability</strong> → <strong>Sync calendars</strong> → Click <strong>Add calendar connection</strong> → Paste export link → Name it &quot;Tranquil Terrace Direct&quot;.</p>
-                    </div>
-                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
-                      <span className="font-bold text-[#c34d59]">Airbnb Host Calendar</span>
-                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Listing</strong> → <strong>Pricing & availability</strong> → <strong>Calendar sync</strong> → Click <strong>Import calendar</strong> → Paste link.</p>
-                    </div>
-                    <div className="rounded-lg bg-white p-3 border border-[#17392f]/10">
-                      <span className="font-bold text-[#364e76]">Agoda YCS Extranet</span>
-                      <p className="mt-1 text-[11px] leading-relaxed">Go to <strong>Calendar</strong> → <strong>Calendar Sync</strong> → Click <strong>Import Calendar</strong> → Paste link and save.</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Section 2: Inbound Feeds (Import into Tranquil Terrace) */}
-              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#17392f]/10 pb-4">
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 3: BOOKING.COM / AGODA / AIRBNB (ICS INTEGRATION) MODULE        */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "ics-sync" && (
+            <div className="space-y-6">
+              {/* Manual RFC 5545 Sync Notice Banner */}
+              <div className="rounded-2xl border border-[#C8A45D]/30 bg-[#1A1D1B] p-6 shadow-xl">
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#C8A45D]/15 text-[#C8A45D]">
+                    <RefreshCw size={22} />
+                  </span>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#a58e56]">Step 2 · Inbound Import</span>
-                    <h3 className="mt-1 font-serif text-xl">Import OTA Calendars into Your Website</h3>
-                    <p className="text-xs text-[#17392f]/60">Paste the iCal export URLs provided by Booking.com, Airbnb, and Agoda for each villa below.</p>
+                    <h2 className="font-serif text-xl text-[#F4F1E8]">
+                      Manual RFC 5545 iCalendar Synchronization
+                    </h2>
+                    <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+                      Manual RFC 5545 ICS sync. No external backend required. Tranquil Terrace enables universal calendar importing and exporting compatible with Booking.com, Airbnb, and Agoda right from your browser.
+                    </p>
                   </div>
+                </div>
+              </div>
+
+              {/* 2-Column: Inbound Import & Outbound Export */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Left: Inbound ICS Import */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#2A2F2C] pb-4">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                      Inbound Channel Sync
+                    </span>
+                    <h3 className="font-serif text-lg text-[#F4F1E8]">
+                      Import Calendar (.ics file or text)
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Upload an exported .ics feed from Airbnb, Booking.com, or Agoda to import reservations into IndexedDB.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                        Target Villa
+                      </label>
+                      <select
+                        value={icsImportVilla}
+                        onChange={(e) => setIcsImportVilla(e.target.value as VillaName)}
+                        className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-200 outline-none"
+                      >
+                        <option value="Araliya">Villa Araliya</option>
+                        <option value="Olu">Villa Olu</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                        Channel Source
+                      </label>
+                      <select
+                        value={icsImportSource}
+                        onChange={(e) => setIcsImportSource(e.target.value)}
+                        className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-200 outline-none"
+                      >
+                        <option value="Booking.com">Booking.com</option>
+                        <option value="Airbnb">Airbnb</option>
+                        <option value="Agoda">Agoda</option>
+                        <option value="Direct / iCal">Other / Direct iCal</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                      Upload .ics File
+                    </label>
+                    <input
+                      type="file"
+                      accept=".ics,text/calendar"
+                      onChange={handleFileUploadIcs}
+                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                      Or Paste Raw ICS Content
+                    </label>
+                    <textarea
+                      rows={5}
+                      placeholder="BEGIN:VCALENDAR&#10;VERSION:2.0&#10;BEGIN:VEVENT&#10;DTSTART;VALUE=DATE:20261110&#10;DTEND;VALUE=DATE:20261114&#10;SUMMARY:Reserved...&#10;END:VEVENT&#10;END:VCALENDAR"
+                      value={icsRawText}
+                      onChange={(e) => setIcsRawText(e.target.value)}
+                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs font-mono text-zinc-300 placeholder-zinc-600 outline-none"
+                    />
+                  </div>
+
                   <button
-                    onClick={saveCalendarFeeds}
-                    disabled={syncSaving}
-                    className="flex items-center gap-2 rounded-xl bg-[#17392f] px-5 py-2.5 text-xs font-semibold text-white shadow hover:bg-[#0f2821] disabled:opacity-60"
+                    onClick={handleParseIcs}
+                    disabled={icsParsing || !icsRawText.trim()}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#C8A45D] py-2.5 text-xs font-semibold text-[#131514] disabled:opacity-50 hover:bg-[#DFBF7A] transition-colors"
                   >
-                    {syncSaving ? <LoaderCircle size={15} className="animate-spin"/> : <Check size={15}/>}
-                    <span>Save & Sync Feeds</span>
+                    {icsParsing && <LoaderCircle size={14} className="animate-spin" />}
+                    Parse & Check Conflicts
                   </button>
                 </div>
 
-                <div className="mt-6 grid gap-8 lg:grid-cols-2">
-                  {/* Villa Araliya Inbound Feeds */}
-                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5 space-y-4">
-                    <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-3">
-                      <span className="rounded-lg bg-[#a58e56]/15 px-3 py-1 text-xs font-bold text-[#806b39]">Villa Araliya Feeds</span>
-                      <span className="text-[11px] text-[#17392f]/50">
-                        {syncData?.status?.Araliya?.blockedDatesCount ?? 0} blocked night(s) detected
+                {/* Right: Outbound ICS Export */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-5 flex flex-col justify-between">
+                  <div>
+                    <div className="border-b border-[#2A2F2C] pb-4">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                        Outbound Channel Sync
                       </span>
+                      <h3 className="font-serif text-lg text-[#F4F1E8]">
+                        Export RFC 5545 iCalendar Feeds
+                      </h3>
+                      <p className="text-xs text-zinc-400 mt-1">
+                        Generate and download standardized .ics calendar files containing all active reservations to import into your OTA accounts.
+                      </p>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#073b80]">Booking.com iCal URL</label>
-                        {syncData?.status?.Araliya?.channels?.booking?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.booking.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
+                    <div className="mt-5 space-y-4">
+                      {/* Villa Araliya Export */}
+                      <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-[#F4F1E8]">Villa Araliya</p>
+                          <p className="text-xs text-zinc-400">
+                            {bookings.filter((b) => b.villaName === "Araliya" && b.status !== "cancelled").length} active reservations
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const content = generateIcsCalendar("Araliya", bookings);
+                            downloadIcsFile("tranquil-terrace-araliya.ics", content);
+                            showToast("Downloaded tranquil-terrace-araliya.ics");
+                          }}
+                          className="flex items-center gap-1.5 rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-3.5 py-2 text-xs font-medium text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                        >
+                          <Download size={14} /> Export Araliya .ics
+                        </button>
                       </div>
-                      <input
-                        type="url"
-                        placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?t=..."
-                        value={feedsForm.Araliya.bookingUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, bookingUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
-                    </div>
 
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#c34d59]">Airbnb iCal URL</label>
-                        {syncData?.status?.Araliya?.channels?.airbnb?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.airbnb.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
+                      {/* Villa Olu Export */}
+                      <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-[#F4F1E8]">Villa Olu</p>
+                          <p className="text-xs text-zinc-400">
+                            {bookings.filter((b) => b.villaName === "Olu" && b.status !== "cancelled").length} active reservations
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const content = generateIcsCalendar("Olu", bookings);
+                            downloadIcsFile("tranquil-terrace-olu.ics", content);
+                            showToast("Downloaded tranquil-terrace-olu.ics");
+                          }}
+                          className="flex items-center gap-1.5 rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-3.5 py-2 text-xs font-medium text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                        >
+                          <Download size={14} /> Export Olu .ics
+                        </button>
                       </div>
-                      <input
-                        type="url"
-                        placeholder="https://www.airbnb.com/calendar/ical/1493263628966005427.ics?s=..."
-                        value={feedsForm.Araliya.airbnbUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, airbnbUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#364e76]">Agoda iCal URL</label>
-                        {syncData?.status?.Araliya?.channels?.agoda?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Araliya.channels.agoda.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
-                      </div>
-                      <input
-                        type="url"
-                        placeholder="https://ycs.agoda.com/api/v1/ical/..."
-                        value={feedsForm.Araliya.agodaUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Araliya: { ...feedsForm.Araliya, agodaUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
                     </div>
                   </div>
 
-                  {/* Villa Olu Inbound Feeds */}
-                  <div className="rounded-xl border border-[#17392f]/15 bg-[#fdfbf7] p-5 space-y-4">
-                    <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-3">
-                      <span className="rounded-lg bg-[#a58e56]/15 px-3 py-1 text-xs font-bold text-[#806b39]">Villa Olu Feeds</span>
-                      <span className="text-[11px] text-[#17392f]/50">
-                        {syncData?.status?.Olu?.blockedDatesCount ?? 0} blocked night(s) detected
-                      </span>
+                  {/* Channel instructions */}
+                  <div className="rounded-xl border border-[#2A2F2C] bg-[#161917] p-4 text-xs text-zinc-400 space-y-2">
+                    <p className="font-semibold text-zinc-300">How to sync with OTAs:</p>
+                    <ol className="list-decimal pl-4 space-y-1 text-[11px] text-zinc-400">
+                      <li>Export the .ics file for each villa using the buttons above.</li>
+                      <li>In Airbnb / Booking.com / Agoda portal, navigate to &quot;Sync Calendar&quot;.</li>
+                      <li>Import the respective villa .ics file to block occupied dates immediately.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              {/* Parsed Events Preview Table */}
+              {icsParsedEvents.length > 0 && (
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+                    <div>
+                      <h3 className="font-serif text-lg text-[#F4F1E8]">
+                        Parsed Calendar Events ({icsParsedEvents.length})
+                      </h3>
+                      <p className="text-xs text-zinc-400">
+                        Review parsed dates and conflict analysis before committing to IndexedDB.
+                      </p>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#073b80]">Booking.com iCal URL</label>
-                        {syncData?.status?.Olu?.channels?.booking?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.booking.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() =>
+                          setIcsParsedEvents((list) => list.map((item) => ({ ...item, selected: true })))
+                        }
+                        className="text-xs text-zinc-400 hover:text-white"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        onClick={() =>
+                          setIcsParsedEvents((list) => list.map((item) => ({ ...item, selected: false })))
+                        }
+                        className="text-xs text-zinc-400 hover:text-white"
+                      >
+                        Deselect All
+                      </button>
+                      <button
+                        onClick={handleImportSelectedIcsEvents}
+                        disabled={saving}
+                        className="flex items-center gap-2 rounded-xl bg-[#C8A45D] px-4 py-2 text-xs font-semibold text-[#131514] hover:bg-[#DFBF7A]"
+                      >
+                        {saving && <LoaderCircle size={14} className="animate-spin" />}
+                        Import Selected to Database
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                        <tr>
+                          <th className="px-4 py-3">Import</th>
+                          <th className="px-4 py-3">Guest / Summary</th>
+                          <th className="px-4 py-3">Stay Dates</th>
+                          <th className="px-4 py-3">Nights</th>
+                          <th className="px-4 py-3">Conflict Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                        {icsParsedEvents.map((item, idx) => {
+                          const nights = calculateNights(item.event.checkin, item.event.checkout);
+                          const hasConflicts = item.conflicts.length > 0;
+
+                          return (
+                            <tr key={idx} className="hover:bg-zinc-800/30">
+                              <td className="px-4 py-3">
+                                <input
+                                  type="checkbox"
+                                  checked={item.selected}
+                                  onChange={(e) => {
+                                    const checked = e.target.checked;
+                                    setIcsParsedEvents((list) =>
+                                      list.map((it, i) => (i === idx ? { ...it, selected: checked } : it))
+                                    );
+                                  }}
+                                  className="rounded border-[#2A2F2C] bg-[#131514] text-[#C8A45D]"
+                                />
+                              </td>
+                              <td className="px-4 py-3 font-medium text-[#F4F1E8]">
+                                {item.event.guestName}
+                                <span className="block text-[11px] text-zinc-500">
+                                  UID: {item.event.reference}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">
+                                {formatDateDisplay(item.event.checkin)} → {formatDateDisplay(item.event.checkout)}
+                              </td>
+                              <td className="px-4 py-3">{nights} nights</td>
+                              <td className="px-4 py-3">
+                                {hasConflicts ? (
+                                  <span className="inline-flex items-center gap-1 rounded bg-rose-500/20 px-2 py-0.5 text-[11px] font-semibold text-rose-300 border border-rose-500/30">
+                                    <AlertTriangle size={12} /> Conflict with {item.conflicts.map((c) => c.reference).join(", ")}
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 rounded bg-emerald-500/20 px-2 py-0.5 text-[11px] font-semibold text-emerald-300 border border-emerald-500/30">
+                                    <Check size={12} /> Conflict Free
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 4: PAYMENT MANAGEMENT MODULE                                   */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "financials" && (
+            <div className="space-y-6">
+              {/* Financial Summary KPI Cards */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Gross Revenue</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-[#F4F1E8]">
+                    {formatMoney(financialSummary.totalRevenueLKR)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">All non-cancelled reservations</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Collected</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-emerald-400">
+                    {formatMoney(financialSummary.paidRevenueLKR)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Advance payments in hand</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Outstanding Balances</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-amber-400">
+                    {formatMoney(financialSummary.pendingRevenueLKR)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Due upon guest check-in</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Exchange Rate Active</span>
+                  <div className="mt-2 font-serif text-2xl font-medium text-[#C8A45D]">
+                    1 USD = {USD_EXCHANGE_RATE} LKR
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Standard hospitality conversion</p>
+                </div>
+              </div>
+
+              {/* Pending Balances Settlement Table */}
+              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+                <div className="border-b border-[#2A2F2C] p-5 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif text-xl text-[#F4F1E8]">Guest Balance & Payment Ledger</h3>
+                    <p className="text-xs text-zinc-400">
+                      Track advance deposits, unpaid bookings, and balance settlement.
+                    </p>
+                  </div>
+                  <div className="text-xs text-zinc-400">
+                    Showing {bookings.filter((b) => b.status !== "cancelled").length} active bookings
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                      <tr>
+                        <th className="px-5 py-3">Guest & Ref</th>
+                        <th className="px-4 py-3">Stay Dates</th>
+                        <th className="px-4 py-3">Payment Status</th>
+                        <th className="px-4 py-3">Total Invoiced</th>
+                        <th className="px-4 py-3">Paid / Collected</th>
+                        <th className="px-4 py-3">Balance Due</th>
+                        <th className="px-5 py-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                      {bookings
+                        .filter((b) => b.status !== "cancelled")
+                        .map((b) => {
+                          const balanceDue = Math.max(0, b.totalAmount - b.paidAmount);
+                          return (
+                            <tr key={b.id} className="hover:bg-zinc-800/30">
+                              <td className="px-5 py-3 font-medium text-[#F4F1E8]">
+                                {b.guestName}
+                                <span className="block text-[11px] text-zinc-500">
+                                  Ref: {b.reference} · Villa {b.villaName}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">
+                                {formatDateDisplay(b.checkin)} → {formatDateDisplay(b.checkout)}
+                              </td>
+                              <td className="px-4 py-3">
+                                <span
+                                  className={`inline-flex rounded-lg border px-2.5 py-0.5 text-[11px] font-semibold ${
+                                    b.paymentStatus === "paid"
+                                      ? "border-emerald-500/30 bg-emerald-950/60 text-emerald-300"
+                                      : b.paymentStatus === "partial"
+                                      ? "border-amber-500/30 bg-amber-950/60 text-amber-300"
+                                      : b.paymentStatus === "refunded"
+                                      ? "border-zinc-700 bg-zinc-800 text-zinc-400"
+                                      : "border-rose-500/30 bg-rose-950/60 text-rose-300"
+                                  }`}
+                                >
+                                  {label(b.paymentStatus)}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 font-medium text-[#F4F1E8]">
+                                {formatMoney(b.totalAmount)}
+                              </td>
+                              <td className="px-4 py-3 text-emerald-400 font-medium">
+                                {formatMoney(b.paidAmount)}
+                              </td>
+                              <td className="px-4 py-3">
+                                <span
+                                  className={`font-semibold ${
+                                    balanceDue > 0 ? "text-amber-400" : "text-zinc-500"
+                                  }`}
+                                >
+                                  {balanceDue > 0 ? formatMoney(balanceDue) : "Cleared"}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3 text-right">
+                                <button
+                                  onClick={() => openPaymentModal(b)}
+                                  className="rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-3 py-1.5 text-xs font-semibold text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                                >
+                                  Record Payment
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 5: GUEST MANAGEMENT DIRECTORY MODULE                            */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "guests" && (
+            <div className="space-y-6">
+              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+                {/* Search Bar Header */}
+                <div className="flex flex-col gap-4 border-b border-[#2A2F2C] p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="font-serif text-xl text-[#F4F1E8]">Guest Directory & CRM</h2>
+                    <p className="text-xs text-zinc-400">
+                      Aggregated guest records with WhatsApp and Email quick actions.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2">
+                    <Search size={15} className="text-zinc-400" />
+                    <input
+                      type="text"
+                      placeholder="Search name, phone, email..."
+                      value={guestSearchQuery}
+                      onChange={(e) => setGuestSearchQuery(e.target.value)}
+                      className="w-56 bg-transparent text-xs text-[#F4F1E8] placeholder-zinc-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Guests Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[850px] text-left text-xs">
+                    <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                      <tr>
+                        <th className="px-5 py-4">Guest Name</th>
+                        <th className="px-4 py-4">Phone / WhatsApp</th>
+                        <th className="px-4 py-4">Email Address</th>
+                        <th className="px-4 py-4">Total Stays</th>
+                        <th className="px-4 py-4">Total Spent</th>
+                        <th className="px-4 py-4">Last Stay</th>
+                        <th className="px-5 py-4 text-right">Quick Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                      {aggregatedGuests.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="p-16 text-center text-zinc-500">
+                            <Users className="mx-auto text-zinc-600 mb-2" size={28} />
+                            <p className="text-sm font-medium">No guests registered yet.</p>
+                          </td>
+                        </tr>
+                      ) : (
+                        aggregatedGuests.map((g) => {
+                          const cleanPhone = (g.phone || "").replace(/[^0-9]/g, "");
+                          return (
+                            <tr key={g.id} className="hover:bg-zinc-800/30">
+                              <td className="px-5 py-4 font-semibold text-[#F4F1E8]">
+                                {g.name}
+                                {g.notes && (
+                                  <span className="block text-[11px] font-normal text-zinc-400 mt-0.5">
+                                    &ldquo;{g.notes}&rdquo;
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-4 py-4 font-mono text-zinc-300">
+                                {g.phone || "—"}
+                              </td>
+                              <td className="px-4 py-4 text-zinc-300">
+                                {g.email || "—"}
+                              </td>
+                              <td className="px-4 py-4 font-medium">
+                                <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-xs">
+                                  {g.totalBookings} stay{g.totalBookings === 1 ? "" : "s"}
+                                </span>
+                              </td>
+                              <td className="px-4 py-4 font-serif text-sm font-medium text-[#C8A45D]">
+                                {formatMoney(g.totalSpentLKR)}
+                              </td>
+                              <td className="px-4 py-4 text-zinc-400">
+                                {g.lastStay ? formatDateDisplay(g.lastStay) : "—"}
+                              </td>
+                              <td className="px-5 py-4 text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  {/* WhatsApp wa.me */}
+                                  {cleanPhone ? (
+                                    <a
+                                      href={`https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+                                        `Dear ${g.name}, warm greetings from Tranquil Terrace Galle!`
+                                      )}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex items-center gap-1 rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-2.5 py-1.5 text-xs text-emerald-300 hover:bg-emerald-900/60 transition-colors"
+                                    >
+                                      <MessageCircle size={13} /> WhatsApp
+                                    </a>
+                                  ) : (
+                                    <span className="text-[10px] text-zinc-600">No phone</span>
+                                  )}
+
+                                  {/* Mailto link */}
+                                  {g.email ? (
+                                    <a
+                                      href={`mailto:${g.email}?subject=${encodeURIComponent(
+                                        "Tranquil Terrace Galle - Guest Inquiry"
+                                      )}`}
+                                      className="flex items-center gap-1 rounded-lg border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-2.5 py-1.5 text-xs text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                                    >
+                                      <Mail size={13} /> Email
+                                    </a>
+                                  ) : null}
+
+                                  {/* Edit notes */}
+                                  <button
+                                    onClick={() => {
+                                      setEditingGuestNotes(g);
+                                      setGuestNotesInput(g.notes || "");
+                                    }}
+                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:text-white"
+                                    title="Add or edit notes"
+                                  >
+                                    <FileText size={14} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 6: ANALYTICS DASHBOARD MODULE                                  */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "analytics" && (
+            <div className="space-y-6">
+              {/* Analytics Metric Cards */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Bookings</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-[#F4F1E8]">
+                    {analyticsData.total}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">
+                    {analyticsData.confirmed} confirmed stays
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Cancellation Rate</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-rose-400">
+                    {analyticsData.cancelRate}%
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">
+                    {analyticsData.cancelled} cancelled of {analyticsData.total}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Average Daily Rate (ADR)</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-[#C8A45D]">
+                    {formatMoney(analyticsData.adrLkr)}
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Per occupied villa night</p>
+                </div>
+
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
+                  <span className="text-xs uppercase tracking-wider text-zinc-400">Avg. Length of Stay</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-indigo-400">
+                    {analyticsData.avgStay} nights
+                  </div>
+                  <p className="mt-2 text-[11px] text-zinc-500">Total {analyticsData.totalNights} nights</p>
+                </div>
+              </div>
+
+              {/* Monthly Revenue Bar Chart (Custom Luxury Visualization) */}
+              <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl">
+                <div className="border-b border-[#2A2F2C] pb-4 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif text-xl text-[#F4F1E8]">Monthly Revenue Performance</h3>
+                    <p className="text-xs text-zinc-400">
+                      Revenue and booked nights breakdown over the last 6 months.
+                    </p>
+                  </div>
+                  <span className="text-xs text-[#C8A45D] font-medium">Currency: {currency}</span>
+                </div>
+
+                <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {analyticsData.monthlyTrends.map((m, idx) => {
+                    const heightPercent = Math.max(12, Math.round((m.revenue / analyticsData.maxMonthlyRevenue) * 100));
+                    return (
+                      <div key={idx} className="flex flex-col items-center justify-end h-64 p-3 rounded-xl bg-[#131514] border border-[#2A2F2C]">
+                        <span className="text-[11px] font-semibold text-[#C8A45D] mb-1">
+                          {formatMoney(m.revenue)}
+                        </span>
+                        <div className="w-full flex items-end justify-center h-40">
+                          <div
+                            style={{ height: `${heightPercent}%` }}
+                            className="w-12 rounded-t-lg bg-gradient-to-t from-[#B38F46] to-[#DFBF7A] transition-all duration-500 shadow-md"
+                          />
+                        </div>
+                        <span className="mt-3 text-xs font-medium text-zinc-300">{m.label}</span>
+                        <span className="text-[10px] text-zinc-500">{m.nights} nights</span>
                       </div>
-                      <input
-                        type="url"
-                        placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?t=..."
-                        value={feedsForm.Olu.bookingUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, bookingUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2-Column: Villa Occupancy & Booking Sources */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Villa Comparison */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <h3 className="font-serif text-lg text-[#F4F1E8]">Villa Occupancy Comparison</h3>
+                  <p className="text-xs text-zinc-400">
+                    Comparative booked nights and revenue split between properties.
+                  </p>
+
+                  <div className="space-y-4 pt-2">
+                    {/* Araliya */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1.5">
+                        <span className="font-medium text-[#F4F1E8]">Villa Araliya</span>
+                        <span className="text-zinc-400">
+                          {analyticsData.araliyaNights} nights · {formatMoney(analyticsData.araliyaRevenue)}
+                        </span>
+                      </div>
+                      <div className="h-3 w-full rounded-full bg-zinc-800 overflow-hidden">
+                        <div
+                          style={{
+                            width: `${
+                              analyticsData.totalNights > 0
+                                ? (analyticsData.araliyaNights / analyticsData.totalNights) * 100
+                                : 50
+                            }%`,
+                          }}
+                          className="h-full rounded-full bg-[#C8A45D]"
+                        />
+                      </div>
                     </div>
 
+                    {/* Olu */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#c34d59]">Airbnb iCal URL</label>
-                        {syncData?.status?.Olu?.channels?.airbnb?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.airbnb.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
+                      <div className="flex items-center justify-between text-xs mb-1.5">
+                        <span className="font-medium text-[#F4F1E8]">Villa Olu</span>
+                        <span className="text-zinc-400">
+                          {analyticsData.oluNights} nights · {formatMoney(analyticsData.oluRevenue)}
+                        </span>
                       </div>
-                      <input
-                        type="url"
-                        placeholder="https://www.airbnb.com/calendar/ical/...ics?s=..."
-                        value={feedsForm.Olu.airbnbUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, airbnbUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#364e76]">Agoda iCal URL</label>
-                        {syncData?.status?.Olu?.channels?.agoda?.configured ? (
-                          <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">● Connected ({syncData.status.Olu.channels.agoda.eventCount} bookings)</span>
-                        ) : (
-                          <span className="text-[10px] text-[#17392f]/40">Not configured</span>
-                        )}
+                      <div className="h-3 w-full rounded-full bg-zinc-800 overflow-hidden">
+                        <div
+                          style={{
+                            width: `${
+                              analyticsData.totalNights > 0
+                                ? (analyticsData.oluNights / analyticsData.totalNights) * 100
+                                : 50
+                            }%`,
+                          }}
+                          className="h-full rounded-full bg-emerald-500"
+                        />
                       </div>
-                      <input
-                        type="url"
-                        placeholder="https://ycs.agoda.com/api/v1/ical/..."
-                        value={feedsForm.Olu.agodaUrl}
-                        onChange={(e) => setFeedsForm({ ...feedsForm, Olu: { ...feedsForm.Olu, agodaUrl: e.target.value } })}
-                        className="h-10 w-full rounded-lg border border-[#17392f]/15 bg-white px-3 text-xs outline-none focus:border-[#17392f]"
-                      />
                     </div>
                   </div>
                 </div>
-              </section>
 
-              {/* Section 3: Live Synchronized Calendar Status */}
-              <section className="rounded-2xl border border-[#17392f]/10 bg-white/85 p-6 shadow-[0_16px_45px_rgba(23,57,47,.05)]">
-                <div className="flex items-center justify-between border-b border-[#17392f]/10 pb-4">
-                  <div>
-                    <h3 className="font-serif text-xl">Current Channel Availability Status</h3>
-                    <p className="text-xs text-[#17392f]/60">Summary of blocked reservations currently protecting Tranquil Terrace from overlaps.</p>
+                {/* Booking Sources */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <h3 className="font-serif text-lg text-[#F4F1E8]">Booking Channel Distribution</h3>
+                  <p className="text-xs text-zinc-400">
+                    Distribution of reservations across websites, OTAs, and direct channels.
+                  </p>
+
+                  <div className="space-y-3 pt-2">
+                    {Object.entries(analyticsData.sourceCounts).map(([src, count]) => {
+                      const pct = analyticsData.total > 0 ? Math.round((count / analyticsData.total) * 100) : 0;
+                      return (
+                        <div key={src}>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-zinc-300 font-medium">{src}</span>
+                            <span className="text-zinc-400">
+                              {count} bookings ({pct}%)
+                            </span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
+                            <div
+                              style={{ width: `${pct}%` }}
+                              className="h-full rounded-full bg-gradient-to-r from-[#B38F46] to-[#C8A45D]"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <span className="text-[11px] text-[#17392f]/50">
-                    Last sync: {syncData?.status?.Araliya?.lastUpdated ? new Date(syncData.status.Araliya.lastUpdated).toLocaleTimeString() : "Just now"}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------------- */}
+          {/* TAB 7: DATA BACKUP & RESTORE MODULE                                */}
+          {/* ------------------------------------------------------------------- */}
+          {activeTab === "backup" && (
+            <div className="space-y-6">
+              {/* Storage Diagnostic Card */}
+              <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+                  <div>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                      Database Health
+                    </span>
+                    <h3 className="font-serif text-xl text-[#F4F1E8]">Local Storage Engine Diagnostics</h3>
+                  </div>
+                  <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    IndexedDB Online
                   </span>
                 </div>
 
-                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
-                    <p className="text-[11px] text-[#17392f]/50 font-medium">Villa Araliya Total Blocked</p>
-                    <strong className="mt-1 block font-serif text-2xl">{syncData?.status?.Araliya?.blockedDatesCount ?? 0} nights</strong>
-                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">{syncData?.status?.Araliya?.bookedRangesCount ?? 0} active reservations</span>
+                <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
+                    <p className="text-xs text-zinc-400">Stored Reservations</p>
+                    <p className="mt-1 font-serif text-2xl font-medium text-[#F4F1E8]">{bookings.length}</p>
                   </div>
-                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
-                    <p className="text-[11px] text-[#17392f]/50 font-medium">Villa Olu Total Blocked</p>
-                    <strong className="mt-1 block font-serif text-2xl">{syncData?.status?.Olu?.blockedDatesCount ?? 0} nights</strong>
-                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">{syncData?.status?.Olu?.bookedRangesCount ?? 0} active reservations</span>
+                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
+                    <p className="text-xs text-zinc-400">Stored Guests</p>
+                    <p className="mt-1 font-serif text-2xl font-medium text-[#F4F1E8]">{aggregatedGuests.length}</p>
                   </div>
-                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
-                    <p className="text-[11px] text-[#17392f]/50 font-medium">Supported OTAs</p>
-                    <strong className="mt-1 block font-serif text-2xl">3 Platforms</strong>
-                    <span className="mt-2 text-[10px] text-emerald-700 font-semibold block">Booking.com, Airbnb, Agoda</span>
-                  </div>
-                  <div className="rounded-xl border border-[#17392f]/10 bg-[#fbf9f4] p-4">
-                    <p className="text-[11px] text-[#17392f]/50 font-medium">Sync Standard</p>
-                    <strong className="mt-1 block font-serif text-2xl">RFC 5545 iCal</strong>
-                    <span className="mt-2 text-[10px] text-[#17392f]/40 block">Universal hospitality standard</span>
+                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
+                    <p className="text-xs text-zinc-400">Active Conflicts</p>
+                    <p className={`mt-1 font-serif text-2xl font-medium ${systemConflicts.length > 0 ? "text-rose-400" : "text-emerald-400"}`}>
+                      {systemConflicts.length}
+                    </p>
                   </div>
                 </div>
-              </section>
+              </div>
+
+              {/* Backup Actions Grid */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Export Card */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#2A2F2C] pb-4">
+                    <h3 className="font-serif text-lg text-[#F4F1E8]">Export Complete Data Backup</h3>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Download full database state into JSON format for secure offline safekeeping or CSV for spreadsheet accounting.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    <button
+                      onClick={handleExportJsonBackup}
+                      className="flex w-full items-center justify-between rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-4 py-3 text-xs font-semibold text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <FileDown size={16} /> Download Full JSON Backup (.json)
+                      </span>
+                      <span>{bookings.length} records</span>
+                    </button>
+
+                    <button
+                      onClick={handleExportCsv}
+                      className="flex w-full items-center justify-between rounded-xl border border-[#2A2F2C] bg-[#131514] px-4 py-3 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <FileSpreadsheet size={16} /> Export Bookings CSV (.csv)
+                      </span>
+                      <span>RFC 4180</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Restore Card */}
+                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#2A2F2C] pb-4">
+                    <h3 className="font-serif text-lg text-[#F4F1E8]">Restore Database from JSON</h3>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Load a previously exported Tranquil Terrace JSON backup with full schema validation.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      onChange={handleSelectBackupFile}
+                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
+                    />
+
+                    {backupValidation && (
+                      <div className={`rounded-xl p-3 text-xs border ${
+                        backupValidation.valid
+                          ? "border-emerald-500/30 bg-emerald-950/20 text-emerald-200"
+                          : "border-rose-500/30 bg-rose-950/20 text-rose-200"
+                      }`}>
+                        {backupValidation.valid ? (
+                          <div className="space-y-2">
+                            <p className="font-semibold text-emerald-300">✓ Valid Tranquil Terrace Backup</p>
+                            <p className="text-[11px] text-zinc-400">
+                              Contains {backupValidation.data.bookings.length} reservations and {backupValidation.data.guests.length} guest records.
+                            </p>
+                            <div className="flex gap-4 pt-1">
+                              <label className="flex items-center gap-1.5 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name="restoreMode"
+                                  checked={backupRestoreMode === "merge"}
+                                  onChange={() => setBackupRestoreMode("merge")}
+                                  className="text-[#C8A45D]"
+                                />
+                                <span>Merge with existing</span>
+                              </label>
+                              <label className="flex items-center gap-1.5 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name="restoreMode"
+                                  checked={backupRestoreMode === "replace"}
+                                  onChange={() => setBackupRestoreMode("replace")}
+                                  className="text-[#C8A45D]"
+                                />
+                                <span className="text-rose-400">Replace entire DB</span>
+                              </label>
+                            </div>
+                            <button
+                              onClick={handleConfirmRestoreBackup}
+                              disabled={saving}
+                              className="mt-2 w-full rounded-lg bg-[#C8A45D] py-2 text-xs font-semibold text-[#131514]"
+                            >
+                              Confirm Restore Now
+                            </button>
+                          </div>
+                        ) : (
+                          <p>Error: {backupValidation.error}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Danger Zone: Reset to Factory Demo */}
+              <div className="rounded-2xl border border-rose-900/30 bg-rose-950/10 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h4 className="text-sm font-semibold text-rose-300">Reset to Factory Demo Records</h4>
+                  <p className="text-xs text-rose-200/70 mt-0.5">
+                    Clear all custom entries and restore the initial 3 demonstration reservations.
+                  </p>
+                </div>
+                <button
+                  onClick={handleResetToDemoData}
+                  className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/20 transition-colors"
+                >
+                  Reset Demo Data
+                </button>
+              </div>
             </div>
           )}
         </div>
       </main>
 
-      {open && <div className="fixed inset-0 z-[70] grid place-items-center bg-[#071b15]/60 p-4 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
-        <form onSubmit={saveBooking} className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-[#f8f5ed] shadow-2xl">
-          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#17392f]/10 bg-[#f8f5ed]/95 p-5 backdrop-blur"><div><p className="text-[10px] uppercase tracking-[.2em] text-[#17392f]/45">{editing ? editing.reference : "Manual reservation"}</p><h2 className="font-serif text-2xl">{editing ? "Booking details" : "Add a booking"}</h2></div><button type="button" onClick={() => setOpen(false)} className="rounded-full border border-[#17392f]/15 p-2"><X size={18}/></button></div>
-          <div className="grid gap-5 p-5 sm:grid-cols-2">
-            <Field label="Guest name"><input required minLength={2} value={form.guestName} onChange={(e) => setForm({...form,guestName:e.target.value})}/></Field>
-            <Field label="Phone / WhatsApp"><input required minLength={7} value={form.phone} onChange={(e) => setForm({...form,phone:e.target.value})}/></Field>
-            <Field label="Email"><input type="email" value={form.email} onChange={(e) => setForm({...form,email:e.target.value})}/></Field>
-            <Field label="Villa"><select value={form.villaName} onChange={(e) => setForm({...form,villaName:e.target.value})}>{villaNames.map((villa) => <option key={villa} value={villa}>{villa}</option>)}</select></Field>
-            <Field label="Source"><select value={form.source} onChange={(e) => setForm({...form,source:e.target.value})}><option>manual</option><option>website</option><option>WhatsApp</option><option>Booking.com</option><option>Agoda</option><option>Airbnb</option><option>phone</option></select></Field>
-            <Field label="Check-in"><input required type="date" value={form.checkin} onChange={(e) => setForm({...form,checkin:e.target.value})}/></Field>
-            <Field label="Check-out"><input required type="date" min={form.checkin || undefined} value={form.checkout} onChange={(e) => setForm({...form,checkout:e.target.value})}/></Field>
-            <Field label="Guests"><select value={form.guests} onChange={(e) => setForm({...form,guests:Number(e.target.value)})}>{[1,2].map((n) => <option key={n} value={n}>{n} guest{n === 1 ? "" : "s"}</option>)}</select></Field>
-            <Field label="Booking status"><select value={form.status} onChange={(e) => setForm({...form,status:e.target.value as BookingStatus})}>{bookingStatuses.map((s) => <option key={s} value={s}>{label(s)}</option>)}</select></Field>
-            <Field label="Total amount (LKR)"><input min="0" type="number" value={form.totalAmount} onChange={(e) => setForm({...form,totalAmount:Number(e.target.value)})}/></Field>
-            <Field label="Paid amount (LKR)"><input min="0" type="number" value={form.paidAmount} onChange={(e) => setForm({...form,paidAmount:Number(e.target.value)})}/></Field>
-            <Field label="Payment status"><select value={form.paymentStatus} onChange={(e) => setForm({...form,paymentStatus:e.target.value as PaymentStatus})}>{paymentStatuses.map((s) => <option key={s} value={s}>{label(s)}</option>)}</select></Field>
-            <div className="hidden sm:block"/>
-            <Field label="Guest request" wide><textarea rows={3} value={form.specialRequest} onChange={(e) => setForm({...form,specialRequest:e.target.value})}/></Field>
-            <Field label="Private admin notes" wide><textarea rows={3} value={form.adminNotes} onChange={(e) => setForm({...form,adminNotes:e.target.value})}/></Field>
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 1: ADD / EDIT BOOKING                                            */}
+      {/* ----------------------------------------------------------------------- */}
+      {bookingModalOpen && (
+        <div
+          className="fixed inset-0 z-[80] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setBookingModalOpen(false);
+          }}
+        >
+          <form
+            onSubmit={handleSaveBooking}
+            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-5"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                  {editingBooking ? `Reference: ${editingBooking.reference}` : "New Reservation"}
+                </span>
+                <h3 className="font-serif text-2xl text-[#F4F1E8]">
+                  {editingBooking ? "Edit Reservation" : "Add Villa Reservation"}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setBookingModalOpen(false)}
+                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Real-time Conflict Alert in Form */}
+            {formConflicts.length > 0 && (
+              <div className="rounded-xl border border-rose-500/40 bg-rose-950/30 p-3.5 text-xs text-rose-200">
+                <p className="font-semibold text-rose-400 flex items-center gap-1.5">
+                  <AlertTriangle size={15} /> Warning: Date Conflict Detected!
+                </p>
+                <p className="mt-1 text-[11px] text-rose-200/80">
+                  Villa {bookingForm.villaName} already has overlapping reservations:
+                </p>
+                <ul className="mt-1 list-disc pl-4 space-y-0.5 text-[11px]">
+                  {formConflicts.map((c) => (
+                    <li key={c.id}>
+                      {c.guestName} ({c.reference}) from {formatDateDisplay(c.checkin)} to {formatDateDisplay(c.checkout)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Form Fields Grid */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Guest Name *
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder="e.g. Sarah & Daniel"
+                  value={bookingForm.guestName}
+                  onChange={(e) => setBookingForm({ ...bookingForm, guestName: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Phone / WhatsApp *
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder="+44 7700 900123"
+                  value={bookingForm.phone}
+                  onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  placeholder="guest@example.com"
+                  value={bookingForm.email}
+                  onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Target Villa *
+                </label>
+                <select
+                  value={bookingForm.villaName}
+                  onChange={(e) => setBookingForm({ ...bookingForm, villaName: e.target.value as VillaName })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                >
+                  <option value="Araliya">Villa Araliya (Courtyard & Pool)</option>
+                  <option value="Olu">Villa Olu (Tropical Veranda)</option>
+                </select>
+              </div>
+
+              {/* Checkin & Checkout */}
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Check-in Date *
+                </label>
+                <input
+                  required
+                  type="date"
+                  value={bookingForm.checkin}
+                  onChange={(e) => {
+                    const newIn = e.target.value;
+                    let newOut = bookingForm.checkout;
+                    if (!newOut || newOut <= newIn) {
+                      newOut = addDaysToDate(newIn, 1);
+                    }
+                    setBookingForm({ ...bookingForm, checkin: newIn, checkout: newOut });
+                  }}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Check-out Date *
+                </label>
+                <input
+                  required
+                  type="date"
+                  min={bookingForm.checkin ? addDaysToDate(bookingForm.checkin, 1) : undefined}
+                  value={bookingForm.checkout}
+                  onChange={(e) => setBookingForm({ ...bookingForm, checkout: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                />
+              </div>
+
+              {/* Calculated Nights Display */}
+              <div className="sm:col-span-2 text-xs text-zinc-400 bg-[#131514] p-3 rounded-xl border border-[#2A2F2C] flex items-center justify-between">
+                <span>
+                  Stay Duration:{" "}
+                  <strong className="text-[#C8A45D]">
+                    {calculateNights(bookingForm.checkin, bookingForm.checkout)} night(s)
+                  </strong>
+                </span>
+                <span>
+                  {formatDateDisplay(bookingForm.checkin)} → {formatDateDisplay(bookingForm.checkout)}
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Number of Guests
+                </label>
+                <select
+                  value={bookingForm.guests}
+                  onChange={(e) => setBookingForm({ ...bookingForm, guests: Number(e.target.value) })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                >
+                  <option value={1}>1 Guest</option>
+                  <option value={2}>2 Guests (Standard)</option>
+                  <option value={3}>3 Guests (Extra bed)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Booking Source
+                </label>
+                <select
+                  value={bookingForm.source}
+                  onChange={(e) => setBookingForm({ ...bookingForm, source: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                >
+                  <option value="website">Website Direct</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Booking.com">Booking.com</option>
+                  <option value="Airbnb">Airbnb</option>
+                  <option value="Agoda">Agoda</option>
+                  <option value="manual">Direct / Phone</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Reservation Status
+                </label>
+                <select
+                  value={bookingForm.status}
+                  onChange={(e) => setBookingForm({ ...bookingForm, status: e.target.value as BookingStatus })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                >
+                  {bookingStatuses.map((s) => (
+                    <option key={s} value={s}>
+                      {label(s)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Payment Status
+                </label>
+                <select
+                  value={bookingForm.paymentStatus}
+                  onChange={(e) => setBookingForm({ ...bookingForm, paymentStatus: e.target.value as PaymentStatus })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                >
+                  {paymentStatuses.map((s) => (
+                    <option key={s} value={s}>
+                      {label(s)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Financials in Form */}
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Total Amount (LKR) *
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="500"
+                  value={bookingForm.totalAmount}
+                  onChange={(e) => setBookingForm({ ...bookingForm, totalAmount: Number(e.target.value) })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Advance Paid Amount (LKR)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="500"
+                  value={bookingForm.paidAmount}
+                  onChange={(e) => setBookingForm({ ...bookingForm, paidAmount: Number(e.target.value) })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                />
+              </div>
+
+              {/* Notes */}
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Special Guest Requests
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. Airport pickup, anniversary cake, floating breakfast"
+                  value={bookingForm.specialRequest}
+                  onChange={(e) => setBookingForm({ ...bookingForm, specialRequest: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  Private Admin Notes
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Staff instructions or internal notes"
+                  value={bookingForm.adminNotes}
+                  onChange={(e) => setBookingForm({ ...bookingForm, adminNotes: e.target.value })}
+                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2A2F2C]">
+              <button
+                type="button"
+                onClick={() => setBookingModalOpen(false)}
+                className="rounded-xl border border-[#2A2F2C] px-4 py-2.5 text-xs font-semibold text-zinc-400 hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex items-center gap-2 rounded-xl bg-[#C8A45D] px-5 py-2.5 text-xs font-semibold text-[#131514] hover:bg-[#DFBF7A]"
+              >
+                {saving && <LoaderCircle size={14} className="animate-spin" />}
+                {editingBooking ? "Update Reservation" : "Confirm & Save to IndexedDB"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 2: 5-STAR BRANDED PRINTABLE PDF INVOICE                           */}
+      {/* ----------------------------------------------------------------------- */}
+      {invoiceModalBooking && (
+        <div
+          className="fixed inset-0 z-[90] grid place-items-center bg-[#070908]/85 p-4 backdrop-blur-md overflow-y-auto"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setInvoiceModalBooking(null);
+          }}
+        >
+          <div className="my-8 w-full max-w-3xl rounded-2xl border border-[#2A2F2C] bg-white text-zinc-900 shadow-2xl p-8 sm:p-10 invoice-printable">
+            {/* Modal Top Actions (Hidden in Print) */}
+            <div className="no-print mb-6 flex items-center justify-between border-b border-zinc-200 pb-4">
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                Luxury Printable Invoice
+              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={triggerPrintInvoice}
+                  className="flex items-center gap-1.5 rounded-xl bg-[#93712d] px-4 py-2 text-xs font-semibold text-white shadow hover:opacity-90 transition-opacity"
+                >
+                  <Printer size={15} /> Print / Save as PDF
+                </button>
+                <button
+                  onClick={() => setInvoiceModalBooking(null)}
+                  className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Printable Invoice Header */}
+            <div className="flex flex-col sm:flex-row items-start justify-between border-b-2 border-[#93712d] pb-6 gap-4">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#93712d] font-serif text-xl font-bold text-white shadow-sm">
+                    TT
+                  </span>
+                  <div>
+                    <h1 className="font-serif text-2xl font-bold tracking-tight text-zinc-900">
+                      Tranquil Terrace
+                    </h1>
+                    <p className="text-xs font-medium uppercase tracking-[0.25em] text-[#93712d]">
+                      Galle · Sri Lanka
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-zinc-600 leading-relaxed max-w-xs">
+                  Luxury Private Villas & Hospitality Sanctuary<br />
+                  Galle Fort Environs, Southern Province, Sri Lanka<br />
+                  Phone: +94 77 123 4567 · info@tranquilterracevilla.com
+                </p>
+              </div>
+
+              <div className="text-left sm:text-right">
+                <span className="inline-block rounded-md bg-[#f7f3ea] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#93712d]">
+                  Official Tax Invoice
+                </span>
+                <p className="mt-2 font-mono text-sm font-semibold text-zinc-900">
+                  INV-{invoiceModalBooking.reference}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  Date: {formatDateDisplay(getTodayIsoDate(), { monthFormat: "short" })}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  Status: <strong className="uppercase text-emerald-800">{invoiceModalBooking.paymentStatus}</strong>
+                </p>
+              </div>
+            </div>
+
+            {/* Bill To & Stay Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6 border-b border-zinc-200 text-xs">
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Billed To (Guest)
+                </h4>
+                <p className="mt-1 font-serif text-lg font-bold text-zinc-900">
+                  {invoiceModalBooking.guestName}
+                </p>
+                <p className="text-zinc-600 mt-0.5">{invoiceModalBooking.phone || "No phone provided"}</p>
+                <p className="text-zinc-600">{invoiceModalBooking.email || "No email provided"}</p>
+              </div>
+
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Reservation Details
+                </h4>
+                <p className="mt-1 text-sm font-semibold text-zinc-900">
+                  Villa {invoiceModalBooking.villaName} (Whole Villa)
+                </p>
+                <p className="text-zinc-600 mt-0.5">
+                  Check-in: {formatDateDisplay(invoiceModalBooking.checkin, { monthFormat: "short", showDayOfWeek: true })} (1:00 PM)
+                </p>
+                <p className="text-zinc-600">
+                  Check-out: {formatDateDisplay(invoiceModalBooking.checkout, { monthFormat: "short", showDayOfWeek: true })} (11:00 AM)
+                </p>
+                <p className="text-zinc-600 font-medium text-[#93712d]">
+                  Duration: {calculateNights(invoiceModalBooking.checkin, invoiceModalBooking.checkout)} Nights · {invoiceModalBooking.guests} Guests
+                </p>
+              </div>
+            </div>
+
+            {/* Itemized Table */}
+            <div className="py-6">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-zinc-300 text-zinc-500 uppercase tracking-wider text-[10px]">
+                    <th className="py-2.5">Description</th>
+                    <th className="py-2.5 text-center">Nights</th>
+                    <th className="py-2.5 text-right">Rate</th>
+                    <th className="py-2.5 text-right">Amount (LKR)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200">
+                  <tr>
+                    <td className="py-4">
+                      <p className="font-semibold text-zinc-900">
+                        Villa {invoiceModalBooking.villaName} - Exclusive Stay
+                      </p>
+                      <p className="text-[11px] text-zinc-500">
+                        Includes complimentary welcome refreshment, Wi-Fi, housekeeping, and pool access.
+                      </p>
+                    </td>
+                    <td className="py-4 text-center font-medium text-zinc-800">
+                      {calculateNights(invoiceModalBooking.checkin, invoiceModalBooking.checkout)}
+                    </td>
+                    <td className="py-4 text-right text-zinc-700">
+                      Rs. {Math.round(invoiceModalBooking.totalAmount / Math.max(1, calculateNights(invoiceModalBooking.checkin, invoiceModalBooking.checkout))).toLocaleString()}
+                    </td>
+                    <td className="py-4 text-right font-semibold text-zinc-900">
+                      Rs. {invoiceModalBooking.totalAmount.toLocaleString()}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Total Calculation Breakdown */}
+              <div className="mt-4 border-t border-zinc-200 pt-4 flex justify-end">
+                <div className="w-64 space-y-2 text-xs">
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Subtotal:</span>
+                    <span>Rs. {invoiceModalBooking.totalAmount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-800 font-medium">
+                    <span>Advance Payment Received:</span>
+                    <span>- Rs. {invoiceModalBooking.paidAmount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between border-t-2 border-zinc-900 pt-2 font-serif text-base font-bold text-zinc-900">
+                    <span>Balance Due on Arrival:</span>
+                    <span className="text-[#93712d]">
+                      Rs. {Math.max(0, invoiceModalBooking.totalAmount - invoiceModalBooking.paidAmount).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bank Transfer Details & Policies */}
+            <div className="mt-6 rounded-xl border border-zinc-200 bg-[#faf8f4] p-5 text-xs text-zinc-700 space-y-2 invoice-gold-bg">
+              <h5 className="font-semibold uppercase tracking-wider text-[10px] text-[#93712d]">
+                Bank Transfer Instructions & Settlement
+              </h5>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                <p><strong>Bank:</strong> Commercial Bank of Ceylon</p>
+                <p><strong>Account Name:</strong> Tranquil Terrace Galle (Pvt) Ltd</p>
+                <p><strong>Account Number:</strong> 1000 8923 4410</p>
+                <p><strong>Branch / SWIFT:</strong> Galle Fort (CCEYLKLX)</p>
+              </div>
+              <p className="text-[10px] text-zinc-500 pt-2 border-t border-zinc-200">
+                Please quote reference <strong>{invoiceModalBooking.reference}</strong> when completing payments. Thank you for choosing Tranquil Terrace Galle!
+              </p>
+            </div>
           </div>
-          {error && <p className="mx-5 mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-          <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t border-[#17392f]/10 bg-[#f8f5ed]/95 p-5 backdrop-blur"><button type="button" onClick={() => setOpen(false)} className="rounded-xl border border-[#17392f]/15 px-5 py-3 text-xs font-semibold">Cancel</button><button disabled={saving} className="flex min-w-36 items-center justify-center gap-2 rounded-xl bg-[#17392f] px-5 py-3 text-xs font-semibold text-white disabled:opacity-60">{saving && <LoaderCircle size={15} className="animate-spin"/>}{editing ? "Save changes" : "Add booking"}</button></div>
-        </form>
-      </div>}
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 3: WHATSAPP & EMAIL MESSAGE GENERATOR                             */}
+      {/* ----------------------------------------------------------------------- */}
+      {messageModalBooking && (
+        <div
+          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setMessageModalBooking(null);
+          }}
+        >
+          <div className="w-full max-w-xl rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                  Message Generator
+                </span>
+                <h3 className="font-serif text-xl text-[#F4F1E8]">
+                  WhatsApp & Email Templates
+                </h3>
+              </div>
+              <button
+                onClick={() => setMessageModalBooking(null)}
+                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Template Selector Tabs */}
+            <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#131514] p-1">
+              {[
+                { id: "confirmation", label: "Booking Confirmation" },
+                { id: "reminder", label: "Payment Reminder" },
+                { id: "arrival", label: "Arrival Guide" },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setMessageTemplateType(t.id as any);
+                    buildTemplateText(messageModalBooking, t.id as any);
+                  }}
+                  className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                    messageTemplateType === t.id
+                      ? "bg-[#C8A45D] text-[#131514] shadow"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Live Message Preview / Editor */}
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                Editable Message Content
+              </label>
+              <textarea
+                rows={12}
+                value={customMessageBody}
+                onChange={(e) => setCustomMessageBody(e.target.value)}
+                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3.5 text-xs text-[#F4F1E8] font-mono leading-relaxed outline-none"
+              />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#2A2F2C]">
+              <button
+                onClick={handleCopyMessage}
+                className="flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#131514] px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:text-white"
+              >
+                {copiedNotice ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                {copiedNotice ? "Copied!" : "Copy Text"}
+              </button>
+
+              <div className="flex items-center gap-2">
+                {messageModalBooking.email && (
+                  <button
+                    onClick={() => handleSendEmail(messageModalBooking.email, messageModalBooking.reference)}
+                    className="flex items-center gap-1.5 rounded-xl border border-[#C8A45D]/40 bg-[#C8A45D]/10 px-3.5 py-2.5 text-xs font-semibold text-[#C8A45D] hover:bg-[#C8A45D]/20 transition-colors"
+                  >
+                    <Mail size={14} /> Open Email
+                  </button>
+                )}
+
+                {messageModalBooking.phone && (
+                  <button
+                    onClick={() => handleSendWhatsApp(messageModalBooking.phone)}
+                    className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 transition-colors"
+                  >
+                    <MessageCircle size={14} /> Open WhatsApp
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 4: RECORD PAYMENT MODAL                                          */}
+      {/* ----------------------------------------------------------------------- */}
+      {paymentModalBooking && (
+        <div
+          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setPaymentModalBooking(null);
+          }}
+        >
+          <div className="w-full max-w-md rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                  Payment Ledger
+                </span>
+                <h3 className="font-serif text-xl text-[#F4F1E8]">Record Guest Payment</h3>
+              </div>
+              <button
+                onClick={() => setPaymentModalBooking(null)}
+                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="rounded-xl bg-[#131514] p-3 text-xs text-zinc-400 space-y-1">
+              <p>
+                Guest: <strong className="text-white">{paymentModalBooking.guestName}</strong>
+              </p>
+              <p>
+                Reference: <strong className="text-white">{paymentModalBooking.reference}</strong>
+              </p>
+              <p>
+                Total Invoiced: <strong className="text-[#C8A45D]">{formatMoney(paymentModalBooking.totalAmount)}</strong>
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                Paid Amount to Date (LKR)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="500"
+                value={paymentAmountInput}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setPaymentAmountInput(val);
+                  if (val >= paymentModalBooking.totalAmount) {
+                    setPaymentStatusInput("paid");
+                  } else if (val > 0) {
+                    setPaymentStatusInput("partial");
+                  } else {
+                    setPaymentStatusInput("unpaid");
+                  }
+                }}
+                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+              />
+              <p className="mt-1 text-[11px] text-zinc-500">
+                Remaining Balance: {formatMoney(Math.max(0, paymentModalBooking.totalAmount - paymentAmountInput))}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                Payment Status
+              </label>
+              <select
+                value={paymentStatusInput}
+                onChange={(e) => setPaymentStatusInput(e.target.value as PaymentStatus)}
+                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+              >
+                {paymentStatuses.map((s) => (
+                  <option key={s} value={s}>
+                    {label(s)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#2A2F2C]">
+              <button
+                onClick={() => setPaymentModalBooking(null)}
+                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSavePayment}
+                className="rounded-xl bg-[#C8A45D] px-4 py-2 text-xs font-semibold text-[#131514]"
+              >
+                Save Payment Record
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 5: EDIT GUEST NOTES                                              */}
+      {/* ----------------------------------------------------------------------- */}
+      {editingGuestNotes && (
+        <div
+          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setEditingGuestNotes(null);
+          }}
+        >
+          <div className="w-full max-w-md rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
+                  Guest Preferences
+                </span>
+                <h3 className="font-serif text-xl text-[#F4F1E8]">{editingGuestNotes.name}</h3>
+              </div>
+              <button
+                onClick={() => setEditingGuestNotes(null)}
+                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                Guest Notes & VIP Preferences
+              </label>
+              <textarea
+                rows={4}
+                value={guestNotesInput}
+                onChange={(e) => setGuestNotesInput(e.target.value)}
+                placeholder="e.g. Likes extra towels, vegetarian breakfast, quiet suite"
+                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#2A2F2C]">
+              <button
+                onClick={() => setEditingGuestNotes(null)}
+                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    const updated = {
+                      ...editingGuestNotes,
+                      notes: guestNotesInput.trim(),
+                      updatedAt: new Date().toISOString(),
+                    };
+                    await dbSaveGuest(updated);
+                    await loadDataFromStorage();
+                    setEditingGuestNotes(null);
+                    showToast("Guest notes saved.");
+                  } catch {
+                    setError("Failed to save guest notes.");
+                  }
+                }}
+                className="rounded-xl bg-[#C8A45D] px-4 py-2 text-xs font-semibold text-[#131514]"
+              >
+                Save Notes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------------------- */}
+      {/* MODAL 6: DELETE RESERVATION CONFIRMATION                                */}
+      {/* ----------------------------------------------------------------------- */}
+      {deleteConfirmId && (
+        <div
+          className="fixed inset-0 z-[95] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setDeleteConfirmId(null);
+          }}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-rose-900/40 bg-[#161917] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-rose-400">
+              <AlertTriangle size={24} />
+              <h3 className="font-serif text-lg font-bold">Delete Reservation?</h3>
+            </div>
+            <p className="text-xs text-zinc-300">
+              Are you sure you want to delete this reservation from local storage? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400 hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteBooking(deleteConfirmId)}
+                className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-500"
+              >
+                Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
-
-function Field({ label: fieldLabel, wide = false, children }: { label: string; wide?: boolean; children: React.ReactNode }) {
-  return <label className={`block text-[10px] font-bold uppercase tracking-[.14em] text-[#17392f]/55 ${wide ? "sm:col-span-2" : ""}`}><span>{fieldLabel}</span><div className="mt-2 [&_input]:h-11 [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-[#17392f]/15 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-normal [&_input]:tracking-normal [&_select]:h-11 [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-[#17392f]/15 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-normal [&_select]:tracking-normal [&_textarea]:w-full [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-[#17392f]/15 [&_textarea]:bg-white [&_textarea]:p-3 [&_textarea]:text-sm [&_textarea]:font-normal [&_textarea]:tracking-normal">{children}</div></label>;
 }

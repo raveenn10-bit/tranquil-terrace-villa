@@ -324,11 +324,16 @@
         const isOpen = item.classList.contains("open");
 
         // Close all
-        document.querySelectorAll(".meta-faq-item").forEach((i) => i.classList.remove("open"));
+        document.querySelectorAll(".meta-faq-item").forEach((i) => {
+          i.classList.remove("open");
+          const qBtn = i.querySelector(".meta-faq-question");
+          if (qBtn) qBtn.setAttribute("aria-expanded", "false");
+        });
 
         // Toggle clicked
         if (!isOpen) {
           item.classList.add("open");
+          btn.setAttribute("aria-expanded", "true");
         }
       });
     });

@@ -386,3 +386,601 @@ form.availability,
   max-width: 100vw !important;
   overflow: hidden !important;
 }
+
+
+/* ==========================================================================
+   TRANQUIL TERRACE GALLE — MASTER LUXURY UPGRADES (2026/27)
+   1. Amenities Section (2-col mobile, 4-col desktop, #17392F, #FAF7F2, #C8A45D)
+   2. Instagram Social Proof (Moments at Tranquil Terrace)
+   3. Professional FAQ Accordion UI (Single-open)
+   4. Mobile 2x2 Grids for Footer Channels & Socials, Packages Visual Scaling Fix
+   ========================================================================== */
+
+/* 1. AMENITIES SECTION LUXURY THEMING */
+.meta-amenities-section {
+  background-color: #FAF7F2 !important;
+  background: #FAF7F2 !important;
+  padding: 6.5rem 1.5rem 6rem !important;
+  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
+  border-bottom: 1px solid rgba(200, 164, 93, 0.22) !important;
+}
+
+.meta-amenities-grid {
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 20px !important;
+  overflow: visible !important;
+}
+
+.meta-amenity-card {
+  background: #FFFFFF !important;
+  border-radius: 16px !important;
+  padding: 2rem 1.6rem !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  box-shadow: 0 4px 20px rgba(23, 57, 47, 0.04) !important;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease, box-shadow 0.35s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  position: relative !important;
+}
+
+.meta-amenity-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: #C8A45D !important;
+  box-shadow: 0 14px 32px rgba(23, 57, 47, 0.09) !important;
+}
+
+.meta-amenity-icon-wrap {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  background: #17392F !important;
+  color: #C8A45D !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 1.25rem !important;
+  border: 1px solid rgba(200, 164, 93, 0.35) !important;
+  box-shadow: 0 4px 12px rgba(23, 57, 47, 0.2) !important;
+  transition: transform 0.3s ease, background-color 0.3s ease !important;
+}
+
+.meta-amenity-card:hover .meta-amenity-icon-wrap {
+  transform: scale(1.06) !important;
+  background: #102922 !important;
+}
+
+.meta-amenity-card h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 1.35rem !important;
+  font-weight: 600 !important;
+  color: #17392F !important;
+  margin: 0 0 0.5rem 0 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.25 !important;
+}
+
+.meta-amenity-card p {
+  font-family: 'Manrope', -apple-system, sans-serif !important;
+  font-size: 0.86rem !important;
+  line-height: 1.6 !important;
+  color: #556157 !important;
+  margin: 0 !important;
+}
+
+/* 2. INSTAGRAM SOCIAL PROOF SECTION */
+.meta-instagram-section {
+  background-color: #FAF7F2 !important;
+  background: #FAF7F2 !important;
+  padding: 6rem 1.5rem 6.5rem !important;
+  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
+  position: relative !important;
+}
+
+.meta-instagram-container {
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+}
+
+.meta-instagram-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  margin-bottom: 2.75rem !important;
+  gap: 2rem !important;
+}
+
+.meta-instagram-header-left h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem) !important;
+  font-weight: 500 !important;
+  color: #17392F !important;
+  line-height: 1.15 !important;
+  margin: 0.35rem 0 0.6rem !important;
+}
+
+.ig-handle-link {
+  color: #C8A45D !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+.ig-handle-link:hover {
+  color: #17392F !important;
+  text-decoration: underline !important;
+}
+
+.meta-btn-gold-instagram {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  background: linear-gradient(135deg, #C8A45D 0%, #B89248 100%) !important;
+  color: #17392F !important;
+  font-family: 'Manrope', -apple-system, sans-serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  padding: 13px 26px !important;
+  border-radius: 40px !important;
+  text-decoration: none !important;
+  box-shadow: 0 6px 18px rgba(200, 164, 93, 0.32) !important;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.meta-btn-gold-instagram:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 24px rgba(200, 164, 93, 0.45) !important;
+  background: linear-gradient(135deg, #D4B26C 0%, #C49E52 100%) !important;
+  color: #0F251F !important;
+}
+
+.ig-btn-icon {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.meta-instagram-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 16px !important;
+}
+
+.meta-insta-card {
+  display: block !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  aspect-ratio: 1 / 1 !important;
+  box-shadow: 0 6px 18px rgba(23, 57, 47, 0.08) !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  background: #17392F !important;
+}
+
+.insta-img-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.insta-img-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.meta-insta-card:hover .insta-img-wrapper img {
+  transform: scale(1.08) !important;
+}
+
+.insta-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(135deg, rgba(23, 57, 47, 0.72) 0%, rgba(200, 164, 93, 0.65) 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease !important;
+  padding: 12px !important;
+  text-align: center !important;
+}
+
+.meta-insta-card:hover .insta-overlay {
+  opacity: 1 !important;
+}
+
+.insta-overlay-badge {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.insta-overlay-handle {
+  color: #FFFFFF !important;
+  font-family: 'Manrope', -apple-system, sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}
+
+.meta-instagram-mobile-action {
+  display: none !important;
+}
+
+/* 3. PROFESSIONAL FAQ ACCORDION UI */
+.meta-faq-section {
+  background-color: #FAF7F2 !important;
+  background: #FAF7F2 !important;
+  padding: 6.5rem 1.5rem 6.5rem !important;
+  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
+}
+
+.meta-faq-container {
+  max-width: 920px !important;
+  margin: 0 auto !important;
+}
+
+.meta-faq-container h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem) !important;
+  font-weight: 500 !important;
+  color: #17392F !important;
+  line-height: 1.15 !important;
+}
+
+.meta-faq-accordion {
+  margin-top: 3rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+.meta-faq-item {
+  background: #FFFFFF !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  box-shadow: 0 4px 16px rgba(23, 57, 47, 0.03) !important;
+  overflow: hidden !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.meta-faq-item:hover {
+  border-color: rgba(200, 164, 93, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(23, 57, 47, 0.06) !important;
+}
+
+.meta-faq-item.open {
+  border-color: #C8A45D !important;
+  box-shadow: 0 8px 26px rgba(200, 164, 93, 0.12) !important;
+}
+
+.meta-faq-question {
+  width: 100% !important;
+  text-align: left !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 1.4rem 1.75rem !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  gap: 1.25rem !important;
+}
+
+.meta-faq-question span:first-child {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #17392F !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.meta-faq-question span.faq-icon {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: #FAF7F2 !important;
+  border: 1px solid rgba(200, 164, 93, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.15rem !important;
+  font-weight: 400 !important;
+  color: #C8A45D !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.meta-faq-item.open .meta-faq-question span.faq-icon {
+  transform: rotate(45deg) !important;
+  background: #17392F !important;
+  color: #FAF7F2 !important;
+  border-color: #17392F !important;
+}
+
+.meta-faq-answer {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  transition: max-height 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.35s ease !important;
+  padding: 0 1.75rem !important;
+}
+
+.meta-faq-item.open .meta-faq-answer {
+  max-height: 500px !important;
+  padding: 0 1.75rem 1.5rem !important;
+}
+
+.meta-faq-answer p {
+  font-family: 'Manrope', -apple-system, sans-serif !important;
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+  color: #4A564C !important;
+  margin: 0 !important;
+}
+
+/* 4. MOBILE LAYOUT & SIZING FIXES (@media (max-width: 768px)) */
+@media (max-width: 768px) {
+  /* Amenities: Strict 2-column Grid */
+  .meta-amenities-section {
+    padding: 4.5rem 1.25rem 4rem !important;
+  }
+
+  .meta-amenities-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+  }
+
+  .meta-amenity-card {
+    flex: none !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 1.25rem 1rem !important;
+    border-radius: 14px !important;
+  }
+
+  .meta-amenity-icon-wrap {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .meta-amenity-icon-wrap svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .meta-amenity-card h4 {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .meta-amenity-card p {
+    font-size: 0.78rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Packages visual scaling fix on mobile */
+  .meta-package-visual {
+    max-height: 220px !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    width: 100% !important;
+  }
+
+  .meta-package-visual img {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* Instagram Horizontal Swipe Carousel on Mobile */
+  .meta-instagram-section {
+    padding: 4rem 1.25rem 4.5rem !important;
+  }
+
+  .meta-instagram-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .meta-instagram-header-right {
+    display: none !important;
+  }
+
+  .meta-instagram-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 12px !important;
+    padding: 4px 16px 16px 16px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    width: calc(100% + 32px) !important;
+    scrollbar-width: none !important;
+  }
+
+  .meta-instagram-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .meta-insta-card {
+    flex: 0 0 68vw !important;
+    max-width: 260px !important;
+    min-width: 220px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-instagram-mobile-action {
+    display: block !important;
+    margin-top: 1.5rem !important;
+  }
+
+  .meta-btn-gold-instagram.full-width {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Footer 2x2 Clean Grids on Mobile */
+  .footer-channel-cards {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .footer-channel-card {
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .channel-card-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .channel-brand-svg {
+    width: 22px !important;
+    height: 22px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .channel-card-left {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .channel-card-name {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+    color: #ffffff !important;
+  }
+
+  .channel-card-sub {
+    display: none !important;
+  }
+
+  .channel-card-arrow {
+    font-size: 11px !important;
+    margin-left: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .social-links-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .social-link {
+    min-height: 46px !important;
+    height: 46px !important;
+    padding: 6px 10px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .social-brand-svg {
+    width: 22px !important;
+    height: 22px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* FAQ on mobile */
+  .meta-faq-section {
+    padding: 4.5rem 1.25rem 4.5rem !important;
+  }
+
+  .meta-faq-question {
+    padding: 1.15rem 1.25rem !important;
+  }
+
+  .meta-faq-question span:first-child {
+    font-size: 1.1rem !important;
+  }
+
+  .meta-faq-answer {
+    padding: 0 1.25rem !important;
+  }
+
+  .meta-faq-item.open .meta-faq-answer {
+    padding: 0 1.25rem 1.25rem !important;
+  }
+
+  .meta-faq-answer p {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Tablet view (769px to 1024px) for Instagram Grid */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .meta-instagram-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+  .meta-amenities-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 14px !important;
+  }
+}
