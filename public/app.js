@@ -21,17 +21,49 @@ requestAnimationFrame(()=>document.body.classList.add('page-ready'));
 const menu=$('.menu-toggle'),nav=$('nav');menu.addEventListener('click',()=>{let open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation');nav.classList.toggle('open',open)});$$('nav a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','Open navigation')}));
 let ticking=false;function scrollEffects(){let y=scrollY,total=document.documentElement.scrollHeight-innerHeight;$('.progress').style.width=`${total>0?y/total*100:0}%`;$('header').classList.toggle('compact',y>35);$('.floating-book').classList.toggle('visible',y>750);if(!reduced){if(y<1000&&$('.hero-media'))$('.hero-media').style.transform=`translateY(${y*.2}px)`;if(innerWidth>800)$$('.motion-parallax').forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)el.style.setProperty('--motion-y',`${Math.max(-18,Math.min(18,(innerHeight/2-r.top-r.height/2)*.035))}px`)})}ticking=false}addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(scrollEffects);ticking=true}},{passive:true});scrollEffects();
 const booking=$('#booking'),form=$('#booking-form'),quick=$('#availability'),summary=$('#booking-summary'),error=$('#booking-error');
+const packageOptions={
+ day:{name:'Day Package',price:12500,time:'10:00 AM – 3:00 PM',meals:'Lunch included'},
+ night:{name:'Night Package',price:14500,time:'5:00 PM – 9:00 AM next day',meals:'Dinner & breakfast included'},
+ 'day-night':{name:'Day & Night Package',price:26000,time:'10:00 AM – 9:00 AM next day',meals:'Lunch, dinner & breakfast included'}
+};
+const money=value=>`Rs. ${new Intl.NumberFormat('en-LK').format(value)}`;
+function packageLabel(f){
+ const value=f.elements.package?.value||'day';
+ return packageOptions[value]||packageOptions.day;
+}
+function enhancePackageForm(f){
+ if(!f||f.elements.package)return;
+ const villa=f.elements.villa;
+ const label=document.createElement('label');
+ label.className=f===form?'full package-field':'package-field';
+ label.innerHTML='PACKAGE<select name="package" aria-label="Choose package"><option value="day">Day · Rs. 12,500</option><option value="night">Night · Rs. 14,500</option><option value="day-night">Day & Night · Rs. 26,000</option></select><small class="package-hint"></small>';
+ villa.closest('label').after(label);
+ const checkinLabel=f.elements.checkin.closest('label');
+ const checkoutLabel=f.elements.checkout.closest('label');
+ checkinLabel.childNodes[0].textContent='DATE ';
+ checkoutLabel.classList.add('package-checkout');
+ checkoutLabel.hidden=true;
+ const update=()=>{
+  const selected=packageLabel(f);
+  label.querySelector('.package-hint').textContent=`${selected.time} · ${selected.meals}`;
+  if(f.elements.checkin.value)f.elements.checkout.value=nextDate(f.elements.checkin.value);
+ };
+ f.elements.package.addEventListener('change',()=>{update();if(f===form)updateSummary();});
+ f.elements.checkin.addEventListener('change',update);
+ update();
+}
+[quick,form].forEach(enhancePackageForm);
 if(form&&!form.elements.phone){const phoneLabel=document.createElement('label');phoneLabel.innerHTML='PHONE / WHATSAPP<input autocomplete="tel" maxlength="30" name="phone" placeholder="+94 77 000 0000" required type="tel"/>';form.elements.email.closest('label').before(phoneLabel);const trap=document.createElement('input');trap.type='text';trap.name='website';trap.tabIndex=-1;trap.autocomplete='off';trap.hidden=true;form.append(trap)}
 const footerBottom=$('.new-footer .footer-bottom');if(footerBottom&&!footerBottom.querySelector('a[href="/admin"]')){const adminLink=document.createElement('a');adminLink.href='/admin';adminLink.className='footer-admin-link';adminLink.textContent='Staff Portal ↗';adminLink.setAttribute('aria-label','Open booking dashboard');footerBottom.insertBefore(adminLink,footerBottom.lastElementChild)}
 function localDate(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}function nextDate(value){const d=new Date(value+'T12:00:00');d.setDate(d.getDate()+1);return localDate(d)}
-function syncDates(f){const a=f.elements.checkin,b=f.elements.checkout;a.min=localDate();b.min=a.value?nextDate(a.value):nextDate(localDate());b.setCustomValidity('');if(a.value&&b.value&&b.value<=a.value)b.setCustomValidity('Check-out must be after check-in.');}
+function syncDates(f){const a=f.elements.checkin,b=f.elements.checkout;a.min=localDate();if(a.value&&f.elements.package)b.value=nextDate(a.value);b.min=a.value?nextDate(a.value):nextDate(localDate());b.setCustomValidity('');if(a.value&&b.value&&b.value<=a.value)b.setCustomValidity('Please choose a valid package date.');}
 function capacity(f){if(!['Araliya','Olu'].includes(f.elements.villa.value))f.elements.villa.value='Araliya';}
-function updateSummary(){syncDates(form);let d=new FormData(form),n=Math.round((new Date(d.get('checkout')+'T12:00:00')-new Date(d.get('checkin')+'T12:00:00'))/86400000);summary.textContent=n>0?`${d.get('villa')} · ${n} night${n>1?'s':''} · ${d.get('guests')} guest${d.get('guests')==='1'?'':'s'}`:'';error.textContent=''}
+function updateSummary(){syncDates(form);let d=new FormData(form),selected=packageLabel(form);summary.textContent=d.get('checkin')?`${d.get('villa')} · ${selected.name} · ${selected.time} · ${money(selected.price)} · ${d.get('guests')} guest${d.get('guests')==='1'?'':'s'}`:'';error.textContent=''}
 [quick,form].forEach(f=>{syncDates(f);capacity(f);f.addEventListener('change',()=>{capacity(f);syncDates(f);if(f===form)updateSummary();window.dispatchEvent(new Event('staydateschange'));})});
-function openBooking(values={}){if(!booking.open){$('#whatsapp-ready').hidden=true;form.hidden=false;error.textContent='';for(const [key,value]of Object.entries(values))if(form.elements[key]&&value!==undefined)form.elements[key].value=value;capacity(form);updateSummary();booking.showModal()}}
-$$('[data-book]').forEach(b=>b.addEventListener('click',()=>openBooking({villa:b.dataset.choice||quick.elements.villa.value,checkin:quick.elements.checkin.value,checkout:quick.elements.checkout.value,guests:quick.elements.guests.value,message:b.dataset.note||''})));
+function openBooking(values={}){if(!booking.open){$('#whatsapp-ready').hidden=true;form.hidden=false;error.textContent='';for(const [key,value]of Object.entries(values))if(form.elements[key]&&value!==undefined)form.elements[key].value=value;if(form.elements.checkin.value)form.elements.checkout.value=nextDate(form.elements.checkin.value);capacity(form);updateSummary();booking.showModal()}}
+$$('[data-book]').forEach(b=>b.addEventListener('click',()=>openBooking({villa:b.dataset.choice||quick.elements.villa.value,package:b.dataset.package||quick.elements.package.value,checkin:quick.elements.checkin.value,checkout:quick.elements.checkout.value,guests:quick.elements.guests.value,message:b.dataset.note||''})));
 quick.addEventListener('submit',e=>{e.preventDefault();syncDates(quick);if(quick.reportValidity())openBooking(Object.fromEntries(new FormData(quick)))});$('.close-dialog').addEventListener('click',()=>booking.close());booking.addEventListener('click',e=>{if(e.target===booking){const r=booking.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)booking.close()}});
-form.addEventListener('submit',async e=>{e.preventDefault();updateSummary();if(!form.reportValidity())return;const d=Object.fromEntries(new FormData(form));if(!d.name.trim()){error.textContent='Please enter your name.';form.elements.name.focus();return}if(!d.phone.trim()){error.textContent='Please enter your phone or WhatsApp number.';form.elements.phone.focus();return}if(d.checkin<localDate()||d.checkout<=d.checkin){error.textContent='Please choose valid future dates, with check-out after check-in.';return}if(Number(d.guests)<1||Number(d.guests)>2){error.textContent='Each villa accommodates up to two guests.';return}const submit=form.querySelector('button[type="submit"]'),original=submit.innerHTML;submit.disabled=true;submit.textContent='Saving your request…';error.textContent='';try{const response=await fetch('/api/bookings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({guestName:d.name,email:d.email,phone:d.phone,villaName:d.villa,checkin:d.checkin,checkout:d.checkout,guests:Number(d.guests),specialRequest:d.message,website:d.website})});const result=await response.json();if(!response.ok||!result.booking)throw new Error(result.error||'Your request could not be saved.');const ref=result.booking.reference;const msg=`Hello Tranquil Terrace Galle!\nI'd like to enquire about a stay.\n\nReference: ${ref}\nVilla: ${d.villa}\nCheck-in: ${d.checkin}\nCheck-out: ${d.checkout}\nGuests: ${d.guests}\nName: ${d.name.trim()}\nPhone: ${d.phone.trim()}${d.email?'\nEmail: '+d.email:''}${d.message.trim()?'\n\nSpecial request: '+d.message.trim():''}\n\nPlease confirm availability, rates and booking terms. Thank you!`;$('#request-preview').textContent=msg;$('#whatsapp-link').href='https://wa.me/94770682366?text='+encodeURIComponent(msg);$('#whatsapp-ready>p').textContent=`Your request ${ref} is saved. Review it below, then open WhatsApp and press send.`;form.hidden=true;$('#whatsapp-ready').hidden=false;booking.scrollTop=0;$('#whatsapp-link').focus()}catch(err){error.textContent=err instanceof Error?err.message:'Your request could not be saved. Please try again.'}finally{submit.disabled=false;submit.innerHTML=original}});$('#edit-request').addEventListener('click',()=>{form.hidden=false;$('#whatsapp-ready').hidden=true;form.elements.name.focus()});
+form.addEventListener('submit',async e=>{e.preventDefault();updateSummary();if(!form.reportValidity())return;const d=Object.fromEntries(new FormData(form)),selected=packageLabel(form);if(!d.name.trim()){error.textContent='Please enter your name.';form.elements.name.focus();return}if(!d.phone.trim()){error.textContent='Please enter your phone or WhatsApp number.';form.elements.phone.focus();return}if(d.checkin<localDate()||d.checkout<=d.checkin){error.textContent='Please choose a valid future date.';return}if(Number(d.guests)<1||Number(d.guests)>2){error.textContent='Each villa accommodates up to two guests.';return}const submit=form.querySelector('button[type="submit"]'),original=submit.innerHTML;submit.disabled=true;submit.textContent='Saving your request…';error.textContent='';try{const response=await fetch('/api/bookings',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({guestName:d.name,email:d.email,phone:d.phone,villaName:d.villa,package:d.package,checkin:d.checkin,checkout:d.checkout,guests:Number(d.guests),specialRequest:d.message,website:d.website})});const result=await response.json();if(!response.ok||!result.booking)throw new Error(result.error||'Your request could not be saved.');const ref=result.booking.reference;const msg=`Hello Tranquil Terrace Galle!\nI'd like to enquire about a package.\n\nReference: ${ref}\nVilla: ${d.villa}\nPackage: ${selected.name}\nDate: ${d.checkin}\nTime: ${selected.time}\nMeals: ${selected.meals}\nPrice: ${money(selected.price)}\nGuests: ${d.guests}\nName: ${d.name.trim()}\nPhone: ${d.phone.trim()}${d.email?'\nEmail: '+d.email:''}${d.message.trim()?'\n\nSpecial request: '+d.message.trim():''}\n\nPlease confirm final availability and booking terms. Thank you!`;$('#request-preview').textContent=msg;$('#whatsapp-link').href='https://wa.me/94770682366?text='+encodeURIComponent(msg);$('#whatsapp-ready>p').textContent=`Your request ${ref} is saved. Review it below, then open WhatsApp and press send.`;form.hidden=true;$('#whatsapp-ready').hidden=false;booking.scrollTop=0;$('#whatsapp-link').focus()}catch(err){error.textContent=err instanceof Error?err.message:'Your request could not be saved. Please try again.'}finally{submit.disabled=false;submit.innerHTML=original}});$('#edit-request').addEventListener('click',()=>{form.hidden=false;$('#whatsapp-ready').hidden=true;form.elements.name.focus()});
 $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{$$('[data-filter]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});const filter=b.dataset.filter;$('.gallery-grid').classList.toggle('filtered',filter!=='all');$$('.gallery-item').forEach(item=>{item.hidden=filter!=='all'&&item.dataset.category!==filter;if(!item.hidden)item.classList.add('in-view')})}));
 const lightbox=$('#lightbox'),captions=['The arrival · Tranquil Terrace Galle','Rest comes naturally · King bedroom','A private little world · The plunge pool','In good company with nature · The terrace','Slow mornings · Floating breakfast'];let photoIndex=0;function showPhoto(i){photoIndex=(i+5)%5;$('#lightbox img').src=`assets/villa-${photoIndex}.webp`;$('#lightbox img').alt=captions[photoIndex];$('#photo-caption').textContent=`${String(photoIndex+1).padStart(2,'0')} / 05 — ${captions[photoIndex]}`}
 $$('[data-image]').forEach(b=>b.addEventListener('click',()=>{showPhoto(Number(b.dataset.image));lightbox.showModal()}));$('.close-lightbox').addEventListener('click',()=>lightbox.close());$('.next-photo').addEventListener('click',()=>showPhoto(photoIndex+1));$('.prev-photo').addEventListener('click',()=>showPhoto(photoIndex-1));lightbox.addEventListener('keydown',e=>{if(e.key==='ArrowRight')showPhoto(photoIndex+1);if(e.key==='ArrowLeft')showPhoto(photoIndex-1)});
@@ -61,7 +93,7 @@ if($('#stay-calendar')){
 
  async function fetchAvailability(vName){
   isSyncing=true;
-  if(status)status.textContent=`Syncing live calendar with Booking.com, Agoda & Airbnb for Villa ${vName}…`;
+  if(status)status.textContent=`Checking saved reservations and connected calendars for Villa ${vName}…`;
   try{
    const res=await fetch(`/api/calendar/availability?villa=${encodeURIComponent(vName)}`);
    if(res.ok){
@@ -80,7 +112,7 @@ if($('#stay-calendar')){
     if(blockedDates.has(cur.toISOString().slice(0,10)))return true;
     cur.setUTCDate(cur.getUTCDate()+1);
    }
-  }catch(e){}
+  }catch{}
   return false;
  }
 
@@ -108,11 +140,11 @@ if($('#stay-calendar')){
   $('#cal-in').textContent=start?shortDate(start):'Select arrival';$('#cal-out').textContent=end?shortDate(end):'Select departure';
   if(start&&end){
    let n=Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(start+'T12:00:00Z'))/86400000),villa=$('#calendar-villa').value;
-   status.textContent=`${n} night${n===1?'':'s'} · Villa ${villa} · Available for your stay (Live synced).`;
+   status.textContent=`${n} night${n===1?'':'s'} · Villa ${villa} · Dates selected. Our team will confirm final availability.`;
    quick.elements.villa.value=villa;quick.elements.checkin.value=start;quick.elements.checkout.value=end;quick.elements.guests.value=$('#calendar-guests').value;
    syncDates(quick);refreshChannels(start,end,$('#calendar-guests').value);
   }else if(!isSyncing){
-   status.textContent=start?'Now choose your check-out date.':'Choose your check-in date, then your check-out date (Live synced with Booking.com, Agoda & Airbnb).';
+   status.textContent=start?'Now choose your check-out date.':'Choose your check-in date, then your check-out date. Final availability is confirmed by our team.';
    refreshChannels('','',$('#calendar-guests').value);
   }
  }
@@ -129,7 +161,7 @@ if($('#stay-calendar')){
   if(!b||b.disabled)return;
   const v=b.dataset.date;
   if(blockedDates.has(v)){
-   status.textContent=`${shortDate(v)} is already reserved on Booking.com/Agoda/Airbnb.`;
+   status.textContent=`${shortDate(v)} is already reserved for this villa.`;
    return;
   }
   if(!start||end||v<=start){
@@ -162,7 +194,7 @@ if($('#stay-calendar')){
    months.querySelector('[data-date]:not([disabled])')?.focus();
    return;
   }
-  openBooking({villa:$('#calendar-villa').value,checkin:start,checkout:end,guests:$('#calendar-guests').value});
+  openBooking({villa:$('#calendar-villa').value,package:quick.elements.package.value,checkin:start,checkout:end,guests:$('#calendar-guests').value});
   refreshChannels(start,end,$('#calendar-guests').value);
  });
  quick.addEventListener('change',()=>{
