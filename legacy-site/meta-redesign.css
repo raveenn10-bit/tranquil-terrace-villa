@@ -6125,12 +6125,19 @@ form.availability, .availability {
 \n
 /* ========================================================
    TRANQUIL TERRACE GALLE — 5-STAR ANIMATED LUXURY FOOTER
+   Color Palettes: 06 Mint Lagoon, 05 Dreamy Periwinkle, 04 Peach Champagne
    ======================================================== */
 :root {
   --tt-green: #082f28;
   --tt-gold: #eac085;
   --tt-cream: #f5eee1;
   --tt-muted: #b8c9bb;
+  --tt-peach: #FFD3B6;
+  --tt-peach-glow: #FFAAA6;
+  --tt-mint: #6DD5C4;
+  --tt-mint-light: #DFF6F0;
+  --tt-periwinkle: #B8C0FF;
+  --tt-periwinkle-light: #E7D8FF;
 }
 
 .tt-footer {
@@ -6140,7 +6147,7 @@ form.availability, .availability {
   isolation: isolate;
   padding: 0 0 1rem;
   overflow: hidden;
-  font-family: 'DM Sans', -apple-system, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .tt-footer a {
@@ -6148,17 +6155,18 @@ form.availability, .availability {
   text-decoration: none;
 }
 
+/* Panoramic Illustrated Tropical Landscape */
 .tt-landscape {
   height: 210px;
   position: relative;
-  background: linear-gradient(180deg, #f8f5ef 0%, #f4e8cf 67%, #e8caa2 100%);
+  background: linear-gradient(180deg, #E7D8FF 0%, #DFF7FF 32%, #FFD3B6 72%, #EAC085 100%);
   overflow: hidden;
 }
 
 .tt-sky-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 78% 74%, rgba(255, 222, 156, 0.7), transparent 19%);
+  background: radial-gradient(circle at 78% 74%, rgba(255, 211, 182, 0.65), rgba(109, 213, 196, 0.22) 42%, transparent 72%);
 }
 
 .tt-sun {
@@ -6167,9 +6175,9 @@ form.availability, .availability {
   position: absolute;
   right: 19%;
   bottom: 38px;
-  background: linear-gradient(#f9ce8c, #e4a75f);
+  background: radial-gradient(circle at 40% 40%, #FFFFFF 0%, #FFD3B6 38%, #EAC085 75%, #D48B47 100%);
   border-radius: 50%;
-  box-shadow: 0 0 52px 8px #ecbc7d66;
+  box-shadow: 0 0 54px 10px rgba(255, 211, 182, 0.75), 0 0 85px 25px rgba(109, 213, 196, 0.25);
   animation: tt-sunrise 2s ease-out both;
 }
 
@@ -6204,6 +6212,7 @@ form.availability, .availability {
   animation: tt-birds-float 7s ease-in-out infinite alternate;
 }
 
+/* Footer Container & Grid */
 .tt-inner {
   position: relative;
   z-index: 2;
@@ -6214,10 +6223,11 @@ form.availability, .availability {
 
 .tt-grid {
   display: grid;
-  grid-template-columns: 1.2fr 0.85fr 1.05fr 1fr;
+  grid-template-columns: 1.25fr 0.9fr 1.05fr 1fr;
   gap: clamp(23px, 3.6vw, 58px);
 }
 
+/* Brand Section */
 .tt-brand-title {
   display: flex !important;
   gap: 16px !important;
@@ -6304,8 +6314,8 @@ form.availability, .availability {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(234, 192, 133, 0.08);
-  border: 1px solid rgba(234, 192, 133, 0.25);
+  background: rgba(109, 213, 196, 0.1);
+  border: 1px solid rgba(109, 213, 196, 0.35);
   border-radius: 20px;
   padding: 5px 12px;
   font-size: 0.76rem;
@@ -6314,16 +6324,17 @@ form.availability, .availability {
 }
 
 .tt-badge:hover {
-  background: rgba(234, 192, 133, 0.16);
-  border-color: var(--tt-gold);
+  background: rgba(109, 213, 196, 0.2);
+  border-color: var(--tt-mint);
 }
 
 .tt-badge strong {
-  color: var(--tt-gold);
+  color: var(--tt-peach);
 }
 
+/* Radiant Peach Champagne CTA Button */
 .tt-button {
-  background: linear-gradient(130deg, #f5d69d, #dfb36e);
+  background: linear-gradient(135deg, #FFD3B6 0%, #EAC085 45%, #C89B55 100%);
   border-radius: 100px;
   padding: 13px 24px;
   display: inline-flex;
@@ -6331,22 +6342,24 @@ form.availability, .availability {
   justify-content: space-between;
   min-width: 200px;
   gap: 18px;
-  color: #12372e !important;
+  color: #0A332B !important;
   font-weight: 700;
   font-size: 0.88rem;
-  box-shadow: 0 7px 25px rgba(0, 29, 24, 0.3);
-  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: 0 7px 25px rgba(0, 29, 24, 0.3), 0 0 15px rgba(255, 211, 182, 0.22);
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
 }
 
 .tt-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #FFF5EB 0%, #FFD3B6 40%, #EAC085 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(255, 211, 182, 0.4);
 }
 
 .tt-button span:last-child {
   font-size: 1.25rem;
 }
 
+/* Footer Columns Header */
 .tt-column h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
   color: var(--tt-gold);
@@ -6386,7 +6399,7 @@ form.availability, .availability {
 }
 
 .tt-column > a:hover {
-  color: var(--tt-gold) !important;
+  color: var(--tt-peach) !important;
   transform: translateX(4px) !important;
 }
 
@@ -6395,6 +6408,91 @@ form.availability, .availability {
   font-size: 0.82rem !important;
   color: var(--tt-muted) !important;
   white-space: nowrap !important;
+}
+
+/* Explore 2-Column Desktop & Subcol Structure */
+.tt-nav-grid-2col {
+  display: flex;
+  flex-direction: column;
+}
+
+.tt-nav-subcol > a {
+  display: flex !important;
+  gap: 11px !important;
+  align-items: center !important;
+  margin-bottom: 14px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.tt-nav-subcol > a span {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+
+.tt-nav-subcol > a:hover {
+  color: var(--tt-peach) !important;
+  transform: translateX(4px) !important;
+}
+
+.tt-nav-subcol > a.tt-sub-nav {
+  padding-left: 14px !important;
+  font-size: 0.82rem !important;
+  color: var(--tt-muted) !important;
+  white-space: nowrap !important;
+}
+
+/* Guest Details Accordion (Desktop Open / Mobile Collapsible) */
+.tt-guest-details {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tt-guest-summary {
+  list-style: none;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tt-guest-summary::-webkit-details-marker {
+  display: none;
+}
+
+.tt-acc-arrow {
+  display: none;
+  font-size: 1.1rem;
+  color: var(--tt-gold);
+  transition: transform 0.3s ease;
+}
+
+.tt-guest-links > a {
+  display: flex !important;
+  gap: 11px !important;
+  align-items: center !important;
+  margin-bottom: 14px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.tt-guest-links > a span {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+
+.tt-guest-links > a:hover {
+  color: var(--tt-peach) !important;
+  transform: translateX(4px) !important;
 }
 
 .tt-direct-guarantee {
@@ -6406,8 +6504,8 @@ form.availability, .availability {
 
 /* PARTNERS / SOCIAL & OTAS */
 .tt-partners {
-  border-top: 1px solid rgba(119, 144, 131, 0.3);
-  border-bottom: 1px solid rgba(119, 144, 131, 0.3);
+  border-top: 1px solid rgba(109, 213, 196, 0.25);
+  border-bottom: 1px solid rgba(109, 213, 196, 0.25);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6443,7 +6541,7 @@ form.availability, .availability {
 
 .tt-social:hover {
   transform: translateY(-3px);
-  filter: brightness(1.1);
+  filter: brightness(1.15);
 }
 
 .tt-ota-badge {
@@ -6453,16 +6551,17 @@ form.availability, .availability {
   padding: 6px 12px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: #fff;
   font-size: 0.82rem;
   font-weight: 700;
-  transition: transform 0.25s, background 0.25s;
+  transition: transform 0.25s, background 0.25s, border-color 0.25s;
 }
 
 .tt-ota-badge:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.12);
+  border-color: var(--tt-mint);
 }
 
 .tt-ota-agoda-txt {
@@ -6516,7 +6615,7 @@ form.availability, .availability {
 .tt-legal-links a:hover,
 .tt-admin-link:hover,
 .tt-back-top:hover {
-  color: var(--tt-gold);
+  color: var(--tt-peach);
 }
 
 .tt-leaf {
@@ -6569,7 +6668,7 @@ form.availability, .availability {
 }
 
 /* ========================================================
-   RESPONSIVE & MOBILE POLISH (CLEAN PROFESSIONAL SPLIT)
+   RESPONSIVE & MOBILE POLISH (STRICT COMPACT SPEC 320px–430px)
    ======================================================== */
 @media (max-width: 1050px) {
   .tt-grid {
@@ -6589,41 +6688,52 @@ form.availability, .availability {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 85px) !important;
   }
 
+  /* Compact silhouette height 110px per spec (90-130px) */
   .tt-landscape {
-    height: 145px;
+    height: 110px !important;
   }
 
   .tt-sun {
-    width: 44px;
-    height: 44px;
-    bottom: 26px;
-    right: 20%;
+    width: 38px !important;
+    height: 38px !important;
+    bottom: 22px !important;
+    right: 22% !important;
   }
 
   .tt-birds {
-    width: 65px;
-    right: 18%;
-    top: 14px;
+    width: 55px !important;
+    right: 20% !important;
+    top: 12px !important;
   }
 
   .tt-inner {
-    padding: 26px 18px 0;
+    padding: 20px 16px 0 !important;
   }
 
-  /* Strict 2-column split layout for mobile */
+  /* Compact single column with 14-16px element spacing */
   .tt-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 26px 16px !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 
+  /* Centered compact brand */
   .tt-brand {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
     grid-column: 1 / -1 !important;
+  }
+
+  .tt-brand-title {
+    justify-content: center !important;
+    gap: 12px !important;
   }
 
   .tt-monogram,
   .tt-monogram-svg {
-    width: 60px !important;
-    height: 66px !important;
+    width: 54px !important;
+    height: 60px !important;
   }
 
   .tt-monogram {
@@ -6640,97 +6750,208 @@ form.availability, .availability {
 
   .tt-brand strong,
   .tt-brand-text strong {
-    font-size: 2.1rem !important;
+    font-size: 1.85rem !important;
     line-height: 0.92 !important;
     color: #FFFFFF !important;
+    text-align: left !important;
   }
 
   .tt-brand small,
   .tt-brand-text small {
-    font-size: 9.5px !important;
-    letter-spacing: 0.38em !important;
-    margin-top: 8px !important;
+    font-size: 8.5px !important;
+    letter-spacing: 0.32em !important;
+    margin-top: 4px !important;
     color: #EAC085 !important;
+    text-align: left !important;
   }
 
   .tt-brand p {
-    font-size: 0.84rem !important;
-    line-height: 1.6 !important;
-    margin: 14px 0 16px !important;
-    max-width: 100% !important;
+    font-size: 0.8rem !important;
+    line-height: 1.5 !important;
+    margin: 10px auto 12px !important;
+    max-width: 320px !important;
+    text-align: center !important;
+  }
+
+  .tt-badges {
+    margin-bottom: 12px !important;
+  }
+
+  .tt-badge {
+    padding: 4px 10px !important;
+    font-size: 0.72rem !important;
   }
 
   .tt-button {
-    padding: 12px 20px !important;
+    padding: 11px 20px !important;
     font-size: 0.82rem !important;
     min-width: 0 !important;
-    width: auto !important;
-    max-width: 260px !important;
+    width: 100% !important;
+    max-width: 280px !important;
     justify-content: center !important;
-    gap: 12px !important;
-  }
-
-  .tt-column:last-child {
-    grid-column: 1 / -1 !important;
-    margin-top: 8px !important;
-    border-top: 1px solid rgba(119, 144, 131, 0.2) !important;
-    padding-top: 18px !important;
-  }
-
-  .tt-column h2 {
-    font-size: 1.35rem !important;
-    margin: 0 0 12px !important;
-    padding-bottom: 8px !important;
-  }
-
-  .tt-column > a {
-    font-size: 0.78rem !important;
-    gap: 7px !important;
-    margin-bottom: 10px !important;
-    white-space: nowrap !important;
-    overflow-wrap: normal !important;
-    word-break: keep-all !important;
-  }
-
-  .tt-column > a span {
-    white-space: nowrap !important;
-  }
-
-  .tt-partners {
-    margin-top: 26px !important;
-    padding: 18px 0 !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 14px !important;
-  }
-
-  .tt-partner-group {
     gap: 10px !important;
+  }
+
+  /* Explore: 2 clean columns side-by-side */
+  .tt-column-explore {
+    padding-top: 4px !important;
+  }
+
+  .tt-column-explore h2 {
+    font-size: 1.25rem !important;
+    margin: 0 0 10px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tt-nav-grid-2col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4px 12px !important;
+  }
+
+  .tt-nav-subcol > a {
+    font-size: 0.78rem !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+
+  /* Guest information: compact collapsible accordion */
+  .tt-column-guest {
+    border-top: 1px solid rgba(119, 144, 131, 0.2) !important;
+    padding-top: 12px !important;
+  }
+
+  .tt-guest-details {
     width: 100% !important;
   }
 
+  .tt-guest-summary {
+    cursor: pointer !important;
+    padding: 4px 0 !important;
+    user-select: none !important;
+  }
+
+  .tt-guest-summary h2 {
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .tt-guest-summary h2:after {
+    display: none !important;
+  }
+
+  .tt-acc-arrow {
+    display: inline-block !important;
+  }
+
+  .tt-guest-details[open] .tt-acc-arrow {
+    transform: rotate(180deg) !important;
+  }
+
+  .tt-guest-links {
+    padding-top: 10px !important;
+  }
+
+  .tt-guest-links > a {
+    font-size: 0.78rem !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+
+  /* Contact column */
+  .tt-column-contact {
+    border-top: 1px solid rgba(119, 144, 131, 0.2) !important;
+    padding-top: 12px !important;
+  }
+
+  .tt-column-contact h2 {
+    font-size: 1.25rem !important;
+    margin: 0 0 10px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tt-column-contact > a {
+    font-size: 0.78rem !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+
+  .tt-direct-guarantee {
+    font-size: 0.72rem !important;
+    line-height: 1.5 !important;
+    margin-top: 10px !important;
+  }
+
+  /* Partners bar: compact horizontal rows */
+  .tt-partners {
+    margin-top: 16px !important;
+    padding: 14px 0 !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 12px !important;
+  }
+
+  .tt-partner-group {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 2px !important;
+  }
+
+  .tt-partner-group > span:first-child {
+    font-size: 0.65rem !important;
+    white-space: nowrap !important;
+    margin-right: 2px !important;
+  }
+
   .tt-social {
-    width: 44px !important;
-    height: 44px !important;
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0 !important;
   }
 
   .tt-ota-badge {
-    padding: 6px 10px !important;
-    font-size: 0.78rem !important;
+    padding: 5px 8px !important;
+    font-size: 0.74rem !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
   }
 
+  .tt-ota-badge svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* Legal bar */
   .tt-legal {
     flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 10px !important;
-    font-size: 0.72rem !important;
-    line-height: 1.5 !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    padding: 14px 0 4px !important;
+    font-size: 0.7rem !important;
   }
 
   .tt-legal-copy {
     flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 4px !important;
+    align-items: center !important;
+    gap: 3px !important;
   }
 
   .tt-legal-sep {
@@ -6738,7 +6959,8 @@ form.availability, .availability {
   }
 
   .tt-legal-links {
-    gap: 14px !important;
+    justify-content: center !important;
+    gap: 10px !important;
   }
 
   .tt-leaf {

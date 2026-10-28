@@ -574,33 +574,50 @@
         <g id="villa">
           <path d="M0 0 V-47 H138 V0Z" fill="#0a332b"/>
           <path d="M-9 -47 L18 -66 H118 L147 -47Z" fill="#082b25"/>
-          <path d="M21 -41 H48 V-6 H21Z M63 -41 H91 V-6 H63Z M106 -41 H126 V-6 H106Z" fill="#e8c28a" opacity=".68"/>
+          <path d="M21 -41 H48 V-6 H21Z M63 -41 H91 V-6 H63Z M106 -41 H126 V-6 H106Z" fill="#FFD3B6" opacity=".78"/>
+          <!-- Mint Lagoon Shimmer Pool & Loungers -->
+          <rect x="145" y="-12" width="68" height="12" rx="3" fill="#6DD5C4" fill-opacity="0.85"/>
+          <path d="M148 -6 Q162 -9 178 -6 T208 -6" stroke="#DFF6F0" stroke-width="1.2" fill="none" opacity="0.9"/>
+          <path d="M218 -12 L227 -16 L234 -12" stroke="#FFD3B6" stroke-width="1.5" fill="none"/>
           <path d="M-12 -6 H150 L169 4 H-16Z" fill="#0c3a31"/>
+        </g>
+        <!-- Galle Fort Historic Lighthouse -->
+        <g id="lighthouse">
+          <path d="M0 0 H140 V-18 H0Z M21 -18 V-64 H43 V-18 M82 -18 V-46 H119 V-18" fill="#092f28"/>
+          <path d="M10 -64 H55 L32 -79Z M74 -46 H125 L100 -59Z" fill="#092f28"/>
+          <polygon points="32,-18 36,-96 46,-96 50,-18" fill="#082923"/>
+          <rect x="33" y="-98" width="16" height="3" fill="#092f28"/>
+          <rect x="35" y="-108" width="12" height="10" fill="#FFD3B6" opacity="0.92"/>
+          <path d="M33 -108 H49 L41 -118 Z" fill="#092f28"/>
+          <polygon points="41,-103 -180,-125 -180,-80" fill="url(#beacon-glow)" opacity="0.32"/>
         </g>
         <g id="shrub" fill="#09352d">
           <path d="M0 0 Q-42 -25 -7 -45 Q-9 -20 0 0 Q5 -49 24 -43 Q17 -20 0 0 Q42 -34 47 -15 Q18 -4 0 0Z"/>
         </g>
+        <linearGradient id="beacon-glow" x1="100%" y1="50%" x2="0%" y2="50%">
+          <stop offset="0%" stop-color="#FFD3B6" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#FFD3B6" stop-opacity="0"/>
+        </linearGradient>
       </defs>
-      <path d="M0 156 Q120 112 248 145 T508 139 T782 146 T1050 154 T1440 160 V220 H0Z" fill="#123e33"/>
+      <!-- Back Wave Contour (Dusk Emerald #103E33) -->
+      <path d="M0 154 Q120 110 248 143 T508 137 T782 144 T1050 152 T1440 158 V220 H0Z" fill="#103E33"/>
       <g class="tt-palm tt-palm-a" transform="translate(62 143) scale(1.05)"><use href="#palm"/></g>
       <g class="tt-palm tt-palm-b" transform="translate(227 142) scale(.8)"><use href="#palm"/></g>
       <g class="tt-palm tt-palm-c" transform="translate(421 142) scale(.65)"><use href="#palm"/></g>
       <g class="tt-palm tt-palm-d" transform="translate(827 150) scale(.81)"><use href="#palm"/></g>
       <g class="tt-palm tt-palm-e" transform="translate(1170 154) scale(.72)"><use href="#palm"/></g>
-      <g transform="translate(105 145)"><use href="#villa"/></g>
-      <g transform="translate(300 147) scale(.7)"><use href="#villa"/></g>
-      <g transform="translate(1230 156)">
-        <path d="M0 0 H140 V-18 H0Z M21 -18 V-64 H43 V-18 M82 -18 V-46 H119 V-18" fill="#092f28"/>
-        <path d="M10 -64 H55 L32 -79Z M74 -46 H125 L100 -59Z" fill="#092f28"/>
-        <rect x="35" y="-96" width="12" height="33" fill="#092f28"/>
-        <path d="M31 -96 H51 L41 -106Z" fill="#092f28"/>
-      </g>
+      <!-- Left: Villa with Mint Lagoon Pool -->
+      <g transform="translate(95 145)"><use href="#villa"/></g>
+      <g transform="translate(320 147) scale(.7)"><use href="#villa"/></g>
+      <!-- Right: Galle Fort Lighthouse -->
+      <g transform="translate(1230 156)"><use href="#lighthouse"/></g>
       <g transform="translate(534 159)"><use href="#shrub"/></g>
       <g transform="translate(973 158)"><use href="#shrub"/></g>
       <g transform="translate(1390 171)"><use href="#shrub"/></g>
-      <path d="M0 170 Q120 143 245 160 T485 169 T741 168 T986 166 T1243 171 T1440 172 V220 H0Z" fill="#082f28"/>
+      <!-- Front Wave Contour (Deep Forest #082F28) -->
+      <path d="M0 170 Q120 143 245 160 T485 169 T741 168 T986 166 T1243 171 T1440 172 V220 H0Z" fill="#082F28"/>
     </svg>
-    <svg class="tt-birds" viewBox="0 0 180 70" fill="none" stroke="#123e33" stroke-width="2.5" stroke-linecap="round">
+    <svg class="tt-birds" viewBox="0 0 180 70" fill="none" stroke="#103E33" stroke-width="2.5" stroke-linecap="round">
       <path d="M12 28 Q26 16 40 29 Q54 15 68 26 M91 17 Q102 9 113 18 Q123 8 135 16 M136 46 Q147 38 157 47 Q168 37 177 44"/>
     </svg>
   </div>
@@ -627,7 +644,7 @@
         <p>Two private pool villas in Galle, offering a peaceful tropical escape with modern comforts and timeless Sri Lankan charm amidst lush cinnamon hills.</p>
         <div class="tt-badges">
           <a class="tt-badge" href="https://www.google.com/maps/place/Tranquil+Terrace+Galle/@6.0750215,80.2264243,17z/data=!4m11!3m10!1s0x3ae17190008d4b95:0x7d9bae152f119179!5m2!4m1!1i2!8m2!3d6.0750215!4d80.2264243!9m1!1b1!16s%2Fg%2F11xsjw9mts!18m1!1e1" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="#EAC085" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg viewBox="0 0 24 24" fill="#FFD3B6" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
             <span><strong>4.6 / 5.0</strong> Google Reviews (49 verified reviews) &nearr;</span>
           </a>
         </div>
@@ -637,30 +654,43 @@
         </a>
       </section>
 
-      <!-- Col 2: Explore Navigation -->
-      <nav class="tt-column tt-reveal" aria-label="Footer navigation">
+      <!-- Col 2: Explore Navigation (2 Columns on Mobile) -->
+      <nav class="tt-column tt-column-explore" aria-label="Footer navigation">
         <h2>Explore</h2>
-        <a href="index.html">⌂ <span>Home</span></a>
-        <a href="villas.html">▣ <span>Our Villas</span></a>
-        <a href="villas.html#araliya" class="tt-sub-nav">&#8627; <span>Villa Araliya</span></a>
-        <a href="villas.html#olu" class="tt-sub-nav">&#8627; <span>Villa Olu</span></a>
-        <a href="gallery.html">▧ <span>Gallery</span></a>
-        <a href="index.html#packages">▤ <span>Packages &amp; Booking</span></a>
-        <a href="contact.html">⌖ <span>Contact &amp; Location</span></a>
+        <div class="tt-nav-grid-2col">
+          <div class="tt-nav-subcol">
+            <a href="index.html">⌂ <span>Home</span></a>
+            <a href="villas.html">▣ <span>Our Villas</span></a>
+            <a href="villas.html#araliya" class="tt-sub-nav">&#8627; <span>Villa Araliya</span></a>
+            <a href="villas.html#olu" class="tt-sub-nav">&#8627; <span>Villa Olu</span></a>
+          </div>
+          <div class="tt-nav-subcol">
+            <a href="gallery.html">▧ <span>Gallery</span></a>
+            <a href="index.html#packages">▤ <span>Packages &amp; Booking</span></a>
+            <a href="contact.html">⌖ <span>Contact &amp; Location</span></a>
+          </div>
+        </div>
       </nav>
 
-      <!-- Col 3: Guest Information -->
-      <nav class="tt-column tt-reveal" aria-label="Guest information">
-        <h2>Guest Information</h2>
-        <a href="contact.html#faq">? <span>Frequently Asked Questions</span></a>
-        <a href="index.html#faq">◷ <span>Check-in 2 PM &middot; Check-out 11 AM</span></a>
-        <a href="index.html#faq">≡ <span>Cancellation Policy</span></a>
-        <a href="contact.html#stay-calendar">📅 <span>Live Availability Calendar</span></a>
-        <a href="https://maps.app.goo.gl/RJAmGePoCYyHsJYX8" target="_blank" rel="noopener">⌖ <span>Google Maps &amp; Directions &nearr;</span></a>
+      <!-- Col 3: Guest Information (Accordion on Mobile, Column on Desktop) -->
+      <nav class="tt-column tt-column-guest" aria-label="Guest information">
+        <details class="tt-guest-details" open>
+          <summary class="tt-guest-summary">
+            <h2>Guest Information</h2>
+            <span class="tt-acc-arrow" aria-hidden="true">▾</span>
+          </summary>
+          <div class="tt-guest-links">
+            <a href="contact.html#faq">? <span>Frequently Asked Questions</span></a>
+            <a href="index.html#faq">◷ <span>Check-in 2 PM &middot; Check-out 11 AM</span></a>
+            <a href="index.html#faq">≡ <span>Cancellation Policy</span></a>
+            <a href="contact.html#stay-calendar">📅 <span>Live Availability Calendar</span></a>
+            <a href="https://maps.app.goo.gl/RJAmGePoCYyHsJYX8" target="_blank" rel="noopener">⌖ <span>Google Maps &amp; Directions &nearr;</span></a>
+          </div>
+        </details>
       </nav>
 
       <!-- Col 4: Contact & Direct Perks -->
-      <section class="tt-column tt-reveal" aria-label="Direct contact">
+      <section class="tt-column tt-column-contact" aria-label="Direct contact">
         <h2>Contact &amp; Concierge</h2>
         <a href="tel:+94770682366">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -669,6 +699,10 @@
         <a href="https://wa.me/94770682366" target="_blank" rel="noopener" data-whatsapp-book="" aria-label="WhatsApp Concierge">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none"><path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z"/><path fill="#FFF" fill-rule="evenodd" d="M17.51 14.38C17.21 14.23 15.74 13.51 15.47 13.41C15.19 13.31 15 13.26 14.8 13.56C14.6 13.86 14.04 14.52 13.86 14.72C13.69 14.92 13.52 14.94 13.22 14.79C12.92 14.64 11.96 14.33 10.82 13.31C9.94 12.52 9.34 11.55 9.17 11.25C9 10.95 9.15 10.79 9.3 10.64C9.43 10.51 9.6 10.29 9.75 10.12C9.9 9.94 9.95 9.82 10.05 9.62C10.15 9.42 10.1 9.24 10.02 9.09C9.95 8.94 9.35 7.47 9.1 6.86C8.86 6.27 8.61 6.35 8.43 6.34C8.26 6.33 8.06 6.33 7.86 6.33C7.66 6.33 7.34 6.41 7.06 6.71C6.79 7.01 6.02 7.73 6.02 9.19C6.02 10.65 7.08 12.06 7.23 12.26C7.38 12.46 9.32 15.46 12.3 16.74C13.01 17.05 13.57 17.23 14 17.37C14.71 17.6 15.36 17.57 15.87 17.49C16.44 17.4 17.63 16.77 17.88 16.06C18.13 15.36 18.13 14.75 18.05 14.63C17.98 14.5 17.81 14.43 17.51 14.28V14.38Z"/></svg>
           <span>WhatsApp Concierge &nearr;</span>
+        </a>
+        <a href="mailto:hello@tranquilterracegalle.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>hello@tranquilterracegalle.com</span>
         </a>
         <a href="https://www.instagram.com/tranquil_terrace_galle/" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
