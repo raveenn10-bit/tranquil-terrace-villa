@@ -6219,10 +6219,11 @@ form.availability, .availability {
 }
 
 .tt-brand-title {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  color: #fff;
+  display: flex !important;
+  gap: 16px !important;
+  align-items: center !important;
+  color: #FFFFFF !important;
+  text-decoration: none !important;
 }
 
 .tt-monogram {
@@ -6232,12 +6233,22 @@ form.availability, .availability {
   font-size: 4.4rem;
   position: relative;
   line-height: 1;
-  border: 1px solid #d4b47b;
+  border: 1.8px solid #D4B47B;
   border-radius: 70px 70px 10px 10px;
   width: 75px;
   height: 82px;
+  background: #0A332B;
   color: var(--tt-gold);
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.tt-monogram-svg {
+  width: 75px;
+  height: 82px;
+  display: block;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
 }
 
 .tt-monogram span {
@@ -6245,23 +6256,36 @@ form.availability, .availability {
   left: 40px;
   top: 21px;
   font-size: 2.4rem;
-  color: white;
+  color: #FFFFFF;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-.tt-brand strong {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.2rem, 3.2vw, 3.2rem);
-  font-weight: 500;
-  line-height: 0.78;
-  display: block;
+.tt-brand-text {
+  display: flex !important;
+  flex-direction: column !important;
 }
 
-.tt-brand small {
-  font-size: 10px;
-  letter-spacing: 0.42em;
-  color: var(--tt-gold);
-  display: block;
-  margin-top: 14px;
+.tt-brand strong,
+.tt-brand-text strong {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(2.2rem, 3.2vw, 3.2rem) !important;
+  font-weight: 600 !important;
+  line-height: 0.92 !important;
+  color: #FFFFFF !important;
+  letter-spacing: -0.01em !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55), 0 0 2px rgba(0, 0, 0, 0.8) !important;
+  display: block !important;
+}
+
+.tt-brand small,
+.tt-brand-text small {
+  font-size: 11px !important;
+  letter-spacing: 0.44em !important;
+  color: #EAC085 !important;
+  font-weight: 700 !important;
+  display: block !important;
+  margin-top: 8px !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
 }
 
 .tt-brand p {
@@ -6344,24 +6368,33 @@ form.availability, .availability {
 }
 
 .tt-column > a {
-  display: flex;
-  gap: 11px;
-  align-items: center;
-  margin-bottom: 14px;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  display: flex !important;
+  gap: 11px !important;
+  align-items: center !important;
+  margin-bottom: 14px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
   transition: color 0.25s, transform 0.25s;
 }
 
+.tt-column > a span {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+
 .tt-column > a:hover {
-  color: var(--tt-gold);
-  transform: translateX(4px);
+  color: var(--tt-gold) !important;
+  transform: translateX(4px) !important;
 }
 
 .tt-column > a.tt-sub-nav {
-  padding-left: 14px;
-  font-size: 0.82rem;
-  color: var(--tt-muted);
+  padding-left: 14px !important;
+  font-size: 0.82rem !important;
+  color: var(--tt-muted) !important;
+  white-space: nowrap !important;
 }
 
 .tt-direct-guarantee {
@@ -6504,16 +6537,16 @@ form.availability, .availability {
   transform: rotate(205deg);
 }
 
-/* REVEAL ANIMATIONS */
+/* REVEAL ANIMATIONS (Ensures guaranteed visibility) */
 .tt-reveal {
-  opacity: 0;
-  transform: translateY(22px);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .tt-reveal.tt-visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .tt-grid .tt-reveal:nth-child(2) { transition-delay: 0.12s; }
@@ -6587,9 +6620,13 @@ form.availability, .availability {
     grid-column: 1 / -1 !important;
   }
 
+  .tt-monogram,
+  .tt-monogram-svg {
+    width: 60px !important;
+    height: 66px !important;
+  }
+
   .tt-monogram {
-    width: 56px !important;
-    height: 62px !important;
     font-size: 3.2rem !important;
     border-radius: 40px 40px 8px 8px !important;
   }
@@ -6598,17 +6635,22 @@ form.availability, .availability {
     left: 29px !important;
     top: 15px !important;
     font-size: 1.8rem !important;
+    color: #FFFFFF !important;
   }
 
-  .tt-brand strong {
+  .tt-brand strong,
+  .tt-brand-text strong {
     font-size: 2.1rem !important;
-    line-height: 0.82 !important;
+    line-height: 0.92 !important;
+    color: #FFFFFF !important;
   }
 
-  .tt-brand small {
-    font-size: 9px !important;
-    letter-spacing: 0.35em !important;
-    margin-top: 10px !important;
+  .tt-brand small,
+  .tt-brand-text small {
+    font-size: 9.5px !important;
+    letter-spacing: 0.38em !important;
+    margin-top: 8px !important;
+    color: #EAC085 !important;
   }
 
   .tt-brand p {
@@ -6645,7 +6687,13 @@ form.availability, .availability {
     font-size: 0.78rem !important;
     gap: 7px !important;
     margin-bottom: 10px !important;
-    overflow-wrap: anywhere !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+  }
+
+  .tt-column > a span {
+    white-space: nowrap !important;
   }
 
   .tt-partners {
