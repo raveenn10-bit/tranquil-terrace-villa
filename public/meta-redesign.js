@@ -392,6 +392,8 @@
 // ==========================================
 (function() {
   function initLuxuryNav() {
+    if (window.__luxuryNavInitialized) return;
+    window.__luxuryNavInitialized = true;
     const burger = document.getElementById("luxury-burger-btn") || document.querySelector(".luxury-burger-btn");
     const drawer = document.getElementById("luxury-mobile-drawer") || document.querySelector(".luxury-mobile-drawer");
     const closeBtn = document.getElementById("luxury-drawer-close") || document.querySelector(".drawer-close-btn");
@@ -1294,4 +1296,31 @@
   initSearchStrip();
   initWhatsAppModal();
   initMobileCarousels();
+})();
+
+
+// Tranquil Terrace Footer Reveal & Copyright Observer
+(function() {
+  function initFooterReveal() {
+    const items = document.querySelectorAll('.tt-reveal');
+    if (!items.length) return;
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(el => el.classList.add('tt-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('tt-visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.08 });
+    items.forEach(el => observer.observe(el));
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFooterReveal);
+  } else {
+    initFooterReveal();
+  }
 })();

@@ -178,3 +178,30 @@ if($('#stay-calendar')){
  renderCalendar();
  fetchAvailability($('#calendar-villa').value);
 }
+
+
+// Tranquil Terrace Footer Reveal & Copyright Observer
+(function() {
+  function initFooterReveal() {
+    const items = document.querySelectorAll('.tt-reveal');
+    if (!items.length) return;
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(el => el.classList.add('tt-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('tt-visible');
+          observer.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.08 });
+    items.forEach(el => observer.observe(el));
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFooterReveal);
+  } else {
+    initFooterReveal();
+  }
+})();

@@ -4994,3 +4994,21 @@ form.availability, .availability {
     gap: 14px !important;
   }
 }
+
+
+.drawer-sub-item {
+  border-bottom: none !important;
+}
+.drawer-nav-sub {
+  font-size: 1.02rem !important;
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: none !important;
+  color: rgba(37, 40, 36, 0.72) !important;
+  padding: 0.4rem 0 !important;
+  text-align: center !important;
+}
+.drawer-nav-sub:hover {
+  color: #8C703B !important;
+}
