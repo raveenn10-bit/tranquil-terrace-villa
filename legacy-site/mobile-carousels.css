@@ -140,10 +140,12 @@ html, body {
     text-align: center !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
     align-items: center !important;
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease !important;
     position: relative !important;
+    height: auto !important;
+    min-height: unset !important;
   }
 
   /* Center all headings, text, badges, and buttons within cards */
@@ -356,6 +358,19 @@ html, body {
   .luxury-package-card {
     padding: 26px 20px !important;
     border: 1px solid rgba(200, 164, 93, 0.3) !important;
+    /* Fix: use flex-start so content stacks tight — no big empty gap */
+    justify-content: flex-start !important;
+    gap: 0 !important;
+    min-height: unset !important;
+    height: auto !important;
+  }
+
+  /* Push CTA wrapper to the bottom naturally — no forced stretching */
+  .luxury-package-card .pkg-card-cta {
+    margin-top: auto !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
   }
 
   .pkg-card-badge {
