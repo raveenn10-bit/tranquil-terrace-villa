@@ -770,10 +770,15 @@ for (const fileName of htmlFiles) {
           poster="videos/hero-poster.webp"
           preload="metadata"
           aria-hidden="true">
-          <source src="videos/hero-cinematic-mobile.mp4" type="video/mp4" media="(max-width: 768px)"/>
+          <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(orientation: portrait) and (max-width: 1024px)"/>
+          <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(max-width: 768px)"/>
           <source src="videos/hero-cinematic.mp4" type="video/mp4"/>
         </video>`
     );
+    // User request: remove rate banner, CTA buttons, and video control pill from hero section
+    html = html.replace(/<div class="meta-hero-rate-banner">[\s\S]*?<\/div>\s*/g, "");
+    html = html.replace(/<div class="meta-hero-cta-group">[\s\S]*?<\/div>\s*/g, "");
+    html = html.replace(/<button[^>]*id="meta-video-control"[\s\S]*?<\/button>\s*/g, "");
     if (!html.includes('rel="preload" as="image" href="videos/hero-poster.webp"')) {
       html = html.replace(
         /<link\s+href="style\.css"/,

@@ -343,18 +343,56 @@
       });
     });
 
-    // 8. Video Play/Pause Toggle
+    // 8. Video Play/Pause Toggle & Responsive Portrait/Landscape Switching
     const videoCtrl = document.getElementById("meta-video-control");
     const video = document.getElementById("meta-hero-video");
     if (videoCtrl && video) {
       videoCtrl.addEventListener("click", function () {
         if (video.paused) {
           video.play();
-          videoCtrl.querySelector("span:last-child").textContent = "Pause Video";
+          const label = videoCtrl.querySelector("span:last-child");
+          if (label) label.textContent = "Pause Video";
         } else {
           video.pause();
-          videoCtrl.querySelector("span:last-child").textContent = "Play Video";
+          const label = videoCtrl.querySelector("span:last-child");
+          if (label) label.textContent = "Play Video";
         }
+      });
+    }
+
+    if (video) {
+      function checkHeroVideoSource() {
+        const isPortraitOrMobile = window.matchMedia("(orientation: portrait) and (max-width: 1024px)").matches || 
+                                   window.matchMedia("(max-width: 768px)").matches ||
+                                   (window.innerWidth < window.innerHeight && window.innerWidth <= 1024);
+        const targetSrc = isPortraitOrMobile ? "videos/hero-cinematic-portrait.mp4" : "videos/hero-cinematic.mp4";
+        const targetPoster = isPortraitOrMobile ? "videos/hero-poster-portrait.webp" : "videos/hero-poster.webp";
+
+        if (video.getAttribute("data-applied-src") !== targetSrc) {
+          video.setAttribute("data-applied-src", targetSrc);
+          video.poster = targetPoster;
+
+          const currentSrc = video.currentSrc || video.src || "";
+          if (!currentSrc.includes(targetSrc)) {
+            video.src = targetSrc;
+            video.load();
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(function () {
+                // Autoplay policy: will play on first user interaction if low-power mode active
+              });
+            }
+          }
+        }
+      }
+
+      checkHeroVideoSource();
+      window.addEventListener("resize", function () {
+        clearTimeout(video._vResizeTimer);
+        video._vResizeTimer = setTimeout(checkHeroVideoSource, 250);
+      });
+      window.addEventListener("orientationchange", function () {
+        setTimeout(checkHeroVideoSource, 250);
       });
     }
 

@@ -290,16 +290,24 @@ header.compact .luxury-crest-svg {
 @media (max-width: 991px) {
   header.taru-header,
   header.luxury-hotel-header,
-  header {
-    height: 72px;
-  }
-
+  header,
   header.taru-header.compact,
   header.taru-header.scrolled,
   header.luxury-hotel-header.compact,
   header.luxury-hotel-header.scrolled,
   header.compact {
-    height: 64px;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    height: auto !important;
+    min-height: 60px !important;
+    padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
+    padding-bottom: 8px !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transform: none !important;
   }
 
   .luxury-header-grid {
