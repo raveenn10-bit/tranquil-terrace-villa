@@ -868,41 +868,56 @@ h2 em, h3 em {
 }
 
 /* ==========================================================================
-   TRANQUIL TERRACE GALLE — TERRACOTTA (#C17C60) RESPONSIVE LUXURY FOOTER
-   - Background: Rich Terracotta #C17C60 Palette
-   - Text & Headings: Crisp Warm Ivory (#FFFDFB) & Golden Accents (#FFD3B6)
+   TRANQUIL TERRACE GALLE — LUXURY CHAMPAGNE SAND (#FFF2DB) RESPONSIVE FOOTER
+   - Background: Bespoke Cream / Champagne Sand #FFF2DB Palette
+   - Accent & Highlights: Rich Terracotta (#C17C60) & Charcoal (#34352F)
+   - Links: Clean, Authentic SVG Icons & Zero Hover Underline
    - Comprehensive Multi-Device Layout Support: 320px to 1920px+
    ========================================================================== */
 
 .tt-footer {
   position: relative !important;
-  background: #C17C60 !important;
-  background: linear-gradient(180deg, #C17C60 0%, #AF684C 100%) !important;
-  color: #FFFDFB !important;
+  background: #FFF2DB !important;
+  background: linear-gradient(180deg, #FFF2DB 0%, #FDF0D5 100%) !important;
+  color: #34352F !important;
   isolation: isolate;
   padding: 0 0 1.5rem !important;
   overflow: hidden !important;
   font-family: var(--font-ui) !important;
-  border-top: none !important;
+  border-top: 1px solid rgba(193, 124, 96, 0.18) !important;
 }
 
-.tt-footer a {
-  color: inherit !important;
+.tt-footer a,
+.tt-footer a:hover,
+.tt-footer a:focus,
+.tt-footer a:active,
+.tt-column a,
+.tt-column a:hover,
+.tt-column a:focus,
+.tt-column a:active,
+.tt-nav-subcol a,
+.tt-nav-subcol a:hover,
+.tt-guest-links a,
+.tt-guest-links a:hover,
+.tt-legal a,
+.tt-legal a:hover {
   text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
-/* Sunset Landscape Horizon transition into Terracotta */
+/* Sunset Landscape Horizon transition into Champagne Sand #FFF2DB */
 .tt-landscape {
   height: 200px !important;
   position: relative !important;
-  background: linear-gradient(180deg, #FAF6F1 0%, #F5E5D9 35%, #DDB39E 70%, #C17C60 100%) !important;
+  background: linear-gradient(180deg, #FAF6F1 0%, #FAF0DF 35%, #FDF1D8 70%, #FFF2DB 100%) !important;
   overflow: hidden !important;
 }
 
 .tt-sky-glow {
   position: absolute !important;
   inset: 0 !important;
-  background: radial-gradient(circle at 78% 74%, rgba(255, 235, 215, 0.5), rgba(193, 124, 96, 0.25) 45%, transparent 72%) !important;
+  background: radial-gradient(circle at 78% 74%, rgba(255, 255, 255, 0.75), rgba(240, 218, 185, 0.45) 45%, transparent 72%) !important;
 }
 
 .tt-sun {
@@ -911,9 +926,9 @@ h2 em, h3 em {
   position: absolute !important;
   right: 19% !important;
   bottom: 38px !important;
-  background: radial-gradient(circle at 40% 40%, #FFFFFF 0%, #FFE2D1 40%, #FFBE98 75%, #C17C60 100%) !important;
+  background: radial-gradient(circle at 40% 40%, #FFFFFF 0%, #FFEEDB 40%, #F5CE9F 75%, #C17C60 100%) !important;
   border-radius: 50% !important;
-  box-shadow: 0 0 54px 10px rgba(255, 226, 209, 0.8), 0 0 85px 25px rgba(193, 124, 96, 0.3) !important;
+  box-shadow: 0 0 54px 10px rgba(255, 235, 205, 0.8), 0 0 85px 25px rgba(193, 124, 96, 0.22) !important;
 }
 
 /* Landscape silhouettes in deep charcoal/bronze */
@@ -955,13 +970,13 @@ h2 em, h3 em {
   display: flex !important;
   gap: 16px !important;
   align-items: center !important;
-  color: #FFFFFF !important;
+  color: #34352F !important;
 }
 
 .tt-monogram {
-  border-color: rgba(255, 255, 255, 0.45) !important;
-  background: #34352F !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(193, 124, 96, 0.35) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(193, 124, 96, 0.12) !important;
 }
 
 .tt-brand strong,
@@ -970,15 +985,15 @@ h2 em, h3 em {
   font-size: clamp(2.2rem, 3.2vw, 3.2rem) !important;
   font-weight: 600 !important;
   line-height: 0.95 !important;
-  color: #FFFFFF !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  color: #34352F !important;
+  text-shadow: none !important;
 }
 
 .tt-brand small,
 .tt-brand-text small {
   font-size: 11px !important;
   letter-spacing: 0.44em !important;
-  color: #FFD3B6 !important;
+  color: #C17C60 !important;
   font-weight: 700 !important;
   margin-top: 8px !important;
 }
@@ -986,7 +1001,7 @@ h2 em, h3 em {
 .tt-brand p {
   font-size: 0.92rem !important;
   line-height: 1.75 !important;
-  color: rgba(255, 253, 251, 0.9) !important;
+  color: #555750 !important;
   max-width: 340px !important;
   margin: 20px 0 18px !important;
 }
@@ -996,33 +1011,33 @@ h2 em, h3 em {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(193, 124, 96, 0.08) !important;
+  border: 1px solid rgba(193, 124, 96, 0.25) !important;
   border-radius: 9999px !important;
   padding: 6px 14px !important;
   font-size: 0.78rem !important;
-  color: #FFFFFF !important;
+  color: #34352F !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
   transition: all 0.25s ease !important;
 }
 
 .tt-badge:hover {
-  background: rgba(255, 255, 255, 0.26) !important;
-  border-color: #FFFFFF !important;
+  background: rgba(193, 124, 96, 0.16) !important;
+  border-color: #C17C60 !important;
   transform: translateY(-2px) !important;
 }
 
 .tt-badge strong {
-  color: #FFFFFF !important;
+  color: #C17C60 !important;
   font-weight: 800 !important;
 }
 
 /* Book Your Stay CTA Button */
 .tt-button {
-  background: #34352F !important;
-  color: #FAF6F1 !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: #C17C60 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #B0694F !important;
   border-radius: 9999px !important;
   padding: 13px 26px !important;
   display: inline-flex !important;
@@ -1032,22 +1047,22 @@ h2 em, h3 em {
   gap: 16px !important;
   font-weight: 700 !important;
   font-size: 0.88rem !important;
-  box-shadow: 0 8px 24px rgba(52, 53, 47, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(193, 124, 96, 0.3) !important;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   text-decoration: none !important;
 }
 
 .tt-button:hover {
-  background: #252622 !important;
+  background: #A96248 !important;
   color: #FFFFFF !important;
   transform: translateY(-3px) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 12px 28px rgba(193, 124, 96, 0.45) !important;
 }
 
 /* Column Titles */
 .tt-column h2 {
   font-family: var(--font-editorial) !important;
-  color: #FFFFFF !important;
+  color: #34352F !important;
   font-size: 1.85rem !important;
   font-weight: 600 !important;
   margin: 6px 0 20px !important;
@@ -1059,13 +1074,13 @@ h2 em, h3 em {
   content: "" !important;
   width: 60px !important;
   height: 2px !important;
-  background: #FFD3B6 !important;
+  background: #C17C60 !important;
   position: absolute !important;
   bottom: 0 !important;
   left: 0 !important;
 }
 
-/* Navigation Links */
+/* Navigation Links & Zero Hover Underline */
 .tt-column > a,
 .tt-nav-subcol > a,
 .tt-guest-links > a {
@@ -1075,40 +1090,84 @@ h2 em, h3 em {
   margin-bottom: 13px !important;
   font-size: 0.9rem !important;
   line-height: 1.45 !important;
-  color: rgba(255, 253, 251, 0.92) !important;
+  color: #3E3F39 !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
   transition: all 0.2s ease !important;
 }
 
 .tt-column > a:hover,
 .tt-nav-subcol > a:hover,
 .tt-guest-links > a:hover {
-  color: #FFFFFF !important;
+  color: #C17C60 !important;
   transform: translateX(4px) !important;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 .tt-column > a.tt-sub-nav,
 .tt-nav-subcol > a.tt-sub-nav {
   padding-left: 14px !important;
   font-size: 0.84rem !important;
-  color: rgba(255, 253, 251, 0.78) !important;
+  color: #63645D !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+.tt-column > a.tt-sub-nav:hover,
+.tt-nav-subcol > a.tt-sub-nav:hover {
+  color: #C17C60 !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* Original SVG Icons Styling */
+.tt-link-icon {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  flex-shrink: 0 !important;
+  color: #C17C60 !important;
+  stroke: #C17C60 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  transition: transform 0.2s ease, color 0.2s ease, stroke 0.2s ease !important;
+}
+
+.tt-sub-icon {
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+  opacity: 0.85 !important;
+}
+
+.tt-column a:hover .tt-link-icon,
+.tt-nav-subcol a:hover .tt-link-icon,
+.tt-guest-links a:hover .tt-link-icon {
+  color: #9E563E !important;
+  stroke: #9E563E !important;
+  transform: scale(1.15) !important;
 }
 
 .tt-direct-guarantee {
   font-size: 0.78rem !important;
-  color: rgba(255, 253, 251, 0.88) !important;
+  color: #555750 !important;
   line-height: 1.65 !important;
   margin-top: 18px !important;
   padding: 10px 14px !important;
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(193, 124, 96, 0.08) !important;
   border-radius: 8px !important;
-  border-left: 3px solid #FFD3B6 !important;
+  border-left: 3px solid #C17C60 !important;
 }
 
 /* Partners & Social Media Row */
 .tt-partners {
-  border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-top: 1px solid rgba(193, 124, 96, 0.18) !important;
+  border-bottom: 1px solid rgba(193, 124, 96, 0.18) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -1125,12 +1184,22 @@ h2 em, h3 em {
   flex-wrap: wrap !important;
 }
 
+.tt-partner-label,
 .tt-partner-group > span:first-child {
   font-size: 0.72rem !important;
   font-weight: 800 !important;
   letter-spacing: 0.14em !important;
-  color: #FFD3B6 !important;
+  color: #8E6850 !important;
   margin-right: 4px !important;
+}
+
+/* Horizontal Social Media Icons Row (Always strictly horizontal on all screen sizes) */
+.tt-social-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: nowrap !important;
 }
 
 .tt-social {
@@ -1139,30 +1208,44 @@ h2 em, h3 em {
   border-radius: 9px !important;
   width: 38px !important;
   height: 38px !important;
-  transition: transform 0.25s ease, filter 0.25s ease !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 }
 .tt-social:hover {
-  transform: translateY(-3px) scale(1.05) !important;
+  transform: translateY(-3px) scale(1.08) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16) !important;
+}
+
+/* OTA Badges Row */
+.tt-ota-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
 }
 
 .tt-ota-badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
-  padding: 7px 14px !important;
+  padding: 8px 16px !important;
   border-radius: 8px !important;
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(193, 124, 96, 0.25) !important;
+  color: #34352F !important;
   font-size: 0.82rem !important;
   font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   transition: all 0.25s ease !important;
 }
 
 .tt-ota-badge:hover {
   transform: translateY(-2px) !important;
-  background: rgba(255, 255, 255, 0.26) !important;
-  border-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border-color: #C17C60 !important;
+  box-shadow: 0 4px 12px rgba(193, 124, 96, 0.15) !important;
 }
 
 /* Legal & Copyright Row */
@@ -1172,18 +1255,21 @@ h2 em, h3 em {
   gap: 20px !important;
   align-items: center !important;
   padding: 24px 0 6px !important;
-  color: rgba(255, 253, 251, 0.85) !important;
+  color: #6C6D66 !important;
   font-size: 0.78rem !important;
 }
 
 .tt-legal a {
-  color: rgba(255, 253, 251, 0.88) !important;
+  color: #555750 !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
   transition: color 0.2s ease !important;
 }
 
 .tt-legal a:hover {
-  color: #FFFFFF !important;
-  text-decoration: underline !important;
+  color: #C17C60 !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 /* ==========================================================================
@@ -1331,25 +1417,39 @@ h2 em, h3 em {
   .tt-partners {
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 20px !important;
-    padding: 20px 0 !important;
+    gap: 22px !important;
+    padding: 22px 0 !important;
   }
   .tt-partner-group {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 10px !important;
+    gap: 12px !important;
+    width: 100% !important;
   }
-  .tt-partner-group > div,
-  .tt-partner-group > span ~ a {
+  .tt-social-row {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    width: 100% !important;
+    flex-wrap: nowrap !important;
+  }
+  .tt-social {
+    width: 42px !important;
+    height: 42px !important;
+  }
+  .tt-ota-row {
+    display: flex !important;
+    flex-direction: column !important;
     gap: 10px !important;
+    width: 100% !important;
   }
   .tt-ota-badge {
     width: 100% !important;
     justify-content: center !important;
     box-sizing: border-box !important;
-    padding: 9px 12px !important;
+    padding: 10px 14px !important;
   }
   .tt-legal {
     flex-direction: column !important;
