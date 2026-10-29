@@ -874,10 +874,11 @@ body.luxury-drawer-open {
   margin-bottom: 12px;
 }
 .review-marquee-card blockquote {
-  font-family: var(--serif,'Cormorant Garamond',Georgia,serif);
-  font-size: 21px;
-  line-height: 1.32;
-  color: #173b30;
+  font-family: var(--font-editorial, 'Cormorant Garamond', Georgia, serif);
+  font-size: 1.15rem !important;
+  line-height: 1.6 !important;
+  color: #1C1E1D !important; /* CRITICAL: High-contrast rich charcoal text */
+  font-style: italic !important;
   margin: 0 0 18px;
   flex-grow: 1;
 }

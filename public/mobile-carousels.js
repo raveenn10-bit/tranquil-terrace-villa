@@ -163,7 +163,7 @@
     { sel: ".experience-marquee-track", itemSel: ".experience-marquee-card:not(:nth-child(n+5))" },
     { sel: ".gallery-grid", itemSel: ".gallery-item" },
     { sel: ".meta-reviews-grid", itemSel: ".meta-review-card" },
-    { sel: ".review-marquee-track", itemSel: ".review-marquee-card:not(:nth-child(n+5))" },
+    { sel: ".review-marquee-track", itemSel: ".review-marquee-card:not(:nth-child(n+9))" },
     { sel: ".guide-grid", itemSel: "article" },
     { sel: ".meta-instagram-grid", itemSel: ".meta-insta-card" }
   ];

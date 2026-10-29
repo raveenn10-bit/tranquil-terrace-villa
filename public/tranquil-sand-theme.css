@@ -2337,3 +2337,46 @@ main,
   }
 }
 
+
+
+.meta-review-card,
+.review-marquee-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(200, 164, 93, 0.28) !important;
+  border-radius: 20px !important;
+  color: #1C1E1D !important;
+  box-shadow: 0 12px 36px rgba(20, 22, 21, 0.06), 0 2px 6px rgba(20, 22, 21, 0.03) !important;
+}
+.meta-review-card blockquote,
+.review-marquee-card blockquote,
+.meta-review-quote {
+  color: #1C1E1D !important; /* CRITICAL: High-contrast rich charcoal text */
+  font-family: var(--font-editorial, 'Cormorant Garamond', Georgia, serif) !important;
+  font-size: 1.15rem !important;
+  line-height: 1.6 !important;
+  font-style: italic !important;
+  margin: 0 0 16px !important;
+}
+.meta-review-stars,
+.review-stars {
+  color: #C8A45D !important;
+  font-size: 1.1rem !important;
+  letter-spacing: 2px !important;
+}
+.meta-review-author-info strong,
+.review-author-row strong {
+  color: #141615 !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+}
+.meta-review-author-info small,
+.review-author-row small {
+  color: #8C703B !important;
+  font-size: 0.76rem !important;
+}
+.meta-review-avatar,
+.review-author-row .avatar {
+  background: rgba(200, 164, 93, 0.15) !important;
+  color: #8C703B !important;
+  border: 1px solid rgba(200, 164, 93, 0.35) !important;
+}
