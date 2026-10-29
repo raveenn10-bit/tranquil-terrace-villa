@@ -1,6 +1,7 @@
 /**
- * TRANQUIL TERRACE GALLE — 5-STAR LUXURY MOBILE CAROUSEL ENGINE
- * Continuous 60fps auto-scroll, native touch swipe, snap, pagination dots, 2.5s pause on interaction
+ * TRANQUIL TERRACE GALLE — LUXURY 5-STAR MOBILE CAROUSEL ENGINE
+ * Native Touch Swiping, Center Snapping & Subtle Pagination Dots
+ * Breakpoint: <= 767px
  */
 
 (function () {
@@ -11,114 +12,113 @@
   class LuxuryMobileCarousel {
     constructor(container, options = {}) {
       this.container = container;
-      this.options = Object.assign(
-        {
-          itemSelector: null,
-          resumeDelay: 2500, // exact 2.5s resume delay
-          scrollSpeed: 1,    // 1px per tick
-        },
-        options
-      );
-
-      this.items = this.options.itemSelector
-        ? Array.from(this.container.querySelectorAll(this.options.itemSelector))
-        : Array.from(this.container.children);
-
-      if (this.items.length <= 1) return;
-
-      this.isInteracting = false;
-      this.resumeTimeout = null;
+      this.itemSelector = options.itemSelector || null;
+      this.dotsContainer = null;
       this.dots = [];
+      this.scrollRaf = null;
 
       this.init();
     }
 
+    getItems() {
+      if (this.itemSelector) {
+        return Array.from(this.container.querySelectorAll(this.itemSelector)).filter(el => {
+          // Only visible items (for gallery filter support)
+          return window.getComputedStyle(el).display !== "none";
+        });
+      }
+      return Array.from(this.container.children).filter(el => {
+        return !el.classList.contains("carousel-pagination-dots") &&
+               window.getComputedStyle(el).display !== "none";
+      });
+    }
+
     init() {
-      // 1. Build pagination dots
+      if (window.innerWidth > 767) {
+        this.destroyDots();
+        return;
+      }
+
       this.buildDots();
-
-      // 2. Attach touch & pointer listeners for pause/resume
-      this.attachListeners();
-
-      // 3. Start auto-scroll if mobile & motion allowed
-      this.startContinuousAutoScroll();
+      this.attachScrollListener();
     }
 
     buildDots() {
-      // Remove any existing dots
-      let existingDots = this.container.nextElementSibling;
-      if (existingDots && existingDots.classList.contains("carousel-pagination-dots")) {
-        existingDots.remove();
-      }
+      this.destroyDots();
 
-      const dotsContainer = document.createElement("div");
-      dotsContainer.className = "carousel-pagination-dots";
-      dotsContainer.setAttribute("aria-hidden", "true");
+      const items = this.getItems();
+      if (items.length <= 1) return;
 
-      this.items.forEach((_, idx) => {
+      this.dotsContainer = document.createElement("div");
+      this.dotsContainer.className = "carousel-pagination-dots";
+      this.dotsContainer.setAttribute("aria-hidden", "true");
+
+      this.dots = [];
+      items.forEach((_, idx) => {
         const dot = document.createElement("button");
         dot.className = "carousel-dot" + (idx === 0 ? " active" : "");
         dot.setAttribute("type", "button");
         dot.setAttribute("aria-label", "Go to slide " + (idx + 1));
-        dot.addEventListener("click", () => {
-          this.pause();
+        
+        dot.addEventListener("click", (e) => {
+          e.preventDefault();
           this.scrollToIndex(idx);
-          this.resume();
         });
-        dotsContainer.appendChild(dot);
+
+        this.dotsContainer.appendChild(dot);
         this.dots.push(dot);
       });
 
-      this.container.parentNode.insertBefore(dotsContainer, this.container.nextSibling);
+      // Insert dots right after the carousel container (or its wrapper if marquee)
+      const insertTarget = this.container.closest(".experience-marquee-wrap") ||
+                           this.container.closest(".packages-container") ||
+                           this.container;
+      insertTarget.parentNode.insertBefore(this.dotsContainer, insertTarget.nextSibling);
+
+      // Initial active dot update
+      this.updateActiveDot();
     }
 
-    attachListeners() {
-      const pause = () => this.pause();
-      const resume = () => this.resume();
-
-      this.container.addEventListener("touchstart", pause, { passive: true });
-      this.container.addEventListener("pointerdown", pause, { passive: true });
-      this.container.addEventListener("mouseenter", pause);
-
-      this.container.addEventListener("touchend", resume, { passive: true });
-      this.container.addEventListener("pointerup", resume, { passive: true });
-      this.container.addEventListener("mouseleave", resume);
-
-      // Track active dot on manual scroll
-      let scrollTimer = null;
-      this.container.addEventListener("scroll", () => {
-        if (scrollTimer) cancelAnimationFrame(scrollTimer);
-        scrollTimer = requestAnimationFrame(() => this.updateActiveDot());
-      }, { passive: true });
-    }
-
-    pause() {
-      this.isInteracting = true;
-      if (this.resumeTimeout) clearTimeout(this.resumeTimeout);
-    }
-
-    resume() {
-      if (this.resumeTimeout) clearTimeout(this.resumeTimeout);
-      this.resumeTimeout = setTimeout(() => {
-        this.isInteracting = false;
-      }, this.options.resumeDelay);
+    destroyDots() {
+      if (this.dotsContainer && this.dotsContainer.parentNode) {
+        this.dotsContainer.parentNode.removeChild(this.dotsContainer);
+      }
+      // Also look for any existing orphaned dots
+      const next = this.container.nextElementSibling;
+      if (next && next.classList.contains("carousel-pagination-dots")) {
+        next.remove();
+      }
+      this.dots = [];
+      this.dotsContainer = null;
     }
 
     scrollToIndex(idx) {
-      if (!this.items[idx]) return;
-      const targetLeft = this.items[idx].offsetLeft - this.container.offsetLeft;
-      this.container.scrollTo({ left: targetLeft, behavior: "smooth" });
+      const items = this.getItems();
+      if (!items[idx]) return;
+
+      const item = items[idx];
+      const cardOffset = item.offsetLeft - this.container.offsetLeft;
+      // Center card in container viewport
+      const target = cardOffset - (this.container.clientWidth - item.clientWidth) / 2;
+
+      this.container.scrollTo({
+        left: Math.max(0, target),
+        behavior: prefersReducedMotion ? "auto" : "smooth"
+      });
     }
 
     updateActiveDot() {
       if (!this.dots.length) return;
-      const scrollPos = this.container.scrollLeft + (this.container.clientWidth / 2);
+      const items = this.getItems();
+      if (!items.length) return;
+
+      const containerCenter = this.container.scrollLeft + (this.container.clientWidth / 2);
       let closestIdx = 0;
       let minDiff = Infinity;
 
-      this.items.forEach((item, idx) => {
+      items.forEach((item, idx) => {
         const itemCenter = (item.offsetLeft - this.container.offsetLeft) + (item.offsetWidth / 2);
-        const diff = Math.abs(scrollPos - itemCenter);
+        const diff = Math.abs(containerCenter - itemCenter);
         if (diff < minDiff) {
           minDiff = diff;
           closestIdx = idx;
@@ -130,46 +130,77 @@
       });
     }
 
-    startContinuousAutoScroll() {
-      let lastTime = performance.now();
+    attachScrollListener() {
+      this.container.addEventListener(
+        "scroll",
+        () => {
+          if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
+          this.scrollRaf = requestAnimationFrame(() => this.updateActiveDot());
+        },
+        { passive: true }
+      );
+    }
 
-      const step = (now) => {
-        const delta = now - lastTime;
-        lastTime = now;
-
-        if (!this.isInteracting && window.innerWidth <= 768 && !prefersReducedMotion) {
-          // Smooth progressive crawl
-          this.container.scrollLeft += this.options.scrollSpeed;
-
-          // Seamless loop when reaching end
-          if (this.container.scrollLeft >= this.container.scrollWidth - this.container.clientWidth - 2) {
-            this.container.scrollLeft = 0;
-          }
-        }
-
-        requestAnimationFrame(step);
-      };
-
-      requestAnimationFrame(step);
+    refresh() {
+      if (window.innerWidth <= 767) {
+        this.buildDots();
+      } else {
+        this.destroyDots();
+      }
     }
   }
 
-  function initAllMobileCarousels() {
-    const targets = [
-      { sel: ".meta-instagram-grid", itemSel: ".meta-insta-card" },
-      { sel: ".meta-packages-list", itemSel: ".meta-package-card" },
-      { sel: ".meta-reviews-grid", itemSel: ".meta-review-card" },
-      { sel: ".meta-villas-grid", itemSel: ".meta-villa-card" },
-      { sel: ".dual-villas-carousel", itemSel: ".named-villa" },
-      { sel: ".villa-gallery-track", itemSel: ".villa-gallery-slide" }
-    ];
+  // Registry of all carousel instances
+  const activeCarousels = [];
 
-    targets.forEach(t => {
-      document.querySelectorAll(t.sel).forEach(el => {
-        new LuxuryMobileCarousel(el, { itemSelector: t.itemSel });
+  const CAROUSEL_TARGETS = [
+    { sel: ".meta-villas-grid", itemSel: ".meta-villa-card" },
+    { sel: ".dual-villas-carousel", itemSel: ".named-villa" },
+    { sel: ".booking-amenities-container", itemSel: ".booking-amenity-cat" },
+    { sel: ".meta-amenities-grid", itemSel: ".meta-amenity-card" },
+    { sel: ".luxury-packages-grid", itemSel: ".luxury-package-card" },
+    { sel: ".special-offers-grid", itemSel: ".special-offer-card" },
+    { sel: ".experience-marquee-track", itemSel: ".experience-marquee-card:not(:nth-child(n+5))" },
+    { sel: ".gallery-grid", itemSel: ".gallery-item" },
+    { sel: ".meta-reviews-grid", itemSel: ".meta-review-card" },
+    { sel: ".review-marquee-track", itemSel: ".review-marquee-card:not(:nth-child(n+5))" },
+    { sel: ".guide-grid", itemSel: "article" },
+    { sel: ".meta-instagram-grid", itemSel: ".meta-insta-card" }
+  ];
+
+  function initAllMobileCarousels() {
+    activeCarousels.length = 0;
+
+    CAROUSEL_TARGETS.forEach(target => {
+      document.querySelectorAll(target.sel).forEach(el => {
+        const instance = new LuxuryMobileCarousel(el, { itemSelector: target.itemSel });
+        activeCarousels.push(instance);
+      });
+    });
+
+    // Support gallery filter tab clicks (rebuild dots for filtered gallery items)
+    document.querySelectorAll("[data-filter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        setTimeout(() => {
+          activeCarousels.forEach(c => {
+            if (c.container.classList.contains("gallery-grid")) {
+              c.refresh();
+              c.container.scrollTo({ left: 0, behavior: "smooth" });
+            }
+          });
+        }, 150);
       });
     });
   }
+
+  // Resize handler (debounced)
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      activeCarousels.forEach(c => c.refresh());
+    }, 150);
+  }, { passive: true });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initAllMobileCarousels);

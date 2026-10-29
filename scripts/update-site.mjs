@@ -722,34 +722,35 @@ for (const fileName of htmlFiles) {
     }
   }
 
-  // Ensure mobile-carousels.css is linked in head
-  if (!html.includes('href="mobile-carousels.css"')) {
+  // Ensure tranquil-sand-theme.css is linked in head
+  if (!html.includes('href="tranquil-sand-theme.css"')) {
     if (html.includes('href="whatsapp-booking.css"')) {
       html = html.replace(
         /<link[^>]*href="whatsapp-booking\.css"[^>]*\/>/i,
-        `<link href="whatsapp-booking.css" rel="stylesheet"/>\n  <link href="mobile-carousels.css" rel="stylesheet"/>`
+        `<link href="whatsapp-booking.css" rel="stylesheet"/>\n  <link href="tranquil-sand-theme.css" rel="stylesheet"/>`
+      );
+    } else {
+      html = html.replace('</head>', '  <link href="tranquil-sand-theme.css" rel="stylesheet"/>\n</head>');
+    }
+  }
+
+  // Ensure mobile-carousels.css is linked in head AFTER tranquil-sand-theme.css
+  if (!html.includes('href="mobile-carousels.css"')) {
+    if (html.includes('href="tranquil-sand-theme.css"')) {
+      html = html.replace(
+        /<link[^>]*href="tranquil-sand-theme\.css"[^>]*\/>/i,
+        `<link href="tranquil-sand-theme.css" rel="stylesheet"/>\n  <link href="mobile-carousels.css" rel="stylesheet"/>`
       );
     } else {
       html = html.replace('</head>', '  <link href="mobile-carousels.css" rel="stylesheet"/>\n</head>');
     }
   }
 
-  // Ensure tranquil-sand-theme.css is linked in head
-  if (!html.includes('href="tranquil-sand-theme.css"')) {
-    if (html.includes('href="mobile-carousels.css"')) {
-      html = html.replace(
-        /<link[^>]*href="mobile-carousels\.css"[^>]*\/>/i,
-        `<link href="mobile-carousels.css" rel="stylesheet"/>\n  <link href="tranquil-sand-theme.css" rel="stylesheet"/>`
-      );
-    } else if (html.includes('href="meta-redesign.css"')) {
-      html = html.replace(
-        /<link[^>]*href="meta-redesign\.css"[^>]*\/>/i,
-        `<link href="meta-redesign.css" rel="stylesheet"/>\n  <link href="tranquil-sand-theme.css" rel="stylesheet"/>`
-      );
-    } else {
-      html = html.replace('</head>', '  <link href="tranquil-sand-theme.css" rel="stylesheet"/>\n</head>');
-    }
-  }
+  // Normalize order if mobile-carousels.css was placed before tranquil-sand-theme.css
+  html = html.replace(
+    /<link[^>]*href="mobile-carousels\.css"[^>]*\/>\s*<link[^>]*href="tranquil-sand-theme\.css"[^>]*\/>/i,
+    `<link href="tranquil-sand-theme.css" rel="stylesheet"/>\n  <link href="mobile-carousels.css" rel="stylesheet"/>`
+  );
 
   // Clean up duplicate FAQ if found in contact.html
   if (fileName === "contact.html") {

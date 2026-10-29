@@ -1,6 +1,10 @@
 /* ========================================================
-   TRANQUIL TERRACE GALLE — 5-STAR LUXURY MOBILE CAROUSELS
-   Smooth 60fps auto-scroll, native touch swipe, 1.2 preview
+   TRANQUIL TERRACE GALLE — LUXURY 5-STAR MOBILE CAROUSELS
+   Master Mobile Responsive & Horizontal Swipeable Engine
+   Breakpoints:
+     - Mobile: <= 767px (Full Horizontal Swipeable Carousels)
+     - Tablet: 768px - 1023px (Preserved Responsive 2-Col)
+     - Desktop: >= 1024px (Preserved Desktop Grids)
    ======================================================== */
 
 /* Prevent page-level horizontal overflow across all mobile screens */
@@ -17,806 +21,29 @@ html, body {
 }
 
 /* Ensure no form input auto-zooms on iOS Safari */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   input, select, textarea {
     font-size: 16px !important;
   }
 }
 
-/* ----------------------------------------------------
-   MOBILE CAROUSELS (Active on mobile screens <= 768px)
-   ---------------------------------------------------- */
-@media (max-width: 768px) {
-  /* 1. Amenities Carousel */
-  .meta-amenities-grid {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 14px !important;
-    padding: 10px 16px 20px !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    scrollbar-width: none !important;
-  }
-  .meta-amenities-grid::-webkit-scrollbar {
-    display: none !important;
-  }
-  .meta-amenity-card {
-    flex: 0 0 82vw !important;
-    max-width: 310px !important;
-    scroll-snap-align: start !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    border-radius: 14px !important;
-  }
-
-  /* 2. Packages Carousel */
-  .meta-packages-list {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 16px !important;
-    padding: 10px 16px 20px !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    scrollbar-width: none !important;
-  }
-  .meta-packages-list::-webkit-scrollbar {
-    display: none !important;
-  }
-  .meta-package-card {
-    flex: 0 0 84vw !important;
-    max-width: 325px !important;
-    scroll-snap-align: start !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    border-radius: 16px !important;
-  }
-
-  /* 3. Reviews Carousel */
-  .meta-reviews-grid {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 16px !important;
-    padding: 10px 16px 20px !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    scrollbar-width: none !important;
-  }
-  .meta-reviews-grid::-webkit-scrollbar {
-    display: none !important;
-  }
-  .meta-review-card {
-    flex: 0 0 84vw !important;
-    max-width: 330px !important;
-    scroll-snap-align: start !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    border-radius: 16px !important;
-  }
-
-  /* 4. Villa Photo Galleries */
-  .villa-gallery-track,
-  .gallery-scroll-mobile {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 14px !important;
-    padding: 10px 16px 20px !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    scrollbar-width: none !important;
-  }
-  .villa-gallery-track::-webkit-scrollbar,
-  .gallery-scroll-mobile::-webkit-scrollbar {
-    display: none !important;
-  }
-  .villa-gallery-track > *,
-  .gallery-scroll-mobile > * {
-    flex: 0 0 84vw !important;
-    max-width: 340px !important;
-    scroll-snap-align: start !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Pagination Indicators container */
-  .carousel-dots-indicator {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 8px !important;
-    margin: 12px 0 20px !important;
-    width: 100% !important;
-  }
-  .carousel-dot {
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    background: rgba(200, 164, 93, 0.25) !important;
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-    cursor: pointer !important;
-    border: none !important;
-    padding: 0 !important;
-  }
-  .carousel-dot.active {
-    width: 22px !important;
-    border-radius: 4px !important;
-    background: #C8A45D !important;
-    box-shadow: 0 0 8px rgba(200, 164, 93, 0.5) !important;
-  }
-
-  /* Responsive Spacing & Headline Typography at 320px - 430px */
-  .meta-section-title, .meta-hero-title, .meta-reviews-title {
-    font-size: clamp(26px, 7.5vw, 38px) !important;
-    line-height: 1.15 !important;
-  }
-  .meta-section-sub {
-    font-size: 13px !important;
-    line-height: 1.6 !important;
-  }
-  .meta-hero {
-    min-height: 80svh !important;
-    padding: 70px 16px 40px !important;
-  }
-  .meta-hero-container {
-    padding: 0 !important;
-  }
-  .meta-hero-copy {
-    max-width: 100% !important;
-  }
-  .meta-hero-cta-group {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 12px !important;
-  }
-  .meta-hero-cta-group a {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  .video-control-pill {
-    max-width: 100% !important;
-    justify-content: center !important;
-  }
-
-  /* Search strip on mobile */
-  .meta-search-strip-bar {
-    flex-direction: column !important;
-    padding: 14px !important;
-    gap: 12px !important;
-  }
-  .search-strip-segment {
-    width: 100% !important;
-  }
-  .search-strip-divider {
-    width: 100% !important;
-    height: 1px !important;
-    margin: 4px 0 !important;
-  }
-  .search-strip-action {
-    width: 100% !important;
-  }
-  .search-strip-cta-btn {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-
-  /* Subnav strip scroll on mobile */
-  .meta-subnav-strip {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-  }
-  .meta-subnav-strip::-webkit-scrollbar {
-    display: none !important;
-  }
-  .meta-subnav-list {
-    display: flex !important;
-    white-space: nowrap !important;
-    padding: 10px 16px !important;
-  }
-}
-
-/* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
+/* ========================================================
+   1. MOBILE HORIZONTAL SWIPEABLE CAROUSEL CONTAINERS
+   Active strictly at mobile viewport (max-width: 767px)
+   ======================================================== */
+@media (max-width: 767px) {
+  /* Universal Horizontal Carousel Track */
+  .meta-villas-grid,
+  .dual-villas-carousel,
+  .booking-amenities-container,
   .meta-amenities-grid,
-  .meta-packages-list,
+  .luxury-packages-grid,
+  .special-offers-grid,
+  .experience-marquee-track,
+  .gallery-grid,
   .meta-reviews-grid,
-  .villa-gallery-track {
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ========================================================
-   UNIVERSAL OVERFLOW TERMINATION & RESPONSIVE POLISH
-   Fixes for 320px, 375px, 390px, 430px screens
-   ======================================================== */
-
-/* Constrain all media elements */
-img, video, iframe, picture {
-  max-width: 100% !important;
-  height: auto !important;
-  box-sizing: border-box !important;
-}
-
-/* SVG responsiveness */
-svg {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Footer brand logo */
-.footer-logo,
-.footer-col-brand .footer-logo,
-.brand-logo,
-.footer-logo img,
-.brand img {
-  max-width: 160px !important;
-  height: auto !important;
-  box-sizing: border-box !important;
-}
-
-/* Landscape wrap in footer */
-.landscape-wrap,
-.villa-landscape {
-  max-width: 100% !important;
-  width: 100% !important;
-  overflow: hidden !important;
-}
-
-/* Footer channel cards */
-.footer-channel-cards {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-.footer-channel-card {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-}
-.channel-card-brand {
-  min-width: 0 !important;
-  flex: 1 1 auto !important;
-  overflow: hidden !important;
-}
-.channel-card-left {
-  min-width: 0 !important;
-  flex: 1 1 auto !important;
-  overflow: hidden !important;
-}
-.channel-card-name,
-.channel-card-sub {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: block !important;
-  max-width: 100% !important;
-}
-
-/* Availability form */
-form.availability,
-.availability {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Reviews header row and Google badge */
-@media (max-width: 768px) {
-  .meta-reviews-header-row {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 16px !important;
-    width: 100% !important;
-  }
-  .meta-google-badge {
-    max-width: 100% !important;
-    width: auto !important;
-    box-sizing: border-box !important;
-  }
-  .new-footer {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-    box-sizing: border-box !important;
-  }
-}
-
-/* ========================================================
-   SECTION OVERFLOW CLIPPING & TICKER ENCAPSULATION
-   ======================================================== */
-
-main, section, .section, header, footer, .hero, .meta-hero {
-  max-width: 100vw !important;
-  overflow-x: clip !important;
-  box-sizing: border-box !important;
-}
-
-/* Luxury ticker and marquee must never cause page scroll */
-.luxury-ticker-wrap,
-.luxury-ticker,
-.ticker-wrap,
-.ticker,
-.platform-marquee-strip,
-.review-marquee-strip {
-  overflow: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-}
-
-/* Villa comparison table on mobile */
-.comparison {
-  overflow-x: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding-bottom: 12px !important;
-}
-.comparison table {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Availability form resets */
-form.availability,
-.availability {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* Header & drawer container fixes */
-.taru-header,
-.luxury-header-grid {
-  max-width: 100vw !important;
-  overflow: hidden !important;
-}
-
-
-/* ==========================================================================
-   TRANQUIL TERRACE GALLE — MASTER LUXURY UPGRADES (2026/27)
-   1. Amenities Section (2-col mobile, 4-col desktop, #17392F, #FAF7F2, #C8A45D)
-   2. Instagram Social Proof (Moments at Tranquil Terrace)
-   3. Professional FAQ Accordion UI (Single-open)
-   4. Mobile 2x2 Grids for Footer Channels & Socials, Packages Visual Scaling Fix
-   ========================================================================== */
-
-/* 1. AMENITIES SECTION LUXURY THEMING */
-.meta-amenities-section {
-  background-color: #FAF7F2 !important;
-  background: #FAF7F2 !important;
-  padding: 6.5rem 1.5rem 6rem !important;
-  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
-  border-bottom: 1px solid rgba(200, 164, 93, 0.22) !important;
-}
-
-.meta-amenities-grid {
-  max-width: 1360px !important;
-  margin: 0 auto !important;
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 20px !important;
-  overflow: visible !important;
-}
-
-.meta-amenity-card {
-  background: #FFFFFF !important;
-  border-radius: 16px !important;
-  padding: 2rem 1.6rem !important;
-  border: 1px solid rgba(200, 164, 93, 0.25) !important;
-  box-shadow: 0 4px 20px rgba(23, 57, 47, 0.04) !important;
-  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease, box-shadow 0.35s ease !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  position: relative !important;
-}
-
-.meta-amenity-card:hover {
-  transform: translateY(-5px) !important;
-  border-color: #C8A45D !important;
-  box-shadow: 0 14px 32px rgba(23, 57, 47, 0.09) !important;
-}
-
-.meta-amenity-icon-wrap {
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 12px !important;
-  background: #17392F !important;
-  color: #C8A45D !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-bottom: 1.25rem !important;
-  border: 1px solid rgba(200, 164, 93, 0.35) !important;
-  box-shadow: 0 4px 12px rgba(23, 57, 47, 0.2) !important;
-  transition: transform 0.3s ease, background-color 0.3s ease !important;
-}
-
-.meta-amenity-card:hover .meta-amenity-icon-wrap {
-  transform: scale(1.06) !important;
-  background: #102922 !important;
-}
-
-.meta-amenity-card h4 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 1.35rem !important;
-  font-weight: 600 !important;
-  color: #17392F !important;
-  margin: 0 0 0.5rem 0 !important;
-  letter-spacing: -0.01em !important;
-  line-height: 1.25 !important;
-}
-
-.meta-amenity-card p {
-  font-family: 'Manrope', -apple-system, sans-serif !important;
-  font-size: 0.86rem !important;
-  line-height: 1.6 !important;
-  color: #556157 !important;
-  margin: 0 !important;
-}
-
-/* 2. INSTAGRAM SOCIAL PROOF SECTION */
-.meta-instagram-section {
-  background-color: #FAF7F2 !important;
-  background: #FAF7F2 !important;
-  padding: 6rem 1.5rem 6.5rem !important;
-  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
-  position: relative !important;
-}
-
-.meta-instagram-container {
-  max-width: 1360px !important;
-  margin: 0 auto !important;
-}
-
-.meta-instagram-header {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-end !important;
-  margin-bottom: 2.75rem !important;
-  gap: 2rem !important;
-}
-
-.meta-instagram-header-left h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: clamp(2.2rem, 3.8vw, 3.2rem) !important;
-  font-weight: 500 !important;
-  color: #17392F !important;
-  line-height: 1.15 !important;
-  margin: 0.35rem 0 0.6rem !important;
-}
-
-.ig-handle-link {
-  color: #C8A45D !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  transition: color 0.2s ease !important;
-}
-
-.ig-handle-link:hover {
-  color: #17392F !important;
-  text-decoration: underline !important;
-}
-
-.meta-btn-gold-instagram {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 9px !important;
-  background: linear-gradient(135deg, #C8A45D 0%, #B89248 100%) !important;
-  color: #17392F !important;
-  font-family: 'Manrope', -apple-system, sans-serif !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.04em !important;
-  padding: 13px 26px !important;
-  border-radius: 40px !important;
-  text-decoration: none !important;
-  box-shadow: 0 6px 18px rgba(200, 164, 93, 0.32) !important;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-}
-
-.meta-btn-gold-instagram:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 24px rgba(200, 164, 93, 0.45) !important;
-  background: linear-gradient(135deg, #D4B26C 0%, #C49E52 100%) !important;
-  color: #0F251F !important;
-}
-
-.ig-btn-icon {
-  width: 18px !important;
-  height: 18px !important;
-  flex-shrink: 0 !important;
-}
-
-.meta-instagram-grid {
-  display: grid !important;
-  grid-template-columns: repeat(6, 1fr) !important;
-  gap: 16px !important;
-}
-
-.meta-insta-card {
-  display: block !important;
-  border-radius: 14px !important;
-  overflow: hidden !important;
-  position: relative !important;
-  aspect-ratio: 1 / 1 !important;
-  box-shadow: 0 6px 18px rgba(23, 57, 47, 0.08) !important;
-  border: 1px solid rgba(200, 164, 93, 0.25) !important;
-  background: #17392F !important;
-}
-
-.insta-img-wrapper {
-  position: relative !important;
-  width: 100% !important;
-  height: 100% !important;
-  overflow: hidden !important;
-}
-
-.insta-img-wrapper img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block !important;
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
-}
-
-.meta-insta-card:hover .insta-img-wrapper img {
-  transform: scale(1.08) !important;
-}
-
-.insta-overlay {
-  position: absolute !important;
-  inset: 0 !important;
-  background: linear-gradient(135deg, rgba(23, 57, 47, 0.72) 0%, rgba(200, 164, 93, 0.65) 100%) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  opacity: 0 !important;
-  transition: opacity 0.3s ease !important;
-  padding: 12px !important;
-  text-align: center !important;
-}
-
-.meta-insta-card:hover .insta-overlay {
-  opacity: 1 !important;
-}
-
-.insta-overlay-badge {
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.22) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-.insta-overlay-handle {
-  color: #FFFFFF !important;
-  font-family: 'Manrope', -apple-system, sans-serif !important;
-  font-size: 0.72rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.03em !important;
-}
-
-.meta-instagram-mobile-action {
-  display: none !important;
-}
-
-/* 3. PROFESSIONAL FAQ ACCORDION UI */
-.meta-faq-section {
-  background-color: #FAF7F2 !important;
-  background: #FAF7F2 !important;
-  padding: 6.5rem 1.5rem 6.5rem !important;
-  border-top: 1px solid rgba(200, 164, 93, 0.22) !important;
-}
-
-.meta-faq-container {
-  max-width: 920px !important;
-  margin: 0 auto !important;
-}
-
-.meta-faq-container h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: clamp(2.2rem, 3.8vw, 3.2rem) !important;
-  font-weight: 500 !important;
-  color: #17392F !important;
-  line-height: 1.15 !important;
-}
-
-.meta-faq-accordion {
-  margin-top: 3rem !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-}
-
-.meta-faq-item {
-  background: #FFFFFF !important;
-  border-radius: 14px !important;
-  border: 1px solid rgba(200, 164, 93, 0.25) !important;
-  box-shadow: 0 4px 16px rgba(23, 57, 47, 0.03) !important;
-  overflow: hidden !important;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
-}
-
-.meta-faq-item:hover {
-  border-color: rgba(200, 164, 93, 0.5) !important;
-  box-shadow: 0 6px 20px rgba(23, 57, 47, 0.06) !important;
-}
-
-.meta-faq-item.open {
-  border-color: #C8A45D !important;
-  box-shadow: 0 8px 26px rgba(200, 164, 93, 0.12) !important;
-}
-
-.meta-faq-question {
-  width: 100% !important;
-  text-align: left !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 1.4rem 1.75rem !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  cursor: pointer !important;
-  gap: 1.25rem !important;
-}
-
-.meta-faq-question span:first-child {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  color: #17392F !important;
-  line-height: 1.35 !important;
-  letter-spacing: -0.01em !important;
-}
-
-.meta-faq-question span.faq-icon {
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 50% !important;
-  background: #FAF7F2 !important;
-  border: 1px solid rgba(200, 164, 93, 0.35) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 1.15rem !important;
-  font-weight: 400 !important;
-  color: #C8A45D !important;
-  flex-shrink: 0 !important;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease, color 0.3s ease !important;
-}
-
-.meta-faq-item.open .meta-faq-question span.faq-icon {
-  transform: rotate(45deg) !important;
-  background: #17392F !important;
-  color: #FAF7F2 !important;
-  border-color: #17392F !important;
-}
-
-.meta-faq-answer {
-  max-height: 0 !important;
-  overflow: hidden !important;
-  transition: max-height 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.35s ease !important;
-  padding: 0 1.75rem !important;
-}
-
-.meta-faq-item.open .meta-faq-answer {
-  max-height: 500px !important;
-  padding: 0 1.75rem 1.5rem !important;
-}
-
-.meta-faq-answer p {
-  font-family: 'Manrope', -apple-system, sans-serif !important;
-  font-size: 0.92rem !important;
-  line-height: 1.7 !important;
-  color: #4A564C !important;
-  margin: 0 !important;
-}
-
-/* 4. MOBILE LAYOUT & SIZING FIXES (@media (max-width: 768px)) */
-@media (max-width: 768px) {
-  /* Amenities: Strict 2-column Grid */
-  .meta-amenities-section {
-    padding: 4.5rem 1.25rem 4rem !important;
-  }
-
-  .meta-amenities-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    overflow: visible !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    width: 100% !important;
-  }
-
-  .meta-amenity-card {
-    flex: none !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    width: 100% !important;
-    padding: 1.25rem 1rem !important;
-    border-radius: 14px !important;
-  }
-
-  .meta-amenity-icon-wrap {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 10px !important;
-    margin-bottom: 0.85rem !important;
-  }
-
-  .meta-amenity-icon-wrap svg {
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  .meta-amenity-card h4 {
-    font-size: 1.05rem !important;
-    margin-bottom: 0.35rem !important;
-  }
-
-  .meta-amenity-card p {
-    font-size: 0.78rem !important;
-    line-height: 1.5 !important;
-  }
-
-  /* Packages visual scaling fix on mobile */
-  .meta-package-visual {
-    max-height: 220px !important;
-    aspect-ratio: 16 / 9 !important;
-    border-radius: 14px !important;
-    overflow: hidden !important;
-    width: 100% !important;
-  }
-
-  .meta-package-visual img {
-    height: 100% !important;
-    width: 100% !important;
-    object-fit: cover !important;
-  }
-
-  /* Instagram Horizontal Swipe Carousel on Mobile */
-  .meta-instagram-section {
-    padding: 4rem 1.25rem 4.5rem !important;
-  }
-
-  .meta-instagram-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 1rem !important;
-    margin-bottom: 1.5rem !important;
-  }
-
-  .meta-instagram-header-right {
-    display: none !important;
-  }
-
+  .review-marquee-track,
+  .guide-grid,
   .meta-instagram-grid {
     display: flex !important;
     flex-direction: row !important;
@@ -825,162 +52,763 @@ form.availability,
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
-    gap: 12px !important;
-    padding: 4px 16px 16px 16px !important;
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    width: calc(100% + 32px) !important;
+    touch-action: pan-y !important; /* Silky, unhindered vertical page scroll */
     scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 16px !important;
+    
+    /* Symmetrical 7.5vw padding gives 1 main card (85vw) + peek on both sides */
+    padding: 12px 7.5vw 24px !important;
+    margin-left: calc(-1 * min(5vw, 20px)) !important;
+    margin-right: calc(-1 * min(5vw, 20px)) !important;
+    scroll-padding: 0 7.5vw !important; /* Snaps active card directly into viewport center */
+    
+    box-sizing: border-box !important;
+    width: auto !important;
+    max-width: 100vw !important;
+    list-style: none !important;
+    animation: none !important; /* Stop auto-marquee scrolling on mobile */
+    transform: none !important;
   }
 
+  /* Hide native scrollbars on all webkit browsers */
+  .meta-villas-grid::-webkit-scrollbar,
+  .dual-villas-carousel::-webkit-scrollbar,
+  .booking-amenities-container::-webkit-scrollbar,
+  .meta-amenities-grid::-webkit-scrollbar,
+  .luxury-packages-grid::-webkit-scrollbar,
+  .special-offers-grid::-webkit-scrollbar,
+  .experience-marquee-track::-webkit-scrollbar,
+  .gallery-grid::-webkit-scrollbar,
+  .meta-reviews-grid::-webkit-scrollbar,
+  .review-marquee-track::-webkit-scrollbar,
+  .guide-grid::-webkit-scrollbar,
   .meta-instagram-grid::-webkit-scrollbar {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
-  .meta-insta-card {
-    flex: 0 0 68vw !important;
-    max-width: 260px !important;
-    min-width: 220px !important;
-    scroll-snap-align: start !important;
-    box-sizing: border-box !important;
+  /* Wrap containers must allow horizontal swipe without clipping */
+  .experience-marquee-wrap,
+  .packages-container,
+  .meta-villas-container,
+  .booking-amenities-section {
+    overflow-x: clip !important;
+    max-width: 100vw !important;
   }
 
-  .meta-instagram-mobile-action {
-    display: block !important;
-    margin-top: 1.5rem !important;
-  }
-
-  .meta-btn-gold-instagram.full-width {
-    width: 100% !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Footer 2x2 Clean Grids on Mobile */
-  .footer-channel-cards {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  .footer-channel-card {
-    min-height: 46px !important;
-    height: 46px !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    box-sizing: border-box !important;
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-
-  .channel-card-brand {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 0 !important;
-    flex: 1 1 auto !important;
-  }
-
-  .channel-brand-svg {
-    width: 22px !important;
-    height: 22px !important;
-    flex-shrink: 0 !important;
-  }
-
-  .channel-card-left {
-    min-width: 0 !important;
-    overflow: hidden !important;
-  }
-
-  .channel-card-name {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-    color: #ffffff !important;
-  }
-
-  .channel-card-sub {
+  /* In marquee tracks on mobile, hide duplicate group 2 so carousel has unique items */
+  .experience-marquee-track > .experience-marquee-card:nth-child(n+5),
+  .review-marquee-track > .review-marquee-card:nth-child(n+5) {
     display: none !important;
   }
 
-  .channel-card-arrow {
-    font-size: 11px !important;
-    margin-left: 4px !important;
-    flex-shrink: 0 !important;
+  /* ========================================================
+     2. UNIVERSAL CARD PROPORTIONS & CENTER ALIGNMENT
+     Card Width: 85vw (82–88% viewport)
+     Gap: 16px | Radius: 22px (20–24px)
+     ======================================================== */
+  .meta-villa-card,
+  .named-villa,
+  .booking-amenity-cat,
+  .meta-amenity-card,
+  .luxury-package-card,
+  .special-offer-card,
+  .experience-marquee-card,
+  .gallery-item,
+  .meta-review-card,
+  .review-marquee-card,
+  .guide-grid > article,
+  .meta-insta-card {
+    flex: 0 0 85vw !important;
+    width: 85vw !important;
+    max-width: 360px !important;
+    min-width: 270px !important;
+    scroll-snap-align: center !important; /* Snaps active card to exact screen center */
+    scroll-snap-stop: always !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 22px !important;
+    
+    /* Luxury card styling */
+    background: #FFFFFF !important;
+    border: 1px solid rgba(200, 164, 93, 0.22) !important;
+    box-shadow: 0 12px 36px rgba(20, 22, 21, 0.06), 0 2px 6px rgba(20, 22, 21, 0.03) !important;
+    
+    /* Perfect Center Alignment for Card Content */
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease !important;
+    position: relative !important;
   }
 
-  .social-links-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
+  /* Center all headings, text, badges, and buttons within cards */
+  .meta-villa-card h2, .meta-villa-card h3,
+  .named-villa h2, .named-villa h3,
+  .booking-amenity-cat h3,
+  .luxury-package-card h3,
+  .special-offer-card h3,
+  .experience-marquee-card h3,
+  .guide-grid > article h3,
+  .meta-review-card h3 {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     width: 100% !important;
+  }
+
+  .meta-villa-card p,
+  .named-villa p,
+  .booking-amenity-cat p,
+  .luxury-package-card p,
+  .special-offer-card p,
+  .experience-marquee-card p,
+  .guide-grid > article p,
+  .meta-review-card p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Center all buttons, CTAs, and links inside cards */
+  .meta-villa-card .button, .meta-villa-card .meta-btn-villa-book,
+  .named-villa .button,
+  .luxury-package-card .button, .luxury-package-card .pkg-card-cta, .luxury-package-card .pkg-btn-select,
+  .special-offer-card .button, .special-offer-card .offer-cta-link, .special-offer-card .offer-cta-btn,
+  .experience-marquee-card .button, .experience-marquee-card .btn-action,
+  .guide-grid > article .text-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center !important;
+  }
+
+  /* Center Badges, Eyebrows, and Pills */
+  .pkg-card-badge,
+  .offer-tag,
+  .card-number,
+  .meta-villa-badge,
+  .booking-cat-title {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Consistent Image Proportions */
+  .meta-villa-media,
+  .villa-photo,
+  .offer-card-media,
+  .card-media {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    margin: 0 !important;
+  }
+
+  .meta-villa-media img,
+  .villa-photo img,
+  .offer-card-media img,
+  .card-media img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+
+  /* Card Body Spacing */
+  .meta-villa-content,
+  .villa-details,
+  .offer-card-body,
+  .card-body {
+    padding: 22px 18px !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
     box-sizing: border-box !important;
   }
 
-  .social-link {
-    min-height: 46px !important;
-    height: 46px !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
+  /* ========================================================
+     3. SECTION-SPECIFIC LUXURY REFINEMENTS
+     ======================================================== */
+
+  /* Villa Feature Cards (index.html & villas.html) */
+  .meta-villa-highlights,
+  .villa-facts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 12px 0 16px !important;
+    list-style: none !important;
+  }
+
+  .meta-villa-highlights li,
+  .villa-facts li {
+    font-size: 0.8rem !important;
+    padding: 4px 10px !important;
+    background: #F8F5F0 !important;
+    border: 1px solid rgba(200, 164, 93, 0.2) !important;
+    border-radius: 100px !important;
+    color: #4A4E49 !important;
+  }
+
+  .meta-villa-rates {
+    text-align: center !important;
+    margin: 10px 0 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .meta-villa-card .meta-btn-villa-book,
+  .named-villa .button {
+    width: 100% !important;
+    max-width: 260px !important;
+    padding: 12px 20px !important;
+    font-size: 0.85rem !important;
+    border-radius: 100px !important;
+  }
+
+  /* Nested Villa Photo Gallery Track inside card */
+  .villa-gallery-track {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    scrollbar-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
+  }
+  .villa-gallery-slide {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    scroll-snap-align: start !important;
+  }
+  .villa-gallery-slide img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* Amenities Section (.booking-amenity-cat) */
+  .booking-amenity-cat {
+    padding: 24px 20px !important;
+    min-height: 290px !important;
+  }
+
+  .booking-cat-title {
+    font-size: 1.15rem !important;
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    color: #141615 !important;
+    gap: 8px !important;
+    margin: 0 0 16px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid rgba(200, 164, 93, 0.25) !important;
+    width: 100% !important;
+  }
+
+  .booking-cat-bullet {
+    color: #C8A45D !important;
+  }
+
+  .booking-amenity-list {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .booking-amenity-list li {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    padding: 7px 0 !important;
+    border-bottom: 1px dashed rgba(52, 53, 47, 0.09) !important;
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+  }
+
+  /* Packages (.luxury-package-card) */
+  .luxury-package-card {
+    padding: 26px 20px !important;
+    border: 1px solid rgba(200, 164, 93, 0.3) !important;
+  }
+
+  .pkg-card-badge {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.12em !important;
+    padding: 4px 12px !important;
+    border-radius: 100px !important;
+    background: #F8F5F0 !important;
+    color: #8C703B !important;
+    border: 1px solid rgba(200, 164, 93, 0.3) !important;
+    margin-bottom: 10px !important;
+  }
+
+  .pkg-card-title {
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    font-size: 1.65rem !important;
+    color: #141615 !important;
+    margin: 0 0 8px !important;
+  }
+
+  .pkg-card-price-row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 10px 0 !important;
+  }
+
+  .pkg-guests-pill {
+    font-size: 0.72rem !important;
+    padding: 3px 8px !important;
+    border-radius: 100px !important;
+    background: rgba(200, 164, 93, 0.1) !important;
+    color: #8C703B !important;
+  }
+
+  .pkg-card-usd {
+    font-size: 0.76rem !important;
+    color: #6C726B !important;
+    margin-bottom: 12px !important;
+  }
+
+  .pkg-amenities-list {
+    width: 100% !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 14px 0 !important;
+    text-align: left !important;
+  }
+
+  .pkg-amenities-list li {
+    font-size: 0.82rem !important;
+    color: #4A4E49 !important;
+    padding: 5px 0 !important;
+    border-bottom: 1px dashed rgba(20, 22, 21, 0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .pkg-card-cta,
+  .pkg-btn-select {
+    width: 100% !important;
+    max-width: 250px !important;
+    padding: 12px 20px !important;
+    border-radius: 100px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    margin: 16px auto 0 !important;
+  }
+
+  /* Celebration Packages (.special-offer-card) */
+  .special-offer-card {
+    border: 1px solid rgba(200, 164, 93, 0.3) !important;
+  }
+
+  .offer-tag {
+    position: absolute !important;
+    top: 14px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.12em !important;
+    padding: 4px 12px !important;
+    border-radius: 100px !important;
+    background: rgba(20, 22, 21, 0.82) !important;
+    backdrop-filter: blur(6px) !important;
+    color: #F8F5F0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    white-space: nowrap !important;
+    z-index: 2 !important;
+  }
+
+  .offer-card-body h3 {
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    font-size: 1.5rem !important;
+    color: #141615 !important;
+    margin: 0 0 6px !important;
+  }
+
+  .offer-highlight-text {
+    font-size: 0.84rem !important;
+    color: #C17C60 !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .offer-desc {
+    font-size: 0.84rem !important;
+    color: #6C726B !important;
+    line-height: 1.6 !important;
+    margin-bottom: 14px !important;
+  }
+
+  .offer-features {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin: 8px 0 14px !important;
+  }
+
+  .offer-features span {
+    font-size: 0.74rem !important;
+    padding: 3px 8px !important;
+    background: #F8F5F0 !important;
+    border-radius: 100px !important;
+    color: #4A4E49 !important;
+  }
+
+  .offer-cta-link,
+  .offer-cta-btn {
+    width: 100% !important;
+    max-width: 250px !important;
+    padding: 12px 20px !important;
+    border-radius: 100px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    margin: 12px auto 0 !important;
+  }
+
+  /* Signature Experiences (.experience-marquee-card) */
+  .experience-marquee-card {
+    border: 1px solid rgba(200, 164, 93, 0.25) !important;
+  }
+
+  .card-number {
+    font-size: 0.7rem !important;
+    letter-spacing: 0.12em !important;
+    color: #8C703B !important;
+    margin-bottom: 6px !important;
+  }
+
+  .card-body h3 {
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    font-size: 1.55rem !important;
+    color: #141615 !important;
+    margin: 0 0 8px !important;
+  }
+
+  .card-body p {
+    font-size: 0.86rem !important;
+    color: #6C726B !important;
+    line-height: 1.6 !important;
+  }
+
+  .card-body .btn-action {
+    width: 100% !important;
+    max-width: 250px !important;
+    padding: 11px 20px !important;
+    border-radius: 100px !important;
+    font-size: 0.84rem !important;
+    margin-top: 14px !important;
+  }
+
+  /* Gallery Collections (.gallery-grid) */
+  .gallery-grid {
+    grid-template-columns: none !important;
+    grid-auto-rows: auto !important;
+  }
+
+  .gallery-item {
+    height: 320px !important;
+    min-height: 320px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border: none !important;
+    position: relative !important;
+    cursor: pointer !important;
+  }
+
+  .gallery-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 22px !important;
+  }
+
+  .gallery-item span {
+    position: absolute !important;
+    bottom: 16px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 86% !important;
+    text-align: center !important;
+    background: rgba(20, 22, 21, 0.76) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    color: #FFFFFF !important;
+    padding: 8px 16px !important;
+    border-radius: 100px !important;
+    font-size: 0.85rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    z-index: 2 !important;
+  }
+
+  /* Reviews & Testimonials (.meta-review-card, .review-marquee-card) */
+  .meta-review-card,
+  .review-marquee-card {
+    padding: 26px 20px !important;
+    min-height: 230px !important;
+    justify-content: space-between !important;
+  }
+
+  .meta-review-stars,
+  .review-stars {
+    color: #C8A45D !important;
+    font-size: 1.15rem !important;
+    letter-spacing: 2px !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 12px !important;
+  }
+
+  .meta-review-quote,
+  .review-marquee-card p {
+    font-size: 0.92rem !important;
+    line-height: 1.65 !important;
+    color: #4A4E49 !important;
+    font-style: italic !important;
+    text-align: center !important;
+    margin: 0 0 16px !important;
+  }
+
+  .meta-review-author-row,
+  .review-author-row {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    box-sizing: border-box !important;
+    gap: 10px !important;
     width: 100% !important;
   }
 
-  .social-brand-svg {
+  .meta-review-author-info,
+  .author-meta {
+    text-align: center !important;
+  }
+
+  .meta-review-author-name,
+  .author-name {
+    font-weight: 600 !important;
+    color: #141615 !important;
+    font-size: 0.88rem !important;
+    display: block !important;
+  }
+
+  .meta-review-author-country,
+  .author-date {
+    font-size: 0.74rem !important;
+    color: #8C703B !important;
+    display: block !important;
+  }
+
+  /* Explore Galle Guide Cards (.guide-grid > article) */
+  .guide-grid > article {
+    padding: 28px 22px !important;
+    min-height: 250px !important;
+  }
+
+  .guide-grid > article > span {
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    color: #C8A45D !important;
+    display: block !important;
+    margin-bottom: 8px !important;
+    text-align: center !important;
+  }
+
+  .guide-grid > article h3 {
+    font-family: var(--font-editorial, 'Cormorant Garamond', serif) !important;
+    font-size: 1.55rem !important;
+    color: #141615 !important;
+    margin: 0 0 10px !important;
+  }
+
+  .guide-grid > article p {
+    font-size: 0.88rem !important;
+    color: #6C726B !important;
+    line-height: 1.65 !important;
+    margin: 0 0 16px !important;
+  }
+
+  .guide-grid > article .text-link {
+    font-size: 0.84rem !important;
+    color: #C17C60 !important;
+    font-weight: 600 !important;
+  }
+
+  /* Instagram Moments (.meta-insta-card) */
+  .meta-insta-card {
+    height: 330px !important;
+    min-height: 330px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .insta-img-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .insta-img-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 22px !important;
+  }
+
+  .insta-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(20, 22, 21, 0.45) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    border-radius: 22px !important;
+  }
+
+  .meta-insta-card:hover .insta-overlay,
+  .meta-insta-card:active .insta-overlay {
+    opacity: 1 !important;
+  }
+
+  /* ========================================================
+     4. SUBTLE LUXURY PAGINATION DOTS
+     ======================================================== */
+  .carousel-pagination-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 14px 0 24px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
+  }
+
+  .carousel-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    background: rgba(200, 164, 93, 0.3) !important;
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    cursor: pointer !important;
+    border: none !important;
+    padding: 0 !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .carousel-dot.active {
     width: 22px !important;
-    height: 22px !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* FAQ on mobile */
-  .meta-faq-section {
-    padding: 4.5rem 1.25rem 4.5rem !important;
-  }
-
-  .meta-faq-question {
-    padding: 1.15rem 1.25rem !important;
-  }
-
-  .meta-faq-question span:first-child {
-    font-size: 1.1rem !important;
-  }
-
-  .meta-faq-answer {
-    padding: 0 1.25rem !important;
-  }
-
-  .meta-faq-item.open .meta-faq-answer {
-    padding: 0 1.25rem 1.25rem !important;
-  }
-
-  .meta-faq-answer p {
-    font-size: 0.85rem !important;
+    border-radius: 4px !important;
+    background: #C8A45D !important;
+    box-shadow: 0 0 10px rgba(200, 164, 93, 0.55) !important;
   }
 }
 
-/* Tablet view (769px to 1024px) for Instagram Grid */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .meta-instagram-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 14px !important;
+/* ========================================================
+   5. TABLET RESPONSIVE BREAKPOINT (768px - 1023px)
+   Preserve responsive 2-column grids cleanly
+   ======================================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .meta-villas-grid,
+  .dual-villas-carousel,
+  .special-offers-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
   }
-  .meta-amenities-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 14px !important;
+
+  .booking-amenities-container {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  .luxury-packages-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 22px !important;
+  }
+
+  .meta-reviews-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 22px !important;
+  }
+
+  .guide-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 22px !important;
+  }
+
+  /* Dots are hidden on tablet and desktop */
+  .carousel-pagination-dots {
+    display: none !important;
+  }
+}
+
+/* ========================================================
+   6. DESKTOP BREAKPOINT (>= 1024px)
+   100% UNTOUCHED — Existing 3-col & 4-col grids preserved
+   ======================================================== */
+@media (min-width: 1024px) {
+  .carousel-pagination-dots {
+    display: none !important;
+  }
+}
+
+/* ========================================================
+   7. ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ======================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .meta-villas-grid,
+  .dual-villas-carousel,
+  .booking-amenities-container,
+  .luxury-packages-grid,
+  .special-offers-grid,
+  .experience-marquee-track,
+  .gallery-grid,
+  .meta-reviews-grid,
+  .review-marquee-track,
+  .guide-grid,
+  .meta-instagram-grid {
+    scroll-behavior: auto !important;
+  }
+  .carousel-dot {
+    transition: none !important;
   }
 }
