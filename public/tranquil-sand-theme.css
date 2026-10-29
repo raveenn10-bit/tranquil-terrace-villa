@@ -1372,3 +1372,464 @@ h2 em, h3 em {
   }
 }
 
+/* ==========================================================================
+   TRANQUIL TERRACE GALLE — MOBILE-FIRST LUXURY REDESIGN & CRITICAL FIXES
+   ========================================================================== */
+
+/* 1. "Enquire for 4 Guests ↗" Button High Contrast Visibility Fix (can not see fix) */
+.meta-villas-unified-notice {
+  background: #FFFDFB !important;
+  border: 1px solid rgba(52, 53, 47, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(52, 53, 47, 0.05) !important;
+  border-radius: 14px !important;
+}
+.meta-villas-unified-notice p {
+  color: #34352F !important;
+}
+.meta-villas-unified-notice p strong {
+  color: #141615 !important;
+}
+.meta-villas-unified-notice .meta-btn-outline {
+  background: #34352F !important;
+  color: #FFFFFF !important;
+  border: 1px solid #34352F !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 22px !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  font-size: 0.88rem !important;
+  letter-spacing: 0.02em !important;
+  text-decoration: none !important;
+  box-shadow: 0 4px 14px rgba(52, 53, 47, 0.2) !important;
+  transition: all 0.25s ease !important;
+  white-space: nowrap !important;
+}
+.meta-villas-unified-notice .meta-btn-outline span {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.meta-villas-unified-notice .meta-btn-outline:hover {
+  background: #C17C60 !important;
+  border-color: #C17C60 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(193, 124, 96, 0.35) !important;
+}
+.meta-villas-unified-notice .meta-btn-outline:hover span {
+  color: #FFFFFF !important;
+}
+
+/* 2. Packages Section Header Center (center karanna) */
+.packages-header-center,
+.meta-packages-section .packages-header-center,
+.meta-special-offers-section .packages-header-center {
+  text-align: center !important;
+  max-width: 760px !important;
+  margin: 0 auto 3.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+.packages-header-center .meta-eyebrow,
+.packages-header-center .meta-section-title,
+.packages-header-center .meta-section-sub {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+}
+.packages-header-center .meta-section-sub {
+  max-width: 640px !important;
+  line-height: 1.65 !important;
+  font-size: 0.95rem !important;
+  color: #55574F !important;
+}
+
+/* 3. Phase 1: Critical Mobile Navigation Menu Links Fix */
+.luxury-mobile-drawer {
+  background: #FAF6F1 !important;
+  color: #34352F !important;
+  z-index: 99999 !important;
+}
+.luxury-mobile-drawer .drawer-scroller {
+  background: #FAF6F1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100% !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem) !important;
+  box-sizing: border-box !important;
+}
+.luxury-mobile-drawer .drawer-top-bar {
+  border-bottom: 1px solid rgba(52, 53, 47, 0.08) !important;
+}
+.luxury-mobile-drawer .drawer-eyebrow {
+  color: #34352F !important;
+  font-family: var(--font-ui) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+.luxury-mobile-drawer .drawer-close-btn {
+  color: #34352F !important;
+}
+.luxury-mobile-drawer .drawer-crest-center {
+  padding: 1.5rem 0 1rem !important;
+}
+/* Crucial override for style.css: nav { display: none } on <=800px */
+.luxury-mobile-drawer .drawer-nav-menu,
+nav.drawer-nav-menu,
+.luxury-mobile-drawer.is-open nav.drawer-nav-menu,
+.luxury-mobile-drawer.is-open .drawer-nav-menu {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: static !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 440px !important;
+  margin: 0 auto !important;
+}
+.luxury-mobile-drawer .drawer-links-list {
+  display: flex !important;
+  flex-direction: column !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+.luxury-mobile-drawer .drawer-links-list li,
+.luxury-mobile-drawer.is-open .drawer-links-list li {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  border-bottom: 1px solid rgba(52, 53, 47, 0.08) !important;
+}
+.luxury-mobile-drawer .drawer-nav-link {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #34352F !important;
+  font-family: var(--font-editorial) !important;
+  font-size: 1.55rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-decoration: none !important;
+  text-align: center !important;
+  padding: 0.75rem 0 !important;
+  transition: color 0.2s ease !important;
+}
+.luxury-mobile-drawer .drawer-nav-link:hover,
+.luxury-mobile-drawer .drawer-nav-link.active {
+  color: #C17C60 !important;
+}
+.luxury-mobile-drawer .drawer-sub-item .drawer-nav-link {
+  font-size: 1.15rem !important;
+  color: #6C726B !important;
+  padding: 0.4rem 0 !important;
+  letter-spacing: 0.08em !important;
+}
+.luxury-mobile-drawer .drawer-sub-item .drawer-nav-link:hover {
+  color: #C17C60 !important;
+}
+.luxury-mobile-drawer .drawer-footer-actions,
+.luxury-mobile-drawer.is-open .drawer-footer-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  opacity: 1 !important;
+  transform: none !important;
+  padding: 1.5rem 1rem 1rem !important;
+  gap: 0.85rem !important;
+}
+.luxury-mobile-drawer .drawer-book-cta {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--color-terracotta) !important;
+  padding: 0.95rem 2rem !important;
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  box-shadow: 0 8px 24px rgba(193, 124, 96, 0.25) !important;
+}
+.luxury-mobile-drawer .drawer-book-cta:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+.luxury-mobile-drawer .drawer-contact-line a {
+  color: #34352F !important;
+}
+.luxury-mobile-drawer .drawer-wa-line a {
+  color: #25D366 !important;
+}
+
+/* 4. Phase 2: Mobile Hero Video Portrait 9:16 & Button Clean-up */
+@media (max-width: 768px) {
+  .meta-hero {
+    position: relative !important;
+    width: 100% !important;
+    min-height: calc(100svh - 82px) !important;
+    max-height: 840px !important;
+    height: auto !important;
+    aspect-ratio: 9 / 16 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    overflow: hidden !important;
+    background: #141615 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .meta-hero-video-wrap {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important;
+  }
+
+  .meta-hero-video {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center 35% !important;
+    display: block !important;
+  }
+
+  .meta-hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 2 !important;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 22, 21, 0.45) 0%,
+      rgba(20, 22, 21, 0.2) 30%,
+      rgba(20, 22, 21, 0.65) 65%,
+      rgba(20, 22, 21, 0.94) 100%
+    ) !important;
+  }
+
+  .meta-hero-container {
+    position: relative !important;
+    z-index: 3 !important;
+    width: 100% !important;
+    padding: 1.5rem 1.25rem 2.25rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-hero-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+
+  .meta-hero-copy .meta-eyebrow {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.16em !important;
+    margin-bottom: 0.4rem !important;
+    color: #EFEADF !important;
+  }
+
+  .meta-hero-title {
+    font-size: clamp(1.85rem, 7.2vw, 2.45rem) !important;
+    line-height: 1.15 !important;
+    margin-bottom: 0.5rem !important;
+    color: #FFFFFF !important;
+  }
+
+  .meta-hero-desc {
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    color: #E2DDD5 !important;
+    margin-bottom: 0.9rem !important;
+    max-width: 320px !important;
+  }
+
+  .meta-hero-rate-banner {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 10px !important;
+    padding: 0.45rem 0.9rem !important;
+    margin: 0 0 1.1rem !important;
+  }
+
+  .meta-hero-rate-tag {
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    color: #FFF !important;
+  }
+
+  .meta-hero-rate-sub {
+    font-size: 0.65rem !important;
+    color: #E2DDD5 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  .meta-hero-cta-group {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 !important;
+  }
+
+  /* Single primary CTA on mobile */
+  .meta-hero-cta-group .meta-btn-primary {
+    width: 100% !important;
+    max-width: 320px !important;
+    padding: 0.85rem 1.5rem !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    border-radius: 9999px !important;
+    background: var(--color-terracotta) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    text-decoration: none !important;
+  }
+
+  /* User request: remove these 2 on mobile (media_1793247949255.png) */
+  .meta-hero-cta-group .meta-btn-outline,
+  .meta-hero #meta-video-control,
+  .meta-hero .video-control-pill {
+    display: none !important;
+  }
+}
+
+/* 5. Phase 4: Mobile Amenities 2-Column Responsive Grid */
+@media (max-width: 768px) {
+  .meta-amenities-section {
+    padding: 3.5rem 1rem !important;
+  }
+
+  .meta-amenities-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    overflow-x: visible !important;
+    scroll-snap-type: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-amenities-grid > .meta-amenity-card {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 1.15rem 0.9rem !important;
+    border-radius: 12px !important;
+    background: #FFFFFF !important;
+    border: 1px solid var(--color-warm-beige) !important;
+    box-shadow: 0 2px 10px rgba(52, 53, 47, 0.04) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    scroll-snap-align: none !important;
+  }
+
+  .meta-amenities-grid > .meta-amenity-card:hover {
+    transform: none !important;
+    border-color: var(--color-terracotta) !important;
+  }
+
+  .meta-amenity-card .meta-amenity-icon-wrap {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 8px !important;
+    background: var(--color-terracotta-soft) !important;
+    color: var(--color-terracotta) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .meta-amenity-card .meta-amenity-icon-wrap svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: var(--color-terracotta) !important;
+  }
+
+  .meta-amenity-card h3 {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.3rem !important;
+    color: var(--color-charcoal) !important;
+  }
+
+  .meta-amenity-card p {
+    font-size: 0.74rem !important;
+    line-height: 1.35 !important;
+    color: var(--color-charcoal-muted) !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 6. Mobile Sticky Bottom Bar Enhancements & Collisions Avoidance */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+  }
+  .meta-mobile-sticky-bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9998 !important;
+    background: rgba(250, 246, 241, 0.98) !important;
+    border-top: 1px solid var(--color-warm-beige) !important;
+    padding: 0.7rem 1rem calc(env(safe-area-inset-bottom, 0px) + 0.7rem) !important;
+    box-shadow: 0 -4px 20px rgba(52, 53, 47, 0.08) !important;
+  }
+  .meta-floating-whatsapp,
+  #floating-whatsapp {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 82px) !important;
+    right: 18px !important;
+    z-index: 9997 !important;
+  }
+  .luxury-audio-toggle,
+  #luxury-audio-toggle {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 82px) !important;
+    left: 18px !important;
+    z-index: 9997 !important;
+  }
+}
+

@@ -190,7 +190,7 @@ const taruHeaderHtml = (activePage) => `
         <li><a class="luxury-nav-link ${activePage === "experiences.html" ? "active" : ""}" href="experiences.html" ${activePage === "experiences.html" ? 'aria-current="page"' : ''}>ABOUT</a></li>
         <li><a class="luxury-nav-link" href="index.html#faq">FAQ</a></li>
         <li><a class="luxury-nav-link ${activePage === "contact.html" ? "active" : ""}" href="contact.html" ${activePage === "contact.html" ? 'aria-current="page"' : ''}>CONTACT</a></li>
-        <li><a class="luxury-nav-link luxury-book-link" href="#booking-card" data-book="" aria-label="Book your escape">BOOK NOW</a></li>
+        <li><a class="luxury-nav-link luxury-book-link" href="${activePage === "index.html" ? "#booking-card" : "index.html#booking-card"}" data-book="" aria-label="Book your escape">BOOK NOW</a></li>
       </ul>
 
       <span class="luxury-nav-sep" aria-hidden="true">|</span>
@@ -211,7 +211,7 @@ const taruHeaderHtml = (activePage) => `
 
     <!-- 5. MOBILE BOOK BUTTON (Mobile only) -->
     <div class="luxury-mobile-book-wrap">
-      <a class="luxury-mobile-book-btn" href="#booking-card" data-book="" aria-label="Book your escape">
+      <a class="luxury-mobile-book-btn" href="${activePage === "index.html" ? "#booking-card" : "index.html#booking-card"}" data-book="" aria-label="Book your escape">
         <span>BOOK</span>
       </a>
     </div>
@@ -259,7 +259,7 @@ const taruDrawerHtml = (activePage) => `
 
     <!-- Drawer Actions & CTA -->
     <div class="drawer-footer-actions" style="--stagger: 10;">
-      <a class="drawer-book-cta" href="#booking-card" data-book="" aria-label="Book your stay at Tranquil Terrace">
+      <a class="drawer-book-cta" href="${activePage === "index.html" ? "#booking-card" : "index.html#booking-card"}" data-book="" aria-label="Book your stay at Tranquil Terrace">
         <span>BOOK YOUR STAY</span>
         <span class="cta-arrow" aria-hidden="true">↗</span>
       </a>
@@ -537,6 +537,8 @@ const htmlFiles = [
   "gallery.html",
   "explore-galle.html",
   "contact.html",
+  "privacy-policy.html",
+  "terms-and-conditions.html",
 ];
 
 const pageMetadata = {
@@ -574,6 +576,18 @@ const pageMetadata = {
     url: "https://tranquilterracegalle.com/contact.html",
     title: "Contact & Reservations · Tranquil Terrace Galle",
     description: "Direct reservations, 24/7 WhatsApp concierge, location in Galle, Sri Lanka, and availability calendar.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  },
+  "privacy-policy.html": {
+    url: "https://tranquilterracegalle.com/privacy-policy.html",
+    title: "Privacy Policy · Tranquil Terrace Galle",
+    description: "Privacy Policy and guest data protection practices at Tranquil Terrace Galle.",
+    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+  },
+  "terms-and-conditions.html": {
+    url: "https://tranquilterracegalle.com/terms-and-conditions.html",
+    title: "Terms & Conditions · Tranquil Terrace Galle",
+    description: "Booking terms, check-in policies, and guest rules at Tranquil Terrace Galle.",
     image: "https://tranquilterracegalle.com/assets/villa-0.webp"
   }
 };
@@ -755,7 +769,7 @@ for (const fileName of htmlFiles) {
         <span>TWO PRIVATE VILLAS</span>
         <div>Day Packages from <strong data-price-lkr="12500">LKR 12,500</strong></div>
       </div>
-      <a class="meta-btn-sticky-book" id="meta-sticky-book-btn" href="#booking-card" data-whatsapp-book="" aria-label="Book your stay on WhatsApp">
+      <a class="meta-btn-sticky-book" id="meta-sticky-book-btn" href="${fileName === "index.html" ? "#booking-card" : "index.html#booking-card"}" data-whatsapp-book="" aria-label="Book your stay on WhatsApp">
         <span>Book Now &nearr;</span>
       </a>
     </div>

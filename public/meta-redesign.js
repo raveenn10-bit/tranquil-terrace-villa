@@ -1352,9 +1352,9 @@
     let isPlaying = false;
     let fadeInterval = null;
 
-    // Strict 45-second loop:
+    // 1 minute 50 seconds (110s) loop:
     audio.addEventListener("timeupdate", function () {
-      if (audio.currentTime >= 45) {
+      if (audio.currentTime >= 110) {
         audio.currentTime = 0;
         if (isPlaying) {
           audio.play().catch(() => {});
