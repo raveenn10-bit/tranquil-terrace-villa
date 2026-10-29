@@ -460,7 +460,7 @@ const taruFooterHtml = `<footer class="tt-footer" id="site-footer" aria-label="T
             </a>
             <a href="index.html#faq">
               <svg class="tt-link-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Check-in 2 PM &middot; Check-out 11 AM</span>
+              <span>Check-in &amp; Check-out Timings</span>
             </a>
             <a href="index.html#faq">
               <svg class="tt-link-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -664,6 +664,26 @@ for (const fileName of htmlFiles) {
   html = html.replace(/4\.6\s*([★⭐]|\/|\s*out\s*of)/gi, '4.9 $1');
   html = html.replace(/4\.6\s*\/\s*5/g, '4.9 / 5');
   html = html.replace(/4\.6\s*\/\s*5\.0/g, '4.9 / 5.0');
+
+  // Align FAQ and check-in / check-out timings with official package schedules (Day: 10AM-3PM, Night: 5PM-9AM)
+  html = html.replace(/"checkinTime":\s*"13:00"/g, '"checkinTime": "10:00"');
+  html = html.replace(/"checkoutTime":\s*"10:00"/g, '"checkoutTime": "09:00"');
+  html = html.replace(
+    /"text":\s*"Check-in is from 1:00 PM \(13:00\) and check-out is by 10:00 AM\.[^"]*"/g,
+    '"text": "Check-in and check-out timings depend on your selected package: Day Package check-in is 10:00 AM – check-out 3:00 PM; Night Package check-in is 5:00 PM – check-out 9:00 AM (Next Day); Day & Night Package check-in is 10:00 AM – check-out 9:00 AM (Next Day). Early check-in or late check-out can be requested via WhatsApp concierge (+94 77 068 2366) subject to villa availability."'
+  );
+  html = html.replace(
+    /<p>Check-in is from 1:00 PM \(13:00\) and check-out is by 10:00 AM\.[^<]*<\/p>/g,
+    '<p>Check-in and check-out timings follow our official package schedules:<br/>&bull; <strong>Day Package:</strong> Check-in 10:00 AM &ndash; Check-out 3:00 PM<br/>&bull; <strong>Night Package:</strong> Check-in 5:00 PM &ndash; Check-out 9:00 AM (Next Day)<br/>&bull; <strong>Day &amp; Night Package:</strong> Check-in 10:00 AM &ndash; Check-out 9:00 AM (Next Day)<br/>Early check-in or late check-out can be requested via WhatsApp concierge (+94 77 068 2366) subject to villa availability.</p>'
+  );
+  html = html.replace(
+    /<details><summary>Where can I check rates and arrival times\?<span>\+<\/span><\/summary><p>[\s\S]*?<\/p><\/details>/g,
+    '<details><summary>Where can I check rates and arrival times?<span>+</span></summary><p>Official package timings are:<br/>&bull; <strong>Day Package:</strong> Check-in 10:00 AM &ndash; Check-out 3:00 PM<br/>&bull; <strong>Night Package:</strong> Check-in 5:00 PM &ndash; Check-out 9:00 AM (Next Day)<br/>&bull; <strong>Day &amp; Night Package:</strong> Check-in 10:00 AM &ndash; Check-out 9:00 AM (Next Day)<br/>Early check-in or late check-out can be requested via WhatsApp concierge (+94 77 068 2366) subject to villa availability. Contact us with your preferred dates for current rates, payment details and terms before confirming your booking.</p></details>'
+  );
+  html = html.replace(
+    /<span>\s*<small>CHECK-IN<\/small>\s*<strong>1:00 PM<\/strong>\s*<\/span>\s*<span>\s*<small>CHECK-OUT<\/small>\s*<strong>10:00 AM<\/strong>\s*<\/span>/g,
+    '<span><small>CHECK-IN</small><strong>Day: 10:00 AM<br/>Night: 5:00 PM</strong></span><span><small>CHECK-OUT</small><strong>Day: 3:00 PM<br/>Night: 9:00 AM</strong></span>'
+  );
 
   // Clean up any existing canonical, og, and twitter tags
   html = html.replace(/<link[^>]*rel="canonical"[^>]*\/?>\s*/gi, "");

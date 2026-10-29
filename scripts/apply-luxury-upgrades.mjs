@@ -333,7 +333,7 @@ export const faqSectionHtml = `
               <span class="faq-icon" aria-hidden="true">+</span>
             </button>
             <div class="meta-faq-answer">
-              <p>Check-in is from 1:00 PM (13:00) and check-out is by 10:00 AM. Early check-in or late check-out can be requested via WhatsApp subject to villa availability.</p>
+              <p>Check-in and check-out timings follow our official package schedules:<br/>&bull; <strong>Day Package:</strong> Check-in 10:00 AM &ndash; Check-out 3:00 PM<br/>&bull; <strong>Night Package:</strong> Check-in 5:00 PM &ndash; Check-out 9:00 AM (Next Day)<br/>&bull; <strong>Day &amp; Night Package:</strong> Check-in 10:00 AM &ndash; Check-out 9:00 AM (Next Day)<br/>Early check-in or late check-out can be requested via WhatsApp concierge (+94 77 068 2366) subject to villa availability.</p>
             </div>
           </div>
 
@@ -440,7 +440,7 @@ export const faqSchemaJson = `  <script type="application/ld+json">
         "name": "What time is check-in and check-out?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Check-in is from 1:00 PM (13:00) and check-out is by 10:00 AM. Early check-in or late check-out can be requested via WhatsApp subject to villa availability."
+          "text": "Check-in and check-out timings depend on your selected package: Day Package check-in is 10:00 AM – check-out 3:00 PM; Night Package check-in is 5:00 PM – check-out 9:00 AM (Next Day); Day & Night Package check-in is 10:00 AM – check-out 9:00 AM (Next Day). Early check-in or late check-out can be requested via WhatsApp concierge (+94 77 068 2366) subject to villa availability."
         }
       },
       {

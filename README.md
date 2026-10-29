@@ -39,7 +39,7 @@ Mobile dashboard verified at 390px iframe width with no horizontal overflow. The
 ## Cinematic 3D redesign — 27 October 2026
 The public pages now use an editorial hospitality layout inspired by the user-supplied Taru Villas reference and screenshot: a utility-led desktop header, sculpted split hero, layered image planes, perspective depth, cursor light, subtle tilt, premium calendar treatment and spatial footer styling. Existing real property photography, copy, booking APIs, OTA links, reviews and the owner dashboard remain connected. Motion is simplified on small screens and disabled when reduced-motion is requested.
 
-Google Maps verified on 27 October 2026: Bogahawella Road, Galle 80000; phone +94 77 068 2366; check-in 1:00 PM; check-out 10:00 AM; rating 4.6/5 from 49 reviews; 82 public photos. The existing five villa WebP assets were selected from this same property listing.
+Google Maps verified on 27 October 2026: Bogahawella Road, Galle 80000; phone +94 77 068 2366; package check-in/out: Day Package 10:00 AM – 3:00 PM, Night Package 5:00 PM – 9:00 AM; rating 4.9/5 from 49 reviews; 82 public photos. The existing five villa WebP assets were selected from this same property listing.
 
 ## Final villa names and capacity — owner update, 27 October 2026
 Tranquil Terrace has two separate private villas: **Araliya** and **Olu**. Each has one king bedroom, one private bathroom, one private plunge pool and capacity for up to two guests. Website enquiries and admin bookings store the selected villa. Confirmed-date overlap protection is applied per villa, allowing Araliya and Olu to be reserved independently on the same dates.

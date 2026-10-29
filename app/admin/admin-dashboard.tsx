@@ -125,6 +125,22 @@ const blankBookingForm = {
 const label = (value: string) =>
   value.replaceAll("_", " ").replace(/\b\w/g, (m) => m.toUpperCase());
 
+export function getBookingPackageTimings(packageId?: string, timingOption?: string) {
+  if (packageId === "day-package") {
+    return { checkin: "10:00 AM", checkout: "3:00 PM" };
+  }
+  if (packageId === "night-package") {
+    return { checkin: "5:00 PM", checkout: "9:00 AM (Next Day)" };
+  }
+  if (packageId === "day-night-package") {
+    if (timingOption === "B") {
+      return { checkin: "5:00 PM", checkout: "3:00 PM (Next Day)" };
+    }
+    return { checkin: "11:00 AM", checkout: "9:00 AM (Next Day)" };
+  }
+  return { checkin: "10:00 AM / 5:00 PM", checkout: "3:00 PM / 9:00 AM" };
+}
+
 export default function AdminDashboard({ live, displayName, authHref }: Props) {
   // Navigation & View state
   const [activeTab, setActiveTab] = useState<DashboardTab>("reservations");
@@ -519,6 +535,8 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
     const inDateDisplay = formatDateDisplay(b.checkin, { monthFormat: "short", showDayOfWeek: true });
     const outDateDisplay = formatDateDisplay(b.checkout, { monthFormat: "short", showDayOfWeek: true });
 
+    const bTimings = getBookingPackageTimings(b.packageId, b.timingOption);
+
     let text = "";
     if (type === "confirmation") {
       text =
@@ -530,8 +548,8 @@ We are pleased to confirm your reservation.
 ✦ RESERVATION DETAILS:
 • Booking Reference: ${b.reference}
 • Villa: Villa ${b.villaName}
-• Check-in: ${inDateDisplay} (from 1:00 PM)
-• Check-out: ${outDateDisplay} (by 11:00 AM)
+• Check-in: ${inDateDisplay} (${bTimings.checkin})
+• Check-out: ${outDateDisplay} (${bTimings.checkout})
 • Stay Duration: ${nightsCount} night(s)
 • Guests: ${b.guests}
 
@@ -542,13 +560,13 @@ We are pleased to confirm your reservation.
 
 ✦ LOCATION & ARRIVAL:
 Tranquil Terrace, Galle, Southern Province, Sri Lanka
-Google Maps Location: https://maps.app.goo.gl/tranquil-terrace-galle
+Google Maps Location: https://maps.app.goo.gl/RJAmGePoCYyHsJYX8
 
 Should you require airport transfers or special dining arrangements, please do not hesitate to contact us.
 
 Warm regards,
 Tranquil Terrace Galle Concierge
-+94 77 123 4567`;
++94 77 068 2366`;
     } else if (type === "reminder") {
       text =
 `Dear ${b.guestName},
@@ -580,16 +598,16 @@ Tranquil Terrace Galle`;
 We are excited to welcome you to Tranquil Terrace Galle!
 
 ✦ ARRIVAL INFORMATION:
-• Check-in Time: 1:00 PM onwards
+• Check-in Time: ${bTimings.checkin}
 • Villa: Villa ${b.villaName}
 • Wi-Fi Network: TranquilTerrace_Guest
 • Wi-Fi Password: GalleLuxury2026
 
 ✦ DIRECTIONS:
 Our sanctuary is located just 10 minutes inland from the historic Galle Fort:
-Google Maps: https://maps.app.goo.gl/tranquil-terrace-galle
+Google Maps: https://maps.app.goo.gl/RJAmGePoCYyHsJYX8
 
-Our Villa Host will greet you with a chilled king coconut welcome drink upon your arrival. If you need any assistance on the way, call us directly at +94 77 123 4567.
+Our Villa Host will greet you with a chilled king coconut welcome drink upon your arrival. If you need any assistance on the way, call us directly at +94 77 068 2366.
 
 Safe travels!
 Tranquil Terrace Galle Team`;
@@ -3112,12 +3130,19 @@ Tranquil Terrace Galle Team`;
                 <p className="mt-1 text-sm font-semibold text-zinc-900">
                   Villa {invoiceModalBooking.villaName} (Whole Villa)
                 </p>
-                <p className="text-zinc-600 mt-0.5">
-                  Check-in: {formatDateDisplay(invoiceModalBooking.checkin, { monthFormat: "short", showDayOfWeek: true })} (1:00 PM)
-                </p>
-                <p className="text-zinc-600">
-                  Check-out: {formatDateDisplay(invoiceModalBooking.checkout, { monthFormat: "short", showDayOfWeek: true })} (11:00 AM)
-                </p>
+                {(() => {
+                  const invTiming = getBookingPackageTimings(invoiceModalBooking.packageId, invoiceModalBooking.timingOption);
+                  return (
+                    <>
+                      <p className="text-zinc-600 mt-0.5">
+                        Check-in: {formatDateDisplay(invoiceModalBooking.checkin, { monthFormat: "short", showDayOfWeek: true })} ({invTiming.checkin})
+                      </p>
+                      <p className="text-zinc-600">
+                        Check-out: {formatDateDisplay(invoiceModalBooking.checkout, { monthFormat: "short", showDayOfWeek: true })} ({invTiming.checkout})
+                      </p>
+                    </>
+                  );
+                })()}
                 <p className="text-zinc-600 font-medium text-[#93712d]">
                   Duration: {calculateNights(invoiceModalBooking.checkin, invoiceModalBooking.checkout)} Nights · {invoiceModalBooking.guests} Guests
                 </p>
