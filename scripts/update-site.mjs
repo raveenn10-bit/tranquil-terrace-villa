@@ -28,6 +28,7 @@ for (const file of [
   "mobile-carousels.css",
   "mobile-carousels.js",
   "tranquil-sand-theme.css",
+  "favicon.svg",
   "robots.txt",
   "sitemap.xml",
 ]) {
@@ -36,6 +37,16 @@ for (const file of [
   if (fs.existsSync(src)) {
     fs.copyFileSync(src, dst);
     console.log(`Copied ${file} to legacy-site/`);
+  }
+}
+
+// 1b. Recursively sync media directories (assets, videos, images)
+for (const dir of ["assets", "videos", "images"]) {
+  const srcDir = path.join(root, "public", dir);
+  const dstDir = path.join(root, "legacy-site", dir);
+  if (fs.existsSync(srcDir)) {
+    fs.cpSync(srcDir, dstDir, { recursive: true });
+    console.log(`Synchronized directory ${dir} to legacy-site/`);
   }
 }
 
