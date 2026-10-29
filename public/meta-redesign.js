@@ -79,6 +79,7 @@
 
     // Update all elements with data-price-lkr
     document.querySelectorAll("[data-price-lkr]").forEach((el) => {
+      if (el.id === "home-cal-rate") return;
       const lkr = Number(el.getAttribute("data-price-lkr")) || 0;
       el.textContent = formatMoney(lkr, curr);
     });
@@ -91,6 +92,9 @@
 
     // Recalculate booking card price
     recalculateBooking();
+    if (typeof updateCalendarSelectionBar === "function") {
+      updateCalendarSelectionBar();
+    }
   }
 
   // Recalculate Booking Card Price
@@ -131,7 +135,7 @@
     }
 
     // Highlight selected card
-    document.querySelectorAll(".meta-package-card").forEach((card) => {
+    document.querySelectorAll(".meta-package-card, .luxury-package-card").forEach((card) => {
       card.classList.toggle("selected", card.dataset.packageId === pkgId);
     });
 
@@ -294,8 +298,9 @@
     });
 
     // 4. Package Cards Click
-    document.querySelectorAll(".meta-package-card").forEach((card) => {
-      card.addEventListener("click", function () {
+    document.querySelectorAll(".meta-package-card, .luxury-package-card").forEach((card) => {
+      card.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return;
         const pkgId = this.dataset.packageId;
         if (pkgId) selectPackage(pkgId);
       });
@@ -671,6 +676,14 @@
     if (inEl) inEl.textContent = calStart ? formatDisplayDate(calStart) : "Select Check-in";
     if (outEl) outEl.textContent = calEnd ? formatDisplayDate(calEnd) : (calStart ? "Select Check-out" : "Select Check-out");
 
+    if (!calStart && !calEnd) {
+      if (rateEl) {
+        rateEl.setAttribute("data-price-lkr", "12500");
+        rateEl.innerHTML = `Day Packages from ${formatMoney(12500, currentCurrency)} <small>(Direct Rate)</small>`;
+      }
+      return;
+    }
+
     let nights = 1;
     if (calStart && calEnd) {
       const d1 = new Date(calStart + "T12:00:00Z");
@@ -678,7 +691,7 @@
       nights = Math.max(1, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)));
     }
 
-    const pricePerNight = PACKAGES["day-night-package"].priceLKR; // LKR 37,500
+    const pricePerNight = PACKAGES["day-night-package"].priceLKR; // LKR 26,000
     const totalLKR = pricePerNight * nights;
 
     if (rateEl) {
@@ -1143,7 +1156,7 @@
     const carouselConfigs = [
       { selector: ".meta-amenities-grid", autoScroll: true, label: "Amenities" },
       { selector: ".meta-reviews-grid", autoScroll: true, label: "Reviews" },
-      { selector: ".meta-packages-list", autoScroll: false, label: "Packages" },
+      { selector: ".meta-packages-list, .luxury-packages-grid", autoScroll: false, label: "Packages" },
       { selector: ".meta-villas-grid", autoScroll: false, label: "Villas" },
       { selector: ".dual-villas-carousel", autoScroll: false, label: "Dual Villas" },
       { selector: ".villa-gallery-track", autoScroll: false, label: "Villa Photos" }
@@ -1322,5 +1335,92 @@
     document.addEventListener('DOMContentLoaded', initFooterReveal);
   } else {
     initFooterReveal();
+  }
+})();
+
+// ==========================================
+// TRANQUIL TERRACE AMBIENT AUDIO CONTROLLER
+// 45-second loop, floating bottom-left mute/unmute
+// ==========================================
+(function() {
+  function initAmbientAudio() {
+    const audio = document.getElementById("ambient-audio");
+    const toggleBtn = document.getElementById("luxury-audio-toggle");
+    const tooltip = document.getElementById("luxury-audio-tooltip");
+    if (!audio || !toggleBtn) return;
+
+    let isPlaying = false;
+    let fadeInterval = null;
+
+    // Strict 45-second loop:
+    audio.addEventListener("timeupdate", function () {
+      if (audio.currentTime >= 45) {
+        audio.currentTime = 0;
+        if (isPlaying) {
+          audio.play().catch(() => {});
+        }
+      }
+    });
+
+    function fadeIn() {
+      audio.volume = 0;
+      audio.play().then(() => {
+        isPlaying = true;
+        toggleBtn.classList.add("is-playing");
+        toggleBtn.setAttribute("aria-label", "Mute ambient sound");
+        toggleBtn.setAttribute("title", "Mute ambient sound");
+        if (tooltip) {
+          const span = tooltip.querySelector("span");
+          if (span) span.textContent = "Mute Ambient Sound";
+        }
+        clearInterval(fadeInterval);
+        fadeInterval = setInterval(() => {
+          if (audio.volume < 0.5) {
+            audio.volume = Math.min(0.5, audio.volume + 0.05);
+          } else {
+            clearInterval(fadeInterval);
+          }
+        }, 60);
+      }).catch(() => {
+        isPlaying = false;
+        toggleBtn.classList.remove("is-playing");
+      });
+    }
+
+    function fadeOut() {
+      clearInterval(fadeInterval);
+      fadeInterval = setInterval(() => {
+        if (audio.volume > 0.06) {
+          audio.volume = Math.max(0, audio.volume - 0.06);
+        } else {
+          audio.pause();
+          audio.volume = 0;
+          isPlaying = false;
+          toggleBtn.classList.remove("is-playing");
+          toggleBtn.setAttribute("aria-label", "Play ambient sound");
+          toggleBtn.setAttribute("title", "Play ambient sound");
+          if (tooltip) {
+            const span = tooltip.querySelector("span");
+            if (span) span.textContent = "Play Ambient Sound";
+          }
+          clearInterval(fadeInterval);
+        }
+      }, 40);
+    }
+
+    toggleBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (!isPlaying) {
+        fadeIn();
+      } else {
+        fadeOut();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAmbientAudio);
+  } else {
+    initAmbientAudio();
   }
 })();

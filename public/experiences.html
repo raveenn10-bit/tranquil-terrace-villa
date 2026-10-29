@@ -29,10 +29,10 @@
   <link href="meta-redesign.css" rel="stylesheet"/>
   <link href="whatsapp-booking.css" rel="stylesheet"/>
   <link href="mobile-carousels.css" rel="stylesheet"/>
+  <link href="tranquil-sand-theme.css" rel="stylesheet"/>
 </head>
 <body class="page-inner page-experiences" id="top">
   <a class="skip" href="#main">Skip to content</a>
-  <div aria-hidden="true" class="progress"></div>
 
 <header class="taru-header luxury-hotel-header" id="site-header">
   <div class="luxury-header-grid">
@@ -158,7 +158,7 @@
     <nav class="luxury-nav luxury-nav-right" aria-label="Main menu right">
       <ul class="luxury-menu-list">
         <li><a class="luxury-nav-link active" href="experiences.html" aria-current="page">ABOUT</a></li>
-        <li><a class="luxury-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li><a class="luxury-nav-link" href="index.html#faq">FAQ</a></li>
         <li><a class="luxury-nav-link " href="contact.html" >CONTACT</a></li>
         <li><a class="luxury-nav-link luxury-book-link" href="#booking-card" data-book="" aria-label="Book your escape">BOOK NOW</a></li>
       </ul>
@@ -311,7 +311,7 @@
         <li style="--stagger: 5;"><a class="drawer-nav-link " href="gallery.html" >GALLERY</a></li>
         <li style="--stagger: 6;"><a class="drawer-nav-link" href="index.html#packages">PACKAGES &amp; BOOKING</a></li>
         <li style="--stagger: 7;"><a class="drawer-nav-link active" href="experiences.html" aria-current="page">ABOUT / EXPERIENCES</a></li>
-        <li style="--stagger: 8;"><a class="drawer-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li style="--stagger: 8;"><a class="drawer-nav-link" href="index.html#faq">FAQ</a></li>
         <li style="--stagger: 9;"><a class="drawer-nav-link " href="contact.html" >CONTACT</a></li>
       </ul>
     </nav>
@@ -351,6 +351,8 @@
     </div>
   </div>
 </div><!-- /luxury-mobile-drawer -->
+
+<div aria-hidden="true" class="progress"></div>
 
 <main id="main">
     <section class="hero inner-hero">
@@ -676,7 +678,7 @@
             <span class="tt-acc-arrow" aria-hidden="true">▾</span>
           </summary>
           <div class="tt-guest-links">
-            <a href="contact.html#faq">? <span>Frequently Asked Questions</span></a>
+            <a href="index.html#faq">? <span>Frequently Asked Questions</span></a>
             <a href="index.html#faq">◷ <span>Check-in 2 PM &middot; Check-out 11 AM</span></a>
             <a href="index.html#faq">≡ <span>Cancellation Policy</span></a>
             <a href="contact.html#stay-calendar">📅 <span>Live Availability Calendar</span></a>
@@ -866,12 +868,30 @@
     <button aria-label="Next photograph" class="next-photo">→</button>
   </dialog>
 
+  <!-- Ambient Audio & Luxury Floating Toggle Button (Bottom Left) -->
+  <audio id="ambient-audio" preload="auto">
+    <source src="assets/ambient.mp3" type="audio/mp3">
+  </audio>
+  <button type="button" class="luxury-audio-toggle" id="luxury-audio-toggle" aria-label="Play ambient sound" title="Play ambient sound">
+    <svg class="audio-icon-muted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <line x1="23" y1="9" x2="17" y2="15"></line>
+      <line x1="17" y1="9" x2="23" y2="15"></line>
+    </svg>
+    <svg class="audio-icon-playing" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+    </svg>
+  </button>
+  <div class="luxury-audio-tooltip" id="luxury-audio-tooltip" aria-hidden="true"><span>Play Ambient Sound</span></div>
+
   <!-- Mobile Sticky Bottom Bar -->
   <aside class="meta-mobile-sticky-bar" aria-label="Mobile booking action">
     <div class="meta-sticky-bar-inner">
       <div class="meta-sticky-price-col">
         <span>TWO PRIVATE VILLAS</span>
-        <div>From <strong data-price-lkr="12500">LKR 12,500</strong></div>
+        <div>Day Packages from <strong data-price-lkr="12500">LKR 12,500</strong></div>
       </div>
       <a class="meta-btn-sticky-book" id="meta-sticky-book-btn" href="#booking-card" data-whatsapp-book="" aria-label="Book your stay on WhatsApp">
         <span>Book Now &nearr;</span>

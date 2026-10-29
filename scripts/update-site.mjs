@@ -27,6 +27,7 @@ for (const file of [
   "whatsapp-booking.js",
   "mobile-carousels.css",
   "mobile-carousels.js",
+  "tranquil-sand-theme.css",
   "robots.txt",
   "sitemap.xml",
 ]) {
@@ -187,7 +188,7 @@ const taruHeaderHtml = (activePage) => `
     <nav class="luxury-nav luxury-nav-right" aria-label="Main menu right">
       <ul class="luxury-menu-list">
         <li><a class="luxury-nav-link ${activePage === "experiences.html" ? "active" : ""}" href="experiences.html" ${activePage === "experiences.html" ? 'aria-current="page"' : ''}>ABOUT</a></li>
-        <li><a class="luxury-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li><a class="luxury-nav-link" href="index.html#faq">FAQ</a></li>
         <li><a class="luxury-nav-link ${activePage === "contact.html" ? "active" : ""}" href="contact.html" ${activePage === "contact.html" ? 'aria-current="page"' : ''}>CONTACT</a></li>
         <li><a class="luxury-nav-link luxury-book-link" href="#booking-card" data-book="" aria-label="Book your escape">BOOK NOW</a></li>
       </ul>
@@ -251,7 +252,7 @@ const taruDrawerHtml = (activePage) => `
         <li style="--stagger: 5;"><a class="drawer-nav-link ${activePage === "gallery.html" ? "active" : ""}" href="gallery.html" ${activePage === "gallery.html" ? 'aria-current="page"' : ''}>GALLERY</a></li>
         <li style="--stagger: 6;"><a class="drawer-nav-link" href="index.html#packages">PACKAGES &amp; BOOKING</a></li>
         <li style="--stagger: 7;"><a class="drawer-nav-link ${activePage === "experiences.html" ? "active" : ""}" href="experiences.html" ${activePage === "experiences.html" ? 'aria-current="page"' : ''}>ABOUT / EXPERIENCES</a></li>
-        <li style="--stagger: 8;"><a class="drawer-nav-link" href="contact.html#faq">FAQ</a></li>
+        <li style="--stagger: 8;"><a class="drawer-nav-link" href="index.html#faq">FAQ</a></li>
         <li style="--stagger: 9;"><a class="drawer-nav-link ${activePage === "contact.html" ? "active" : ""}" href="contact.html" ${activePage === "contact.html" ? 'aria-current="page"' : ''}>CONTACT</a></li>
       </ul>
     </nav>
@@ -420,7 +421,7 @@ const taruFooterHtml = `<footer class="tt-footer" id="site-footer" aria-label="T
             <span class="tt-acc-arrow" aria-hidden="true">▾</span>
           </summary>
           <div class="tt-guest-links">
-            <a href="contact.html#faq">? <span>Frequently Asked Questions</span></a>
+            <a href="index.html#faq">? <span>Frequently Asked Questions</span></a>
             <a href="index.html#faq">◷ <span>Check-in 2 PM &middot; Check-out 11 AM</span></a>
             <a href="index.html#faq">≡ <span>Cancellation Policy</span></a>
             <a href="contact.html#stay-calendar">📅 <span>Live Availability Calendar</span></a>
@@ -656,18 +657,42 @@ for (const fileName of htmlFiles) {
     }
   }
 
+  // Ensure tranquil-sand-theme.css is linked in head
+  if (!html.includes('href="tranquil-sand-theme.css"')) {
+    if (html.includes('href="mobile-carousels.css"')) {
+      html = html.replace(
+        /<link[^>]*href="mobile-carousels\.css"[^>]*\/>/i,
+        `<link href="mobile-carousels.css" rel="stylesheet"/>\n  <link href="tranquil-sand-theme.css" rel="stylesheet"/>`
+      );
+    } else if (html.includes('href="meta-redesign.css"')) {
+      html = html.replace(
+        /<link[^>]*href="meta-redesign\.css"[^>]*\/>/i,
+        `<link href="meta-redesign.css" rel="stylesheet"/>\n  <link href="tranquil-sand-theme.css" rel="stylesheet"/>`
+      );
+    } else {
+      html = html.replace('</head>', '  <link href="tranquil-sand-theme.css" rel="stylesheet"/>\n</head>');
+    }
+  }
+
+  // Clean up duplicate FAQ if found in contact.html
+  if (fileName === "contact.html") {
+    html = html.replace(/<section class="faq section">[\s\S]*?<\/section>\s*/g, "");
+  }
+
   // Update Instagram URL in LodgingBusiness schema in index.html
   html = html.replace(/https:\/\/www\.instagram\.com\/tranquil\.terrace\.galle\//g, "https://www.instagram.com/tranquil_terrace_galle/");
 
-  // B. Clean up any existing header and any orphaned or duplicate mobile drawers
+  // B. Clean up any existing header, orphaned notice bars, and duplicate mobile drawers
+  html = html.replace(/<!-- (?:1\. )?Top Notice Announcement Bar -->\s*/g, "");
+  html = html.replace(/<aside class="meta-notice-bar"[\s\S]*?<\/aside>\s*/g, "");
   html = html.replace(/<header[\s\S]*?<\/header>\s*/g, "");
   html = html.replace(/(?:<!-- MOBILE DRAWER[\s\S]*?-->\s*)?<div class="luxury-mobile-drawer"[\s\S]*?<!-- \/luxury-mobile-drawer -->\s*/g, "");
   html = html.replace(/<div class="luxury-mobile-drawer"[\s\S]*?<\/div><!-- \/luxury-mobile-drawer -->\s*/g, "");
 
-  // Insert the unified header and single mobile drawer right at top of body
+  // Insert the unified header and single mobile drawer right at top of body (after skip link)
   const headerAndDrawer = `${taruHeaderHtml(fileName)}\n\n${taruDrawerHtml(fileName)}`;
-  if (html.includes('class="meta-notice-bar"')) {
-    html = html.replace(/(<aside class="meta-notice-bar"[\s\S]*?<\/aside>)/, `$1\n\n${headerAndDrawer}`);
+  if (html.includes('class="skip"')) {
+    html = html.replace(/(<a class="skip"[^>]*>[\s\S]*?<\/a>)/, `$1\n\n${headerAndDrawer}`);
   } else if (html.includes('<div aria-hidden="true" class="progress"></div>')) {
     html = html.replace(
       '<div aria-hidden="true" class="progress"></div>',
@@ -686,9 +711,12 @@ for (const fileName of htmlFiles) {
     `<a class="button" id="whatsapp-link"$1><svg class="official-wa-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="margin-right:6px;"><path fill="#25D366" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2Z"/><path fill="#FFFFFF" fill-rule="evenodd" d="M17.51 14.38C17.21 14.23 15.74 13.51 15.47 13.41C15.19 13.31 15 13.26 14.8 13.56C14.6 13.86 14.04 14.52 13.86 14.72C13.69 14.92 13.52 14.94 13.22 14.79C12.92 14.64 11.96 14.33 10.82 13.31C9.94 12.52 9.34 11.55 9.17 11.25C9 10.95 9.15 10.79 9.3 10.64C9.43 10.51 9.6 10.29 9.75 10.12C9.9 9.94 9.95 9.82 10.05 9.62C10.15 9.42 10.1 9.24 10.02 9.09C9.95 8.94 9.35 7.47 9.1 6.86C8.86 6.27 8.61 6.35 8.43 6.34C8.26 6.33 8.06 6.33 7.86 6.33C7.66 6.33 7.34 6.41 7.06 6.71C6.79 7.01 6.02 7.73 6.02 9.19C6.02 10.65 7.08 12.06 7.23 12.26C7.38 12.46 9.32 15.46 12.3 16.74C13.01 17.05 13.57 17.23 14 17.37C14.71 17.6 15.36 17.57 15.87 17.49C16.44 17.4 17.63 16.77 17.88 16.06C18.13 15.36 18.13 14.75 18.05 14.63C17.98 14.5 17.81 14.43 17.51 14.28V14.38Z"/></svg>Open WhatsApp <span>↗</span></a>`
   );
 
-  // D. Ensure bottom elements: Mobile Sticky Booking Bar, Floating WhatsApp button, and scripts
+  // D. Ensure bottom elements: Ambient Audio, Mobile Sticky Booking Bar, Floating WhatsApp button, and scripts
   // Clean up any old floating buttons, old script tags, and comments
-  html = html.replace(/<!-- (?:Mobile Sticky Bottom Bar|Floating WhatsApp|Official Floating WhatsApp|Core Scripts|1[12]\.|Luxury WhatsApp|Scripts)[^\n]*-->\s*/g, "");
+  html = html.replace(/<!-- (?:Mobile Sticky Bottom Bar|Floating WhatsApp|Official Floating WhatsApp|Core Scripts|1[12]\.|Luxury WhatsApp|Scripts|Ambient Audio)[^\n]*-->\s*/g, "");
+  html = html.replace(/<audio id="ambient-audio"[\s\S]*?<\/audio>\s*/g, "");
+  html = html.replace(/<button[^>]*id="luxury-audio-toggle"[\s\S]*?<\/button>\s*/g, "");
+  html = html.replace(/<div class="luxury-audio-tooltip"[\s\S]*?<\/div>\s*/g, "");
   html = html.replace(/<aside class="meta-mobile-sticky-bar"[\s\S]*?<\/aside>\s*/g, "");
   html = html.replace(/<a class="meta-floating-whatsapp"[\s\S]*?<\/a>\s*/g, "");
   html = html.replace(/<button[^>]*class="[^"]*meta-floating-whatsapp[^"]*"[\s\S]*?<\/button>\s*/g, "");
@@ -702,12 +730,30 @@ for (const fileName of htmlFiles) {
   html = html.replace(/<script[^>]*src="whatsapp-booking\.js"[^>]*><\/script>\s*/g, "");
 
   const bottomAdditions = `
+  <!-- Ambient Audio & Luxury Floating Toggle Button (Bottom Left) -->
+  <audio id="ambient-audio" preload="auto">
+    <source src="assets/ambient.mp3" type="audio/mp3">
+  </audio>
+  <button type="button" class="luxury-audio-toggle" id="luxury-audio-toggle" aria-label="Play ambient sound" title="Play ambient sound">
+    <svg class="audio-icon-muted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <line x1="23" y1="9" x2="17" y2="15"></line>
+      <line x1="17" y1="9" x2="23" y2="15"></line>
+    </svg>
+    <svg class="audio-icon-playing" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+    </svg>
+  </button>
+  <div class="luxury-audio-tooltip" id="luxury-audio-tooltip" aria-hidden="true"><span>Play Ambient Sound</span></div>
+
   <!-- Mobile Sticky Bottom Bar -->
   <aside class="meta-mobile-sticky-bar" aria-label="Mobile booking action">
     <div class="meta-sticky-bar-inner">
       <div class="meta-sticky-price-col">
         <span>TWO PRIVATE VILLAS</span>
-        <div>From <strong data-price-lkr="12500">LKR 12,500</strong></div>
+        <div>Day Packages from <strong data-price-lkr="12500">LKR 12,500</strong></div>
       </div>
       <a class="meta-btn-sticky-book" id="meta-sticky-book-btn" href="#booking-card" data-whatsapp-book="" aria-label="Book your stay on WhatsApp">
         <span>Book Now &nearr;</span>

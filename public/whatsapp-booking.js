@@ -33,12 +33,12 @@
       isDayUse: false,
     },
     "day-night-package": {
-      name: "Day & Night Package (24 Hours)",
+      name: "Day & Night Package",
       shortName: "Day & Night Package",
-      timing: "Full 24-Hour Escape",
+      timing: "Option A: 11 AM – 9 AM or Option B: 5 PM – 3 PM (Next Day)",
       priceLKR: 26000,
       bothPriceLKR: 52000,
-      description: "Full 24-hour escape • All Meals & Floating Breakfast included",
+      description: "Complete immersion • All Meals & Floating Breakfast included",
       hasFloatingBreakfast: true,
       isDayUse: false,
       options: {

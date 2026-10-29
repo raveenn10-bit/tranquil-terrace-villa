@@ -1,0 +1,1374 @@
+/* ==========================================================================
+   TRANQUIL TERRACE GALLE — TRANQUIL SAND & TERRACOTTA LUXURY THEME
+   Palette:
+   - Primary Background: #FAF6F1
+   - Terracotta Accent: #C17C60
+   - Terracotta Dark: #A66349
+   - Terracotta Soft: #F6EEE9
+   - Dark Charcoal: #34352F
+   - Muted Charcoal: #55574F
+   - Warm Beige: #D6CEB8
+   - Warm Beige Light: #EFEADF
+   - Card Background: #FFFFFF / #FFFDFB
+   ========================================================================== */
+
+:root {
+  --color-sand-bg: #FAF6F1;
+  --color-sand-ivory: #FFFDFB;
+  --color-sand-card: #FFFFFF;
+  --color-terracotta: #C17C60;
+  --color-terracotta-dark: #A66349;
+  --color-terracotta-soft: #F6EEE9;
+  --color-charcoal: #34352F;
+  --color-charcoal-muted: #55574F;
+  --color-charcoal-light: #767870;
+  --color-warm-beige: #D6CEB8;
+  --color-warm-beige-light: #EFEADF;
+  --color-sand-border: rgba(52, 53, 47, 0.12);
+  --color-gold: #C17C60; /* Replaces metallic brass with rich warm terracotta */
+  --font-editorial: "Cormorant Garamond", Georgia, serif;
+  --font-ui: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Global body & background */
+body {
+  background-color: var(--color-sand-bg) !important;
+  color: var(--color-charcoal) !important;
+  font-family: var(--font-ui) !important;
+}
+
+/* Notice Bar in warm dark charcoal / terracotta */
+.meta-notice-bar {
+  background: #34352F !important;
+  color: #FAF6F1 !important;
+  border-bottom: 1px solid rgba(193, 124, 96, 0.3) !important;
+}
+.meta-notice-bar span.sparkle {
+  color: #C17C60 !important;
+}
+
+/* Header & Nav */
+header.taru-header,
+header.luxury-hotel-header,
+header {
+  background: rgba(250, 246, 241, 0.96) !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+  color: var(--color-charcoal) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.luxury-nav-link {
+  color: var(--color-charcoal) !important;
+}
+.luxury-nav-link:hover,
+.luxury-nav-link.active {
+  color: var(--color-terracotta) !important;
+}
+.luxury-nav-book-btn {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--color-terracotta) !important;
+}
+.luxury-nav-book-btn:hover {
+  background: var(--color-terracotta-dark) !important;
+  border-color: var(--color-terracotta-dark) !important;
+  color: #FFFFFF !important;
+}
+
+/* Section titles & eyebrows */
+.meta-eyebrow,
+.section-eyebrow,
+.eyebrow {
+  color: var(--color-terracotta) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+}
+.meta-section-title,
+.section-title,
+h1, h2, h3 {
+  color: var(--color-charcoal) !important;
+  font-family: var(--font-editorial) !important;
+}
+.meta-section-title em,
+h2 em, h3 em {
+  color: var(--color-terracotta) !important;
+  font-style: italic !important;
+}
+.meta-section-sub,
+.body-copy {
+  color: var(--color-charcoal-muted) !important;
+}
+
+/* Hero Section */
+.meta-hero-copy .meta-eyebrow {
+  color: #EFEADF !important;
+}
+.meta-hero-copy .sparkle {
+  color: #C17C60 !important;
+}
+.meta-btn-primary {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+  border: 1px solid var(--color-terracotta) !important;
+}
+.meta-btn-primary:hover {
+  background: var(--color-terracotta-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(193, 124, 96, 0.3) !important;
+}
+.meta-btn-outline {
+  border-color: rgba(250, 246, 241, 0.4) !important;
+  color: #FAF6F1 !important;
+}
+.meta-btn-outline:hover {
+  background: rgba(250, 246, 241, 0.12) !important;
+  border-color: #FAF6F1 !important;
+}
+
+/* Horizontal Search Strip */
+.meta-search-strip-section {
+  background: var(--color-sand-bg) !important;
+}
+.meta-search-strip-bar {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+  box-shadow: 0 16px 40px -10px rgba(52, 53, 47, 0.08) !important;
+}
+.search-strip-label {
+  color: var(--color-terracotta) !important;
+}
+.search-strip-select,
+.search-strip-date {
+  color: var(--color-charcoal) !important;
+}
+.search-strip-cta-btn {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.search-strip-cta-btn:hover {
+  background: var(--color-terracotta-dark) !important;
+  box-shadow: 0 8px 20px rgba(193, 124, 96, 0.35) !important;
+}
+.meta-subnav-strip {
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-subnav-link {
+  color: var(--color-charcoal-muted) !important;
+}
+.meta-subnav-link:hover {
+  color: var(--color-terracotta) !important;
+}
+
+/* Curated Amenities */
+.meta-amenities-section {
+  background: #FAF6F1 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-amenity-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-amenity-card:hover {
+  border-color: var(--color-terracotta) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(193, 124, 96, 0.12) !important;
+}
+.meta-amenity-icon-wrap {
+  background: var(--color-terracotta-soft) !important;
+  color: var(--color-terracotta) !important;
+}
+.meta-amenity-card h4 {
+  color: var(--color-charcoal) !important;
+}
+.meta-amenity-card p {
+  color: var(--color-charcoal-muted) !important;
+}
+
+/* Villas Showcase */
+.meta-villas-section {
+  background: #F5EFE6 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-villa-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-villa-badge {
+  background: var(--color-charcoal) !important;
+  color: #FAF6F1 !important;
+}
+.meta-villa-rates {
+  color: var(--color-terracotta) !important;
+}
+.meta-villa-rates strong {
+  color: var(--color-charcoal) !important;
+}
+.meta-villa-spec-item {
+  color: var(--color-charcoal-muted) !important;
+  background: var(--color-sand-bg) !important;
+  border: 1px solid var(--color-warm-beige-light) !important;
+}
+.meta-btn-villa-book {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-btn-villa-book:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+
+/* Calendar Section */
+.meta-calendar-section {
+  background: #FAF6F1 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-cal-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+  box-shadow: 0 16px 40px -10px rgba(52, 53, 47, 0.08) !important;
+}
+.meta-cal-villa-tab.active {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-cal-nav-btn:hover {
+  background: var(--color-terracotta-soft) !important;
+  color: var(--color-terracotta) !important;
+}
+.meta-cal-cell.is-selected {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-cal-cell.is-range {
+  background: var(--color-terracotta-soft) !important;
+  color: var(--color-charcoal) !important;
+}
+.meta-cal-book-btn {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-cal-book-btn:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+
+/* 3-Column Luxury Packages Section */
+.meta-packages-section {
+  background: #F5EFE6 !important;
+  padding: 6rem 1.5rem !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.packages-container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.packages-header-center {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 3.5rem;
+}
+.luxury-packages-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+}
+@media (max-width: 991px) {
+  .luxury-packages-grid {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 2rem;
+  }
+}
+
+.luxury-package-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-warm-beige);
+  border-radius: 16px;
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-shadow: 0 4px 20px rgba(52, 53, 47, 0.04);
+}
+.luxury-package-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-terracotta);
+  box-shadow: 0 20px 40px -10px rgba(193, 124, 96, 0.18);
+}
+.luxury-package-card.featured {
+  border-color: var(--color-terracotta);
+  background: #FFFDFB;
+  box-shadow: 0 12px 36px rgba(193, 124, 96, 0.12);
+}
+.pkg-card-badge {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  margin-bottom: 0.75rem;
+}
+.pkg-card-badge.featured-badge {
+  color: #FFFFFF;
+  background: var(--color-terracotta);
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+}
+.pkg-card-title {
+  font-family: var(--font-editorial);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.15;
+}
+.pkg-card-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.pkg-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+.pkg-currency {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-terracotta);
+}
+.pkg-amount {
+  font-family: var(--font-editorial);
+  font-size: 2.3rem;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  line-height: 1;
+}
+.pkg-guests-pill {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-charcoal-muted);
+  background: var(--color-sand-bg);
+  border: 1px solid var(--color-warm-beige);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+.pkg-card-usd {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--color-charcoal-light);
+  margin-top: 0.25rem;
+}
+
+.pkg-timing-block {
+  margin: 1.35rem 0 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--color-sand-bg);
+  border-radius: 8px;
+  border: 1px solid var(--color-warm-beige-light);
+}
+.pkg-timing-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+.timing-icon {
+  color: var(--color-terracotta);
+  flex-shrink: 0;
+  display: flex;
+}
+.timing-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--color-charcoal-light);
+}
+.timing-value {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-charcoal);
+  font-weight: 600;
+}
+
+.pkg-timing-block.multi-timing {
+  padding: 0.85rem 1rem;
+}
+.timing-badge {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--color-terracotta);
+  margin-bottom: 0.5rem;
+}
+.timing-options-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.timing-opt {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.opt-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--color-terracotta);
+}
+.opt-val {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  line-height: 1.3;
+}
+.timing-or {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--color-charcoal-light);
+  text-align: center;
+  margin: 0.15rem 0;
+}
+
+.pkg-divider {
+  height: 1px;
+  background: var(--color-sand-border);
+  margin: 1.25rem 0;
+}
+.pkg-inclusions-label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-charcoal-light);
+  margin-bottom: 0.85rem;
+}
+.pkg-amenities-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex-grow: 1;
+}
+.pkg-amenities-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  color: var(--color-charcoal-muted);
+}
+.pkg-amenities-list li.pkg-highlight {
+  color: var(--color-charcoal);
+}
+.pkg-icon {
+  color: var(--color-terracotta);
+  flex-shrink: 0;
+}
+.pkg-icon.icon-gold {
+  color: var(--color-terracotta);
+}
+
+.pkg-card-cta {
+  margin-top: auto;
+}
+.pkg-btn-terracotta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.95rem 1.25rem;
+  background: var(--color-terracotta);
+  color: #FFFFFF !important;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+.pkg-btn-terracotta:hover {
+  background: var(--color-terracotta-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(193, 124, 96, 0.35);
+}
+.pkg-arrow {
+  transition: transform 0.2s ease;
+}
+.pkg-btn-terracotta:hover .pkg-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* Special Offers Section */
+.meta-special-offers-section {
+  background: #FAF6F1 !important;
+  padding: 5.5rem 1.5rem !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.special-offers-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.special-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.25rem;
+  margin-top: 3rem;
+}
+@media (max-width: 800px) {
+  .special-offers-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+.special-offer-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-warm-beige);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(52, 53, 47, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.special-offer-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-terracotta);
+  box-shadow: 0 16px 36px rgba(193, 124, 96, 0.15);
+}
+.offer-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+.offer-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.special-offer-card:hover .offer-card-media img {
+  transform: scale(1.04);
+}
+.offer-tag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--color-terracotta);
+  color: #FFFFFF;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.offer-card-body {
+  padding: 2rem 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex-grow: 1;
+}
+.offer-card-body h3 {
+  font-family: var(--font-editorial);
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  margin: 0;
+}
+.offer-highlight-text {
+  font-family: var(--font-editorial);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--color-terracotta);
+  margin: 0;
+  line-height: 1.35;
+}
+.offer-desc {
+  font-size: 0.88rem;
+  color: var(--color-charcoal-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+.offer-cta-link {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-terracotta) !important;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+.offer-cta-link:hover {
+  color: var(--color-terracotta-dark) !important;
+  transform: translateX(4px);
+}
+
+/* Reviews Section in Warm Sand */
+.meta-reviews-section {
+  background: #F5EFE6 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-google-badge {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-google-score {
+  color: var(--color-terracotta) !important;
+}
+.meta-google-stars {
+  color: var(--color-terracotta) !important;
+}
+.meta-review-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-review-stars {
+  color: var(--color-terracotta) !important;
+}
+.meta-review-author-info strong {
+  color: var(--color-charcoal) !important;
+}
+.meta-review-avatar {
+  background: var(--color-terracotta-soft) !important;
+  color: var(--color-terracotta) !important;
+}
+
+/* Location Section */
+.meta-location-section {
+  background: #FAF6F1 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-location-matrix-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-dist-item {
+  border-bottom: 1px solid var(--color-warm-beige-light) !important;
+}
+.meta-dist-time {
+  background: var(--color-terracotta-soft) !important;
+  color: var(--color-terracotta) !important;
+}
+.meta-btn-directions {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-btn-directions:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+
+/* FAQ Accordion Section */
+.meta-faq-section {
+  background: #F5EFE6 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-faq-item {
+  background: #FFFFFF !important;
+  border: 1px solid var(--color-warm-beige) !important;
+}
+.meta-faq-item.open {
+  border-color: var(--color-terracotta) !important;
+}
+.meta-faq-question {
+  color: var(--color-charcoal) !important;
+}
+.meta-faq-question .faq-icon {
+  color: var(--color-terracotta) !important;
+}
+.meta-faq-answer {
+  color: var(--color-charcoal-muted) !important;
+}
+
+/* Instagram Moments */
+.meta-instagram-section {
+  background: #FAF6F1 !important;
+  border-bottom: 1px solid var(--color-sand-border) !important;
+}
+.meta-btn-follow-ig {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-btn-follow-ig:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+
+/* Mobile Sticky Bottom Bar */
+.meta-mobile-sticky-bar {
+  background: rgba(250, 246, 241, 0.96) !important;
+  border-top: 1px solid var(--color-warm-beige) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+.meta-sticky-price-col span {
+  color: var(--color-terracotta) !important;
+}
+.meta-sticky-price-col strong {
+  color: var(--color-charcoal) !important;
+}
+.meta-btn-sticky-book {
+  background: var(--color-terracotta) !important;
+  color: #FFFFFF !important;
+}
+.meta-btn-sticky-book:hover {
+  background: var(--color-terracotta-dark) !important;
+}
+
+/* Hero Price Banner */
+.meta-hero-rate-banner {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 1.25rem 0 1.75rem 0;
+  padding: 0.85rem 1.6rem;
+  background: rgba(250, 246, 241, 0.14);
+  border: 1px solid rgba(250, 246, 241, 0.28);
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.meta-hero-rate-tag {
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #FAF6F1;
+}
+.meta-hero-rate-sub {
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  color: #D6CEB8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Ambient Audio Floating Toggle Button (Bottom Left) */
+.luxury-audio-toggle {
+  position: fixed;
+  left: 20px;
+  bottom: 24px;
+  z-index: 998;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(250, 246, 241, 0.94);
+  border: 1px solid var(--color-warm-beige);
+  color: var(--color-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(52, 53, 47, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+}
+.luxury-audio-toggle:hover {
+  transform: scale(1.08);
+  border-color: var(--color-terracotta);
+  color: var(--color-terracotta);
+  box-shadow: 0 6px 20px rgba(193, 124, 96, 0.28);
+}
+.luxury-audio-toggle.is-playing {
+  background: #FFFFFF;
+  border-color: var(--color-terracotta);
+  color: var(--color-terracotta);
+}
+.luxury-audio-toggle .audio-icon-playing,
+.luxury-audio-toggle .audio-icon-muted {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+.luxury-audio-toggle .audio-icon-playing {
+  display: none;
+}
+.luxury-audio-toggle .audio-icon-muted {
+  display: block;
+}
+.luxury-audio-toggle.is-playing .audio-icon-playing {
+  display: block;
+}
+.luxury-audio-toggle.is-playing .audio-icon-muted {
+  display: none;
+}
+
+.luxury-audio-tooltip {
+  position: fixed;
+  left: 70px;
+  bottom: 28px;
+  z-index: 998;
+  background: var(--color-charcoal);
+  color: #FAF6F1;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+}
+.luxury-audio-toggle:hover + .luxury-audio-tooltip,
+.luxury-audio-tooltip.show-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
+@media (max-width: 600px) {
+  .luxury-audio-toggle {
+    left: 16px;
+    bottom: 84px;
+    width: 38px;
+    height: 38px;
+  }
+  .luxury-audio-tooltip {
+    left: 62px;
+    bottom: 88px;
+  }
+}
+
+/* Ensure smooth transitions & motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   TRANQUIL TERRACE GALLE — TERRACOTTA (#C17C60) RESPONSIVE LUXURY FOOTER
+   - Background: Rich Terracotta #C17C60 Palette
+   - Text & Headings: Crisp Warm Ivory (#FFFDFB) & Golden Accents (#FFD3B6)
+   - Comprehensive Multi-Device Layout Support: 320px to 1920px+
+   ========================================================================== */
+
+.tt-footer {
+  position: relative !important;
+  background: #C17C60 !important;
+  background: linear-gradient(180deg, #C17C60 0%, #AF684C 100%) !important;
+  color: #FFFDFB !important;
+  isolation: isolate;
+  padding: 0 0 1.5rem !important;
+  overflow: hidden !important;
+  font-family: var(--font-ui) !important;
+  border-top: none !important;
+}
+
+.tt-footer a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Sunset Landscape Horizon transition into Terracotta */
+.tt-landscape {
+  height: 200px !important;
+  position: relative !important;
+  background: linear-gradient(180deg, #FAF6F1 0%, #F5E5D9 35%, #DDB39E 70%, #C17C60 100%) !important;
+  overflow: hidden !important;
+}
+
+.tt-sky-glow {
+  position: absolute !important;
+  inset: 0 !important;
+  background: radial-gradient(circle at 78% 74%, rgba(255, 235, 215, 0.5), rgba(193, 124, 96, 0.25) 45%, transparent 72%) !important;
+}
+
+.tt-sun {
+  width: 68px !important;
+  height: 68px !important;
+  position: absolute !important;
+  right: 19% !important;
+  bottom: 38px !important;
+  background: radial-gradient(circle at 40% 40%, #FFFFFF 0%, #FFE2D1 40%, #FFBE98 75%, #C17C60 100%) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 54px 10px rgba(255, 226, 209, 0.8), 0 0 85px 25px rgba(193, 124, 96, 0.3) !important;
+}
+
+/* Landscape silhouettes in deep charcoal/bronze */
+.tt-scenery path[fill="#103E33"],
+.tt-scenery path[fill="#082F28"],
+.tt-scenery path[fill="#0a332b"],
+.tt-scenery path[fill="#082b25"],
+.tt-scenery path[fill="#092f28"],
+.tt-scenery path[fill="#09352d"],
+.tt-scenery g[fill="#092f28"] {
+  fill: #34352F !important;
+}
+.tt-scenery path[stroke="#092f28"] {
+  stroke: #34352F !important;
+}
+.tt-birds {
+  stroke: #34352F !important;
+}
+
+/* Inner Container */
+.tt-inner {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+  padding: 48px clamp(20px, 5vw, 80px) 0 !important;
+}
+
+/* Footer Grid: Desktop Default 4 Columns */
+.tt-grid {
+  display: grid !important;
+  grid-template-columns: 1.3fr 0.85fr 1fr 1.15fr !important;
+  gap: clamp(24px, 3.5vw, 54px) !important;
+  align-items: start !important;
+}
+
+/* Brand Section */
+.tt-brand-title {
+  display: flex !important;
+  gap: 16px !important;
+  align-items: center !important;
+  color: #FFFFFF !important;
+}
+
+.tt-monogram {
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  background: #34352F !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.tt-brand strong,
+.tt-brand-text strong {
+  font-family: var(--font-editorial) !important;
+  font-size: clamp(2.2rem, 3.2vw, 3.2rem) !important;
+  font-weight: 600 !important;
+  line-height: 0.95 !important;
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+.tt-brand small,
+.tt-brand-text small {
+  font-size: 11px !important;
+  letter-spacing: 0.44em !important;
+  color: #FFD3B6 !important;
+  font-weight: 700 !important;
+  margin-top: 8px !important;
+}
+
+.tt-brand p {
+  font-size: 0.92rem !important;
+  line-height: 1.75 !important;
+  color: rgba(255, 253, 251, 0.9) !important;
+  max-width: 340px !important;
+  margin: 20px 0 18px !important;
+}
+
+/* Google Reviews Badge */
+.tt-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 0.78rem !important;
+  color: #FFFFFF !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  transition: all 0.25s ease !important;
+}
+
+.tt-badge:hover {
+  background: rgba(255, 255, 255, 0.26) !important;
+  border-color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+}
+
+.tt-badge strong {
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+}
+
+/* Book Your Stay CTA Button */
+.tt-button {
+  background: #34352F !important;
+  color: #FAF6F1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 9999px !important;
+  padding: 13px 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-width: 200px !important;
+  gap: 16px !important;
+  font-weight: 700 !important;
+  font-size: 0.88rem !important;
+  box-shadow: 0 8px 24px rgba(52, 53, 47, 0.3) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  text-decoration: none !important;
+}
+
+.tt-button:hover {
+  background: #252622 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Column Titles */
+.tt-column h2 {
+  font-family: var(--font-editorial) !important;
+  color: #FFFFFF !important;
+  font-size: 1.85rem !important;
+  font-weight: 600 !important;
+  margin: 6px 0 20px !important;
+  padding-bottom: 10px !important;
+  position: relative !important;
+}
+
+.tt-column h2:after {
+  content: "" !important;
+  width: 60px !important;
+  height: 2px !important;
+  background: #FFD3B6 !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+}
+
+/* Navigation Links */
+.tt-column > a,
+.tt-nav-subcol > a,
+.tt-guest-links > a {
+  display: flex !important;
+  gap: 11px !important;
+  align-items: center !important;
+  margin-bottom: 13px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.45 !important;
+  color: rgba(255, 253, 251, 0.92) !important;
+  transition: all 0.2s ease !important;
+}
+
+.tt-column > a:hover,
+.tt-nav-subcol > a:hover,
+.tt-guest-links > a:hover {
+  color: #FFFFFF !important;
+  transform: translateX(4px) !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+}
+
+.tt-column > a.tt-sub-nav,
+.tt-nav-subcol > a.tt-sub-nav {
+  padding-left: 14px !important;
+  font-size: 0.84rem !important;
+  color: rgba(255, 253, 251, 0.78) !important;
+}
+
+.tt-direct-guarantee {
+  font-size: 0.78rem !important;
+  color: rgba(255, 253, 251, 0.88) !important;
+  line-height: 1.65 !important;
+  margin-top: 18px !important;
+  padding: 10px 14px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  border-left: 3px solid #FFD3B6 !important;
+}
+
+/* Partners & Social Media Row */
+.tt-partners {
+  border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  flex-wrap: wrap !important;
+  padding: 24px 0 !important;
+  margin-top: 42px !important;
+}
+
+.tt-partner-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+.tt-partner-group > span:first-child {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  color: #FFD3B6 !important;
+  margin-right: 4px !important;
+}
+
+.tt-social {
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 9px !important;
+  width: 38px !important;
+  height: 38px !important;
+  transition: transform 0.25s ease, filter 0.25s ease !important;
+}
+.tt-social:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+}
+
+.tt-ota-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 7px 14px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #FFFFFF !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  transition: all 0.25s ease !important;
+}
+
+.tt-ota-badge:hover {
+  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.26) !important;
+  border-color: #FFFFFF !important;
+}
+
+/* Legal & Copyright Row */
+.tt-legal {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  align-items: center !important;
+  padding: 24px 0 6px !important;
+  color: rgba(255, 253, 251, 0.85) !important;
+  font-size: 0.78rem !important;
+}
+
+.tt-legal a {
+  color: rgba(255, 253, 251, 0.88) !important;
+  transition: color 0.2s ease !important;
+}
+
+.tt-legal a:hover {
+  color: #FFFFFF !important;
+  text-decoration: underline !important;
+}
+
+/* ==========================================================================
+   MULTI-DEVICE RESPONSIVE LAYOUT BREAKPOINTS
+   ========================================================================== */
+
+/* 1. Large Laptops / Small Desktops (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+  .tt-grid {
+    grid-template-columns: 1.25fr 0.8fr 0.95fr 1fr !important;
+    gap: 28px !important;
+  }
+  .tt-column > a,
+  .tt-nav-subcol > a,
+  .tt-guest-links > a {
+    font-size: 0.84rem !important;
+  }
+}
+
+/* 2. Tablets & Portrait Displays (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+  .tt-grid {
+    grid-template-columns: 1.2fr 1fr !important;
+    gap: 40px 32px !important;
+  }
+  .tt-brand {
+    grid-column: 1 / 2 !important;
+  }
+  .tt-column-contact {
+    grid-column: 2 / 3 !important;
+  }
+  .tt-column-explore {
+    grid-column: 1 / 2 !important;
+  }
+  .tt-column-guest {
+    grid-column: 2 / 3 !important;
+  }
+  .tt-partners {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 18px !important;
+  }
+}
+
+/* 3. Small Tablets & Large Phones (481px to 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .tt-landscape {
+    height: 150px !important;
+  }
+  .tt-inner {
+    padding: 36px 24px 0 !important;
+  }
+  .tt-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px 20px !important;
+  }
+  .tt-brand {
+    grid-column: 1 / -1 !important;
+  }
+  .tt-column-explore {
+    grid-column: 1 / 2 !important;
+  }
+  .tt-column-guest {
+    grid-column: 2 / 3 !important;
+  }
+  .tt-column-contact {
+    grid-column: 1 / -1 !important;
+  }
+  .tt-button {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+  .tt-partners {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 18px !important;
+  }
+  .tt-legal {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+}
+
+/* 4. Compact Mobile Devices (320px to 480px) */
+@media (max-width: 480px) {
+  .tt-landscape {
+    height: 130px !important;
+  }
+  .tt-sun {
+    width: 44px !important;
+    height: 44px !important;
+    bottom: 26px !important;
+  }
+  .tt-inner {
+    padding: 30px 18px 0 !important;
+  }
+  .tt-grid {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+  .tt-brand-title {
+    gap: 12px !important;
+  }
+  .tt-brand strong,
+  .tt-brand-text strong {
+    font-size: 2.1rem !important;
+  }
+  .tt-brand p {
+    font-size: 0.88rem !important;
+    margin: 16px 0 !important;
+  }
+  .tt-badges {
+    width: 100% !important;
+  }
+  .tt-badge {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 8px 12px !important;
+  }
+  .tt-button {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 13px 20px !important;
+  }
+  .tt-column h2 {
+    font-size: 1.55rem !important;
+    margin-bottom: 16px !important;
+  }
+  .tt-column > a,
+  .tt-nav-subcol > a,
+  .tt-guest-links > a {
+    font-size: 0.88rem !important;
+    padding: 3px 0 !important;
+  }
+  /* Side-by-side explore sub-columns for space efficiency */
+  .tt-nav-grid-2col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .tt-partners {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 20px !important;
+    padding: 20px 0 !important;
+  }
+  .tt-partner-group {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  .tt-partner-group > div,
+  .tt-partner-group > span ~ a {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  .tt-ota-badge {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 9px 12px !important;
+  }
+  .tt-legal {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+    font-size: 0.74rem !important;
+  }
+  .tt-legal-copy {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  .tt-legal-sep {
+    display: none !important;
+  }
+  .tt-legal div {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+}
+

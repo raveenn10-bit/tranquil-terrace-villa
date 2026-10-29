@@ -72,11 +72,11 @@ export const STAY_PACKAGES: readonly StayPackage[] = [
     name: "Day & Night Package",
     priceLKR: 26000,
     guests: 2,
-    duration: "Full 24-hour stay",
+    duration: "Overnight & day stay (Option A: 11 AM – 9 AM or Option B: 5 PM – 3 PM next day)",
     timingOptions: [
       {
         id: "A",
-        label: "Option A: 11:00 AM – 9:00 AM next day",
+        label: "Option A: 11:00 AM → 9:00 AM (Next Day)",
         checkinTime: "11:00 AM",
         checkoutTime: "9:00 AM (Next Day)",
         startHour: 11,
@@ -87,7 +87,7 @@ export const STAY_PACKAGES: readonly StayPackage[] = [
       },
       {
         id: "B",
-        label: "Option B: 5:00 PM – 3:00 PM next day",
+        label: "Option B: 5:00 PM → 3:00 PM (Next Day)",
         checkinTime: "5:00 PM",
         checkoutTime: "3:00 PM (Next Day)",
         startHour: 17,
@@ -99,7 +99,7 @@ export const STAY_PACKAGES: readonly StayPackage[] = [
     ],
     meals: ["Floating Breakfast", "Dinner", "Lunch", "Welcome Drink"],
     amenities: ["Private Swimming Pool", "Private Location", "Private Car Parking"],
-    description: "The complete 24-hour private villa experience with all meals and floating breakfast included.",
+    description: "The complete immersion with floating breakfast, lunch, and dinner. Choose between two flexible check-in schedules.",
   },
 ] as const;
 
