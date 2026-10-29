@@ -28,6 +28,7 @@ for (const file of [
   "mobile-carousels.css",
   "mobile-carousels.js",
   "tranquil-sand-theme.css",
+  "sticky-nav.css",
   "favicon.svg",
   "robots.txt",
   "sitemap.xml",
@@ -752,6 +753,18 @@ for (const fileName of htmlFiles) {
     `<link href="tranquil-sand-theme.css" rel="stylesheet"/>\n  <link href="mobile-carousels.css" rel="stylesheet"/>`
   );
 
+  // Ensure sticky-nav.css is linked in head AFTER mobile-carousels.css
+  if (!html.includes('href="sticky-nav.css"')) {
+    if (html.includes('href="mobile-carousels.css"')) {
+      html = html.replace(
+        /<link[^>]*href="mobile-carousels\.css"[^>]*\/>/i,
+        `<link href="mobile-carousels.css" rel="stylesheet"/>\n  <link href="sticky-nav.css" rel="stylesheet"/>`
+      );
+    } else {
+      html = html.replace('</head>', '  <link href="sticky-nav.css" rel="stylesheet"/>\n</head>');
+    }
+  }
+
   // Clean up duplicate FAQ if found in contact.html
   if (fileName === "contact.html") {
     html = html.replace(/<section class="faq section">[\s\S]*?<\/section>\s*/g, "");
@@ -791,8 +804,9 @@ for (const fileName of htmlFiles) {
           muted 
           loop 
           playsinline 
+          webkit-playsinline
           poster="videos/hero-poster.webp"
-          preload="metadata"
+          preload="auto"
           aria-hidden="true">
           <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(orientation: portrait) and (max-width: 1024px)"/>
           <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(max-width: 768px)"/>

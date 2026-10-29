@@ -1670,15 +1670,17 @@ nav.drawer-nav-menu,
   color: #25D366 !important;
 }
 
-/* 4. Phase 2: Mobile Hero Video Portrait 9:16 & Button Clean-up */
+/* 4. Phase 2: Mobile Hero Video Fullscreen Edge-to-Edge & Clean Contrast */
 @media (max-width: 768px) {
   .meta-hero {
     position: relative !important;
     width: 100% !important;
-    min-height: calc(100svh - 82px) !important;
-    max-height: 840px !important;
-    height: auto !important;
-    aspect-ratio: 9 / 16 !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+    min-height: calc(100svh - 68px) !important;
+    height: calc(100svh - 68px) !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
@@ -1686,68 +1688,92 @@ nav.drawer-nav-menu,
     background: #141615 !important;
     padding: 0 !important;
     margin: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
   }
 
   .meta-hero-video-wrap {
     position: absolute !important;
     inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
     z-index: 1 !important;
+    overflow: hidden !important;
   }
 
   .meta-hero-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
     max-width: none !important;
     max-height: none !important;
     object-fit: cover !important;
-    object-position: center 35% !important;
+    object-position: center center !important;
     display: block !important;
   }
 
   .meta-hero-overlay {
     position: absolute !important;
     inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
     z-index: 2 !important;
     background: linear-gradient(
       180deg,
-      rgba(20, 22, 21, 0.45) 0%,
-      rgba(20, 22, 21, 0.2) 30%,
+      rgba(20, 22, 21, 0.35) 0%,
+      rgba(20, 22, 21, 0.15) 30%,
       rgba(20, 22, 21, 0.65) 65%,
       rgba(20, 22, 21, 0.94) 100%
     ) !important;
+    pointer-events: none !important;
   }
 
   .meta-hero-container {
     position: relative !important;
-    z-index: 3 !important;
+    z-index: 5 !important;
     width: 100% !important;
-    padding: 1.5rem 1.25rem 2.25rem !important;
+    max-width: 100% !important;
+    padding: 1.5rem 1.25rem calc(1.75rem + 68px) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-end !important;
+    align-items: center !important;
     margin: 0 !important;
     box-sizing: border-box !important;
   }
 
   .meta-hero-copy {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 440px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
   }
 
   .meta-hero-copy .meta-eyebrow {
     font-size: 0.68rem !important;
     letter-spacing: 0.16em !important;
     margin-bottom: 0.4rem !important;
-    color: #EFEADF !important;
+    color: #E2CA92 !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 600 !important;
   }
 
   .meta-hero-title {
@@ -1755,14 +1781,16 @@ nav.drawer-nav-menu,
     line-height: 1.15 !important;
     margin-bottom: 0.5rem !important;
     color: #FFFFFF !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
   }
 
   .meta-hero-desc {
     font-size: 0.88rem !important;
     line-height: 1.45 !important;
-    color: #E2DDD5 !important;
+    color: #F0ECE1 !important;
     margin-bottom: 0.9rem !important;
     max-width: 320px !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
   }
 
   /* User request: remove rate banner, cta buttons, and video control pill from hero section */
@@ -1783,31 +1811,56 @@ nav.drawer-nav-menu,
 }
 
 /* ========================================================
-   MOBILE HEADER: NATURAL SCROLL WITH PAGE (NOT STICKY)
-   User request: mobile view ekedi scroll down karaddi
-   menu ekath scroll wena widiyata hadanna.
+   STICKY NAVIGATION — MOBILE & DESKTOP GLOBAL STANDARD
+   Always visible at top while scrolling down or up.
    ======================================================== */
-@media (max-width: 991px) {
+header.taru-header,
+header.luxury-hotel-header,
+header,
+#site-header {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9500 !important;
+  background: rgba(250, 246, 241, 0.97) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(37, 40, 36, 0.08) !important;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease !important;
+}
+
+/* Scrolled state: slightly reduced height & luxury shadow */
+header.taru-header.scrolled,
+header.taru-header.compact,
+header.luxury-hotel-header.scrolled,
+header.luxury-hotel-header.compact,
+header.compact,
+#site-header.scrolled,
+#site-header.compact {
+  box-shadow: 0 4px 24px rgba(20, 22, 21, 0.07) !important;
+  border-bottom-color: rgba(37, 40, 36, 0.12) !important;
+}
+
+@media (max-width: 767px) {
   header.taru-header,
   header.luxury-hotel-header,
   header,
-  header.taru-header.compact,
+  #site-header {
+    height: 68px !important;
+  }
+
   header.taru-header.scrolled,
-  header.luxury-hotel-header.compact,
+  header.taru-header.compact,
   header.luxury-hotel-header.scrolled,
-  header.compact {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    height: auto !important;
-    min-height: 60px !important;
-    padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
-    padding-bottom: 8px !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    transform: none !important;
+  header.luxury-hotel-header.compact,
+  header.compact,
+  #site-header.scrolled,
+  #site-header.compact {
+    height: 60px !important;
   }
 }
 
