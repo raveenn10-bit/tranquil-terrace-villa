@@ -856,3 +856,75 @@ html, body {
 .meta-review-author-info small {
   color: #8C703B !important;
 }
+
+
+/* =====================================================
+   FAQ SECTION — MOBILE PERFECT CENTER FIX
+   ===================================================== */
+@media (max-width: 767px) {
+  .meta-faq-section {
+    padding: 4rem 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-faq-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Header block — centered text */
+  .meta-faq-container > div {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Accordion — full width, no offset */
+  .meta-faq-accordion {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 1.75rem !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Each FAQ item — full bleed edge to edge inside container */
+  .meta-faq-item {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Question row */
+  .meta-faq-question {
+    padding: 1.1rem 1.1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .meta-faq-question span:first-child {
+    font-size: 1.05rem !important;
+    text-align: left !important;
+    flex: 1 !important;
+  }
+
+  /* Answer body */
+  .meta-faq-answer {
+    padding: 0 1.1rem !important;
+  }
+
+  .meta-faq-item.open .meta-faq-answer {
+    padding: 0 1.1rem 1.1rem !important;
+  }
+
+  .meta-faq-answer p {
+    font-size: 0.84rem !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+    color: #4A4E49 !important;
+  }
+}
