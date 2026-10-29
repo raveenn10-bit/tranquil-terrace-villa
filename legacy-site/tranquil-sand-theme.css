@@ -1811,91 +1811,402 @@ nav.drawer-nav-menu,
   }
 }
 
-/* 5. Phase 4: Mobile Amenities 2-Column Responsive Grid */
-@media (max-width: 768px) {
-  .meta-amenities-section {
-    padding: 3.5rem 1rem !important;
-  }
+/* ==========================================================================
+   5. BOOKING.COM CLEAN CATEGORIZED AMENITIES LAYOUT (Zero Bulky Icon Boxes)
+   ========================================================================== */
+.booking-amenities-section {
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 4.5rem 1.5rem !important;
+  box-sizing: border-box !important;
+}
 
-  .meta-amenities-grid {
-    display: grid !important;
+.booking-amenities-container {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 22px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 32px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1024px) {
+  .booking-amenities-container {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-    overflow-x: visible !important;
-    scroll-snap-type: none !important;
-    padding: 0 !important;
+    gap: 18px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking-amenities-section {
+    padding: 3rem 1rem !important;
+  }
+  .booking-amenities-container {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    margin-top: 20px !important;
+  }
+}
+
+.booking-amenity-cat {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(193, 124, 96, 0.18) !important;
+  border-radius: 14px !important;
+  padding: 20px 18px !important;
+  box-shadow: 0 2px 10px rgba(52, 53, 47, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.booking-amenity-cat:hover {
+  border-color: rgba(193, 124, 96, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(193, 124, 96, 0.08) !important;
+}
+
+.booking-cat-title {
+  font-family: var(--font-ui, "Manrope", sans-serif) !important;
+  font-size: 0.98rem !important;
+  font-weight: 700 !important;
+  color: var(--color-charcoal, #34352F) !important;
+  margin: 0 0 14px 0 !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid rgba(193, 124, 96, 0.14) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  letter-spacing: -0.01em !important;
+}
+
+.booking-cat-bullet {
+  color: var(--color-terracotta, #C17C60) !important;
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+}
+
+.booking-amenity-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.booking-amenity-list li {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 7px 0 !important;
+  border-bottom: 1px dashed rgba(52, 53, 47, 0.09) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+}
+
+.booking-amenity-list li:last-child {
+  border-bottom: none !important;
+}
+
+.booking-amenity-list .amenity-name {
+  color: var(--color-charcoal, #34352F) !important;
+  font-weight: 500 !important;
+  flex: 1 1 auto !important;
+}
+
+.booking-amenity-list .amenity-tag {
+  color: var(--color-terracotta, #C17C60) !important;
+  font-size: 0.74rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+  flex-shrink: 0 !important;
+}
+
+/* ==========================================================================
+   6. MOBILE VIEWPORT LOCK, ZERO HORIZONTAL DRIFT & TYPOGRAPHY FIXES
+   ========================================================================== */
+html, body {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  touch-action: pan-y !important;
+  -webkit-text-size-adjust: 100% !important;
+  position: relative !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+main,
+.page,
+.section,
+.meta-packages-section,
+.meta-amenities-section,
+.meta-villas-section,
+.meta-reviews-section,
+.meta-location-section,
+.stay-calendar,
+.stay-details,
+.gallery,
+.experience,
+.galle-guide,
+.contact-layout,
+.faq {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 800px) {
+  /* Prevent horizontal carousel margins from expanding page width */
+  .meta-amenities-grid,
+  .meta-packages-list,
+  .meta-reviews-grid,
+  .meta-villas-grid,
+  .dual-villas-carousel,
+  .pkg-carousel-track {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  .meta-amenities-grid > .meta-amenity-card {
-    flex: none !important;
+  /* Center package cards and honeymoon special offer cards */
+  .meta-packages-list > .meta-package-card,
+  .pkg-card {
     width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
     box-sizing: border-box !important;
-    padding: 1.15rem 0.9rem !important;
-    border-radius: 12px !important;
-    background: #FFFFFF !important;
-    border: 1px solid var(--color-warm-beige) !important;
-    box-shadow: 0 2px 10px rgba(52, 53, 47, 0.04) !important;
+  }
+
+  /* FIX: Inner hero notch overlap & breadcrumbs text collision (contact.html, gallery.html, villas.html, etc.) */
+  .page-inner .inner-hero,
+  .inner-hero,
+  .hero.inner-hero {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 84px) !important;
+    padding-bottom: 28px !important;
+    min-height: auto !important;
+    position: relative !important;
+  }
+
+  .page-inner .inner-copy,
+  .inner-copy {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .page-inner .inner-back,
+  .inner-back {
+    position: static !important;
+    display: inline-block !important;
+    margin-top: 16px !important;
+    font-size: 0.74rem !important;
+    letter-spacing: 0.12em !important;
+    color: var(--color-charcoal-light, #767870) !important;
+    text-decoration: none !important;
+  }
+
+  /* FIX: Gallery heading vertical letter break ("Tak 
+ e a 
+ close 
+ r 
+ look.") */
+  .title-row,
+  .gallery .title-row,
+  .page-inner .title-row {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     text-align: left !important;
-    scroll-snap-align: none !important;
+    gap: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
-  .meta-amenities-grid > .meta-amenity-card:hover {
-    transform: none !important;
-    border-color: var(--color-terracotta) !important;
+  .title-row h2,
+  .gallery .title-row h2,
+  .page-inner .title-row h2 {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 2.2rem !important;
+    line-height: 1.15 !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    letter-spacing: -0.01em !important;
+    margin: 0 !important;
   }
 
-  .meta-amenity-card .meta-amenity-icon-wrap {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    border-radius: 8px !important;
-    background: var(--color-terracotta-soft) !important;
-    color: var(--color-terracotta) !important;
+  .title-row .filters,
+  .gallery .title-row .filters,
+  .page-inner .title-row .filters {
     display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 4px !important;
+  }
+
+  /* FIX: Giant round gold button overlapping date pickers in .availability */
+  form.availability,
+  .availability,
+  .page-inner .availability {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 14px !important;
+    padding: 22px 18px !important;
+    border-radius: 16px !important;
+    margin: 20px 0 !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(193, 124, 96, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(52, 53, 47, 0.06) !important;
+  }
+
+  form.availability label,
+  .availability label,
+  .page-inner .availability label {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    color: var(--color-charcoal, #34352F) !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    gap: 6px !important;
+  }
+
+  form.availability input,
+  form.availability select,
+  .availability input,
+  .availability select,
+  .page-inner .availability input,
+  .page-inner .availability select {
+    width: 100% !important;
+    height: 48px !important;
+    box-sizing: border-box !important;
+    background: #FAF8F5 !important;
+    border: 1px solid rgba(52, 53, 47, 0.16) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-size: 0.92rem !important;
+    color: var(--color-charcoal, #34352F) !important;
+  }
+
+  form.availability .button,
+  .availability .button,
+  .page-inner .availability .button {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    border-radius: 9999px !important;
+    margin-top: 8px !important;
+    flex-direction: row !important;
     align-items: center !important;
     justify-content: center !important;
-    margin-bottom: 0.65rem !important;
-  }
-
-  .meta-amenity-card .meta-amenity-icon-wrap svg {
-    width: 18px !important;
-    height: 18px !important;
-    stroke: var(--color-terracotta) !important;
-  }
-
-  .meta-amenity-card h3 {
-    font-size: 0.88rem !important;
+    padding: 12px 20px !important;
+    font-size: 0.92rem !important;
     font-weight: 700 !important;
-    line-height: 1.25 !important;
-    margin-bottom: 0.3rem !important;
-    color: var(--color-charcoal) !important;
+    background: var(--color-terracotta, #C17C60) !important;
+    border: 1px solid var(--color-terracotta, #C17C60) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px rgba(193, 124, 96, 0.35) !important;
+    position: static !important;
+    align-self: stretch !important;
   }
 
-  .meta-amenity-card p {
-    font-size: 0.74rem !important;
-    line-height: 1.35 !important;
-    color: var(--color-charcoal-muted) !important;
+  /* FIX: Comparison table in villas.html */
+  .comparison,
+  .page-inner .comparison {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 20px 16px !important;
     margin: 0 !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    border-radius: 16px !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(193, 124, 96, 0.2) !important;
   }
-}
+  .comparison table {
+    width: 100% !important;
+    min-width: 360px !important;
+    font-size: 0.84rem !important;
+  }
+  .comparison th,
+  .comparison td {
+    padding: 12px 10px !important;
+    white-space: nowrap !important;
+  }
 
-/* 6. Mobile Sticky Bottom Bar Enhancements & Collisions Avoidance */
-@media (max-width: 768px) {
-  body {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+  /* FIX: Channel links (Booking.com, Agoda, Airbnb) uniform stacked cards */
+  .calendar-channels .channel-links,
+  .channel-links {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+    box-sizing: border-box !important;
   }
+
+  .calendar-channels .channel-link,
+  .channel-link {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(52, 53, 47, 0.14) !important;
+    border-radius: 12px !important;
+    padding: 13px 16px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .channel-link:hover {
+    border-color: var(--color-terracotta, #C17C60) !important;
+    background: #FFFDFB !important;
+  }
+
+  .channel-link > span {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+  }
+  .channel-booking > span { color: #003580 !important; }
+  .channel-agoda > span { color: #5392F9 !important; }
+  .channel-airbnb > span { color: #FF5A5F !important; }
+
+  .channel-link > small {
+    font-size: 0.72rem !important;
+    color: var(--color-charcoal-muted, #55574F) !important;
+    font-weight: 500 !important;
+  }
+
+  /* FIX: Mobile Sticky Bottom Bar price wrapping & Floating Buttons Clearance */
+  body {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 78px) !important;
+  }
+
   .meta-mobile-sticky-bar {
     position: fixed !important;
     bottom: 0 !important;
@@ -1904,20 +2215,74 @@ nav.drawer-nav-menu,
     z-index: 9998 !important;
     background: rgba(250, 246, 241, 0.98) !important;
     border-top: 1px solid var(--color-warm-beige) !important;
-    padding: 0.7rem 1rem calc(env(safe-area-inset-bottom, 0px) + 0.7rem) !important;
+    padding: 0.65rem 1rem calc(env(safe-area-inset-bottom, 0px) + 0.65rem) !important;
     box-shadow: 0 -4px 20px rgba(52, 53, 47, 0.08) !important;
   }
+
+  .meta-sticky-bar-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+
+  .meta-sticky-price-col {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .meta-sticky-price-col span {
+    font-size: 0.64rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    color: var(--color-terracotta, #C17C60) !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  .meta-sticky-price-col div {
+    font-family: var(--font-ui, "Manrope", sans-serif) !important;
+    font-size: 0.8rem !important;
+    color: var(--color-charcoal, #34352F) !important;
+    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    margin-top: 1px !important;
+  }
+
+  .meta-sticky-price-col strong {
+    font-weight: 800 !important;
+    font-size: 0.96rem !important;
+    color: var(--color-terracotta, #C17C60) !important;
+    white-space: nowrap !important;
+  }
+
+  .meta-btn-sticky-book {
+    white-space: nowrap !important;
+    padding: 10px 18px !important;
+    font-size: 0.84rem !important;
+    font-weight: 700 !important;
+    flex-shrink: 0 !important;
+    background: var(--color-terracotta, #C17C60) !important;
+    border-radius: 9999px !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Clear floating WhatsApp button completely above the sticky bottom bar */
   .meta-floating-whatsapp,
   #floating-whatsapp {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 82px) !important;
-    right: 18px !important;
-    z-index: 9997 !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 90px) !important;
+    right: 16px !important;
+    z-index: 9999 !important;
   }
+
   .luxury-audio-toggle,
   #luxury-audio-toggle {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 82px) !important;
-    left: 18px !important;
-    z-index: 9997 !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 90px) !important;
+    left: 16px !important;
+    z-index: 9999 !important;
   }
 }
-

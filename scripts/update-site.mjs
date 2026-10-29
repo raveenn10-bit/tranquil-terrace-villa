@@ -386,7 +386,7 @@ const taruFooterHtml = `<footer class="tt-footer" id="site-footer" aria-label="T
         <div class="tt-badges">
           <a class="tt-badge" href="https://www.google.com/maps/place/Tranquil+Terrace+Galle/@6.0750215,80.2264243,17z/data=!4m11!3m10!1s0x3ae17190008d4b95:0x7d9bae152f119179!5m2!4m1!1i2!8m2!3d6.0750215!4d80.2264243!9m1!1b1!16s%2Fg%2F11xsjw9mts!18m1!1e1" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="#D97706" width="14" height="14"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            <span><strong>4.6 / 5.0</strong> Google Reviews (49 verified reviews) &nearr;</span>
+            <span><strong>4.9 / 5.0</strong> Google Reviews (49 verified reviews) &nearr;</span>
           </a>
         </div>
         <a class="tt-button" href="index.html#packages" data-book="" aria-label="Book your stay at Tranquil Terrace">
@@ -640,6 +640,18 @@ for (const fileName of htmlFiles) {
 
   // A. Harmonize <head> with fonts, theme-color, stylesheets, canonical domain & Open Graph metadata
   html = html.replace(/<meta content="[^"]*?" name="theme-color"\/>/, '<meta content="#141615" name="theme-color"/>');
+
+  // Lock mobile viewport against zooming and horizontal shifts
+  html = html.replace(
+    /<meta[^>]+(?:name=["']viewport["']|content=["'][^"']*["'][^>]+name=["']viewport["'])[^>]*>/i,
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>'
+  );
+
+  // Update verified Google Review rating from 4.6 to 4.9 across schemas and copy
+  html = html.replace(/"ratingValue":\s*"4\.6"/g, '"ratingValue": "4.9"');
+  html = html.replace(/4\.6\s*([★⭐]|\/|\s*out\s*of)/gi, '4.9 $1');
+  html = html.replace(/4\.6\s*\/\s*5/g, '4.9 / 5');
+  html = html.replace(/4\.6\s*\/\s*5\.0/g, '4.9 / 5.0');
 
   // Clean up any existing canonical, og, and twitter tags
   html = html.replace(/<link[^>]*rel="canonical"[^>]*\/?>\s*/gi, "");
