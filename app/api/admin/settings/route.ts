@@ -1,4 +1,4 @@
-import { isAdminRequest } from "@/lib/admin-auth";
+import { isAdminRequest, sanitizeInputText } from "@/lib/admin-auth";
 import {
   serverGetAllSettings,
   serverGetSetting,
@@ -12,9 +12,10 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const key = searchParams.get("key");
+    const rawKey = searchParams.get("key");
 
-    if (key) {
+    if (rawKey) {
+      const key = sanitizeInputText(rawKey, 50);
       const value = await serverGetSetting(key);
       return Response.json({ key, value });
     }
@@ -42,12 +43,13 @@ export async function POST(request: Request) {
       value?: any;
     };
 
-    if (!body || !body.key) {
-      return Response.json({ error: "Setting key is required." }, { status: 400 });
+    const key = sanitizeInputText(body?.key, 50);
+    if (!key || !/^[a-zA-Z0-9_.-]{1,50}$/.test(key)) {
+      return Response.json({ error: "A valid alphanumeric setting key is required." }, { status: 400 });
     }
 
-    await serverSaveSetting(body.key, body.value);
-    return Response.json({ success: true, key: body.key, value: body.value });
+    await serverSaveSetting(key, body.value);
+    return Response.json({ success: true, key, value: body.value });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to save setting.";
     return Response.json({ error: message }, { status: 500 });

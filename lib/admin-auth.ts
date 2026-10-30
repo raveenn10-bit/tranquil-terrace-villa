@@ -157,6 +157,40 @@ export function resetLoginRateLimit(ip: string): void {
 }
 
 // =============================================================================
+// Security: Public Booking Rate Limiting (10 requests per 10 minutes per IP)
+// =============================================================================
+const bookingAttempts = new Map<string, RateLimitEntry>();
+const BOOKING_RATE_LIMIT_MAX = 10;
+const BOOKING_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+
+export function checkBookingRateLimit(ip: string): { allowed: boolean; retryAfterSeconds?: number } {
+  const now = Date.now();
+  const entry = bookingAttempts.get(ip);
+  if (!entry || now > entry.resetTime) {
+    bookingAttempts.set(ip, { count: 1, resetTime: now + BOOKING_RATE_LIMIT_WINDOW_MS });
+    return { allowed: true };
+  }
+  if (entry.count >= BOOKING_RATE_LIMIT_MAX) {
+    const retryAfterSeconds = Math.ceil((entry.resetTime - now) / 1000);
+    return { allowed: false, retryAfterSeconds };
+  }
+  entry.count++;
+  return { allowed: true };
+}
+
+// =============================================================================
+// Security: Input Sanitization (Neutralizes Stored XSS & Control Characters)
+// =============================================================================
+export function sanitizeInputText(value: unknown, maxLen = 500): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, maxLen);
+}
+
+// =============================================================================
 // Security: Origin / CSRF Verification for State-Modifying Requests
 // =============================================================================
 export function verifyAdminOrigin(request: Request): boolean {

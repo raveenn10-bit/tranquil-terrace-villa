@@ -1,4 +1,4 @@
-import { isAdminRequest } from "@/lib/admin-auth";
+import { isAdminRequest, sanitizeInputText } from "@/lib/admin-auth";
 import {
   bookingStatuses,
   paymentStatuses,
@@ -58,11 +58,11 @@ export async function PATCH(request: Request, context: RouteContext) {
     const payload = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
     const villaName = normalizeVillaName(payload.villaName ?? current.villaName);
-    const guestName = payload.guestName === undefined ? current.guestName : textValue(payload.guestName, 100);
-    const email = payload.email === undefined ? current.email : textValue(payload.email, 150).toLowerCase();
-    const phone = payload.phone === undefined ? current.phone : textValue(payload.phone, 30);
+    const guestName = payload.guestName === undefined ? current.guestName : sanitizeInputText(payload.guestName, 100);
+    const email = payload.email === undefined ? current.email : sanitizeInputText(payload.email, 150).toLowerCase();
+    const phone = payload.phone === undefined ? current.phone : sanitizeInputText(payload.phone, 30);
     const guests = payload.guests === undefined ? current.guests : Number(payload.guests);
-    const source = payload.source === undefined ? current.source : textValue(payload.source, 30);
+    const source = payload.source === undefined ? current.source : sanitizeInputText(payload.source, 30);
     const status = bookingStatuses.includes(payload.status as never)
       ? String(payload.status)
       : current.status;
@@ -77,19 +77,19 @@ export async function PATCH(request: Request, context: RouteContext) {
       : Math.max(0, Math.round(Number(payload.paidAmount) || 0));
     const specialRequest = payload.specialRequest === undefined
       ? current.specialRequest
-      : textValue(payload.specialRequest, 1000);
+      : sanitizeInputText(payload.specialRequest, 1000);
     const adminNotes = payload.adminNotes === undefined
       ? current.adminNotes
-      : textValue(payload.adminNotes, 2000);
+      : sanitizeInputText(payload.adminNotes, 2000);
     const packageId = payload.packageId === undefined
       ? (current.packageId || "")
-      : textValue(payload.packageId, 50);
+      : sanitizeInputText(payload.packageId, 50);
     const timingOption = payload.timingOption === undefined
       ? (current.timingOption || "")
-      : textValue(payload.timingOption, 10);
+      : sanitizeInputText(payload.timingOption, 10);
 
-    const checkinInput = payload.checkin === undefined ? current.checkin : textValue(payload.checkin, 40);
-    const checkoutInput = payload.checkout === undefined ? current.checkout : textValue(payload.checkout, 40);
+    const checkinInput = payload.checkin === undefined ? current.checkin : sanitizeInputText(payload.checkin, 40);
+    const checkoutInput = payload.checkout === undefined ? current.checkout : sanitizeInputText(payload.checkout, 40);
 
     if (guestName.length < 2 || phone.length < 7) {
       return Response.json({ error: "Guest name and phone number are required." }, { status: 400 });

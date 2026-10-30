@@ -1,6 +1,8 @@
 import {
   isAdminRequest,
   verifyAdminOrigin,
+  checkBookingRateLimit,
+  sanitizeInputText,
 } from "@/lib/admin-auth";
 import {
   bookingStatuses,
@@ -60,19 +62,37 @@ export async function POST(request: Request) {
     const payload = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
     // 2. Honeypot anti-spam protection
-    if (textValue(payload.website, 80)) {
+    if (sanitizeInputText(payload.website, 80)) {
       return Response.json({ accepted: true }, { status: 202 });
     }
 
     const admin = isAdminRequest(request);
-    const guestName = textValue(payload.guestName ?? payload.name, 100);
-    const email = textValue(payload.email, 150).toLowerCase();
-    const phone = textValue(payload.phone, 30);
+
+    // 2b. Rate Limiting for public bookings (10 submissions per 10 mins)
+    if (!admin) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+      const rateCheck = checkBookingRateLimit(ip);
+      if (!rateCheck.allowed) {
+        return Response.json(
+          {
+            error: `Too many booking inquiries. Please wait ${rateCheck.retryAfterSeconds} seconds before trying again.`,
+          },
+          {
+            status: 429,
+            headers: { "Retry-After": String(rateCheck.retryAfterSeconds) },
+          }
+        );
+      }
+    }
+
+    const guestName = sanitizeInputText(payload.guestName ?? payload.name, 100);
+    const email = sanitizeInputText(payload.email, 150).toLowerCase();
+    const phone = sanitizeInputText(payload.phone, 30);
     const rawVilla = payload.villaName ?? payload.villa;
     const villaName = normalizeVillaName(rawVilla);
     const guests = Math.min(2, Math.max(1, Number(payload.guests ?? 2)));
-    const specialRequest = textValue(payload.specialRequest ?? payload.message, 1000);
-    const source = admin ? textValue(payload.source, 30) || "manual" : "website";
+    const specialRequest = sanitizeInputText(payload.specialRequest ?? payload.message, 1000);
+    const source = admin ? sanitizeInputText(payload.source, 30) || "manual" : "website";
     const status = admin && bookingStatuses.includes(payload.status as never)
       ? (payload.status as (typeof bookingStatuses)[number])
       : "inquiry";
@@ -148,8 +168,8 @@ export async function POST(request: Request) {
     }
 
     // 6. Build booking record
-    const finalId = admin && textValue(payload.id, 80) ? textValue(payload.id, 80) : crypto.randomUUID();
-    const finalReference = admin && textValue(payload.reference, 80) ? textValue(payload.reference, 80) : generateReference();
+    const finalId = admin && sanitizeInputText(payload.id, 80) ? sanitizeInputText(payload.id, 80) : crypto.randomUUID();
+    const finalReference = admin && sanitizeInputText(payload.reference, 80) ? sanitizeInputText(payload.reference, 80) : generateReference();
 
     const bookingValues: BookingRecord = {
       id: finalId,
@@ -167,7 +187,7 @@ export async function POST(request: Request) {
       totalAmount,
       paidAmount,
       specialRequest,
-      adminNotes: admin ? textValue(payload.adminNotes, 2000) : "",
+      adminNotes: admin ? sanitizeInputText(payload.adminNotes, 2000) : "",
       packageId: candidate.packageId ?? "",
       timingOption: candidate.timingOption ?? "",
       createdAt: new Date().toISOString(),
