@@ -1,5 +1,8 @@
-import { getDb } from "@/db";
-import { bookings } from "@/db/schema";
+import {
+  serverGetAllBookings,
+  serverGetSetting,
+  serverSaveSetting,
+} from "@/lib/supabase-server";
 
 export type VillaKey = "Araliya" | "Olu";
 export type ChannelKey = "booking" | "airbnb" | "agoda";
@@ -68,6 +71,26 @@ export function getCalendarFeeds(): CalendarFeedsState {
     globalThis.__tranquil_calendar_feeds = JSON.parse(JSON.stringify(DEFAULT_FEEDS));
   }
   return globalThis.__tranquil_calendar_feeds!;
+}
+
+
+export async function getCalendarFeedsAsync(): Promise<CalendarFeedsState> {
+  try {
+    const cloud = await serverGetSetting<CalendarFeedsState>("calendarFeeds");
+    if (cloud && cloud.Araliya && cloud.Olu) {
+      globalThis.__tranquil_calendar_feeds = cloud;
+      return cloud;
+    }
+  } catch {}
+  return getCalendarFeeds();
+}
+
+export async function updateCalendarFeedsAsync(updates: Partial<CalendarFeedsState>): Promise<CalendarFeedsState> {
+  const current = updateCalendarFeeds(updates);
+  try {
+    await serverSaveSetting("calendarFeeds", current);
+  } catch {}
+  return current;
 }
 
 export function updateCalendarFeeds(updates: Partial<CalendarFeedsState>): CalendarFeedsState {
@@ -258,7 +281,12 @@ export async function fetchChannelIcs(
  * Generates an RFC 5545 iCalendar string for exporting to Airbnb, Booking.com, and Agoda
  */
 export async function generateVillaIcs(villa: VillaKey, origin = "https://tranquilterracevilla.com"): Promise<string> {
-  const allBookings = await getDb().select().from(bookings);
+  let allBookings: any[] = [];
+  try {
+    allBookings = await serverGetAllBookings();
+  } catch (err) {
+    console.warn("Could not fetch bookings from Supabase for ICS generation:", err);
+  }
   
   // Active bookings for this villa (excluding cancelled or checked_out if old)
   const activeBookings = (allBookings as any[]).filter(
@@ -311,10 +339,16 @@ export async function getVillaAvailability(
   villa: VillaKey,
   forceRefresh = false
 ): Promise<AvailabilityResponse> {
-  const feeds = getCalendarFeeds()[villa] || { bookingUrl: "", airbnbUrl: "", agodaUrl: "" };
+  const feedsState = await getCalendarFeedsAsync();
+  const feeds = feedsState[villa] || { bookingUrl: "", airbnbUrl: "", agodaUrl: "" };
   
   // 1. Fetch internal DB confirmed/pending reservations
-  const allDbBookings = await getDb().select().from(bookings);
+  let allDbBookings: any[] = [];
+  try {
+    allDbBookings = await serverGetAllBookings();
+  } catch (err) {
+    console.warn("Could not fetch bookings from Supabase for availability:", err);
+  }
   const internalRanges: BlockedRange[] = (allDbBookings as any[])
     .filter(
       (b) =>

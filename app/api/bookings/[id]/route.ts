@@ -1,6 +1,3 @@
-import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { bookings } from "@/db/schema";
 import { isAdminRequest } from "@/lib/admin-auth";
 import {
   bookingStatuses,
@@ -13,24 +10,52 @@ import {
   type CandidateStaySpan,
 } from "@/lib/booking-conflict";
 import { normalizeVillaName } from "@/lib/villa-data";
+import {
+  serverGetBookingById,
+  serverSaveBooking,
+  serverDeleteBooking,
+  serverGetAllBookings,
+} from "@/lib/supabase-server";
 
 function textValue(value: unknown, max = 500): string {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
-export async function PATCH(request: Request, context: any) {
+type RouteContext = {
+  params: Promise<{ id: string }> | { id: string };
+};
+
+export async function GET(request: Request, context: RouteContext) {
   if (!isAdminRequest(request)) {
     return Response.json({ error: "Owner access required." }, { status: 403 });
   }
 
   try {
-    const params = await context?.params;
-    const id = params?.id;
-    const db = getDb();
-    const [current] = (await db.select().from(bookings).where(eq(bookings.id, id)).limit(1)) as BookingRecord[];
-    if (!current) return Response.json({ error: "Booking not found." }, { status: 404 });
+    const { id } = await Promise.resolve(context.params);
+    const booking = await serverGetBookingById(id);
+    if (!booking) {
+      return Response.json({ error: "Booking not found." }, { status: 404 });
+    }
+    return Response.json({ booking });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to load booking.";
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
 
-    const payload = (await request.json()) as Record<string, unknown>;
+export async function PATCH(request: Request, context: RouteContext) {
+  if (!isAdminRequest(request)) {
+    return Response.json({ error: "Owner access required." }, { status: 403 });
+  }
+
+  try {
+    const { id } = await Promise.resolve(context.params);
+    const current = await serverGetBookingById(id);
+    if (!current) {
+      return Response.json({ error: "Booking not found." }, { status: 404 });
+    }
+
+    const payload = (await request.json().catch(() => ({}))) as Record<string, unknown>;
 
     const villaName = normalizeVillaName(payload.villaName ?? current.villaName);
     const guestName = payload.guestName === undefined ? current.guestName : textValue(payload.guestName, 100);
@@ -91,9 +116,9 @@ export async function PATCH(request: Request, context: any) {
 
     const candidate: CandidateStaySpan = candidateResolution;
 
-    // Check overlap with other bookings (if active status)
+    // Pre-check overlap if status is active
     if (!["cancelled", "checked_out"].includes(status)) {
-      const allBookings = (await db.select().from(bookings)) as BookingRecord[];
+      const allBookings = await serverGetAllBookings();
       const conflict = findBookingConflict(candidate, allBookings, id);
 
       if (conflict.hasConflict) {
@@ -109,7 +134,9 @@ export async function PATCH(request: Request, context: any) {
       }
     }
 
-    const next = {
+    const updatedBooking: BookingRecord = {
+      ...current,
+      id,
       guestName,
       email,
       phone,
@@ -118,8 +145,8 @@ export async function PATCH(request: Request, context: any) {
       checkout: candidate.checkoutFormatted,
       guests,
       source,
-      status,
-      paymentStatus,
+      status: status as BookingRecord["status"],
+      paymentStatus: paymentStatus as BookingRecord["paymentStatus"],
       totalAmount,
       paidAmount,
       specialRequest,
@@ -129,15 +156,31 @@ export async function PATCH(request: Request, context: any) {
       updatedAt: new Date().toISOString(),
     };
 
-    const [booking] = await db
-      .update(bookings)
-      .set(next)
-      .where(eq(bookings.id, id))
-      .returning();
-
-    return Response.json({ booking });
-  } catch (error) {
+    const saved = await serverSaveBooking(updatedBooking);
+    return Response.json({ booking: saved });
+  } catch (error: any) {
+    if (error?.status === 409 || error?.message?.includes("already reserved") || error?.code === "23P01") {
+      return Response.json(
+        { error: error.message || "Villa is already reserved for the selected period." },
+        { status: 409 }
+      );
+    }
     const message = error instanceof Error ? error.message : "The booking could not be updated.";
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request, context: RouteContext) {
+  if (!isAdminRequest(request)) {
+    return Response.json({ error: "Owner access required." }, { status: 403 });
+  }
+
+  try {
+    const { id } = await Promise.resolve(context.params);
+    await serverDeleteBooking(id);
+    return Response.json({ success: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to delete booking.";
     return Response.json({ error: message }, { status: 500 });
   }
 }

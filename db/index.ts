@@ -1,20 +1,12 @@
 import * as schema from "./schema";
+import {
+  serverGetAllBookings,
+  serverGetBookingById,
+  serverSaveBooking,
+  type BookingRecord,
+} from "@/lib/supabase-server";
 
 export type BookingItem = typeof schema.bookings.$inferSelect;
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __tranquil_bookings_store: BookingItem[] | undefined;
-}
-
-const initialDemoBookings: BookingItem[] = [];
-
-function getStore(): BookingItem[] {
-  if (!globalThis.__tranquil_bookings_store) {
-    globalThis.__tranquil_bookings_store = [...initialDemoBookings];
-  }
-  return globalThis.__tranquil_bookings_store;
-}
 
 function findIdFromPredicate(predicate: any): string | null {
   if (!predicate) return null;
@@ -28,112 +20,84 @@ function findIdFromPredicate(predicate: any): string | null {
   return null;
 }
 
-function createMemoryDb() {
+export function getDb() {
   return {
-    select(fields?: any) {
+    select(_fields?: any) {
       return {
-        from(table: any) {
-          let results = [...getStore()];
+        from(_table: any) {
+          const fetchPromise = serverGetAllBookings();
+
           return {
             where(predicate: any) {
               const targetId = findIdFromPredicate(predicate);
-              let filtered = results;
-              if (targetId) {
-                filtered = results.filter((r) => r.id === targetId);
-              }
+              const p = targetId
+                ? serverGetBookingById(targetId).then((item) => (item ? [item] : []))
+                : fetchPromise;
+
               return {
                 limit(n: number) {
-                  return Promise.resolve(filtered.slice(0, n));
+                  return p.then((list) => list.slice(0, n));
                 },
                 then(resolve: (val: any) => any, reject?: (err: any) => any) {
-                  return Promise.resolve(filtered).then(resolve, reject);
+                  return p.then(resolve, reject);
                 },
               };
             },
             orderBy(..._args: any[]) {
-              results.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
               return {
                 limit(n: number) {
-                  return Promise.resolve(results.slice(0, n));
+                  return fetchPromise.then((list) => list.slice(0, n));
                 },
                 then(resolve: (val: any) => any, reject?: (err: any) => any) {
-                  return Promise.resolve(results).then(resolve, reject);
+                  return fetchPromise.then(resolve, reject);
                 },
               };
             },
             limit(n: number) {
-              return Promise.resolve(results.slice(0, n));
+              return fetchPromise.then((list) => list.slice(0, n));
             },
             then(resolve: (val: any) => any, reject?: (err: any) => any) {
-              return Promise.resolve(results).then(resolve, reject);
+              return fetchPromise.then(resolve, reject);
             },
           };
         },
       };
     },
-    insert(table: any) {
+    insert(_table: any) {
       return {
         values(val: any) {
-          const store = getStore();
-          const item: BookingItem = {
-            id: val.id || crypto.randomUUID(),
-            reference: val.reference || `TTG-${Date.now()}`,
-            guestName: val.guestName || "",
-            email: val.email || "",
-            phone: val.phone || "",
-            villaName: val.villaName || "Araliya",
-            checkin: val.checkin || "",
-            checkout: val.checkout || "",
-            guests: val.guests || 2,
-            source: val.source || "website",
-            status: val.status || "inquiry",
-            paymentStatus: val.paymentStatus || "unpaid",
-            totalAmount: val.totalAmount || 0,
-            paidAmount: val.paidAmount || 0,
-            specialRequest: val.specialRequest || "",
-            adminNotes: val.adminNotes || "",
-            packageId: val.packageId || "",
-            timingOption: val.timingOption || "",
-            createdAt: val.createdAt || new Date().toISOString(),
-            updatedAt: val.updatedAt || new Date().toISOString(),
-          };
-          store.unshift(item);
+          const promise = serverSaveBooking(val as BookingRecord).then((saved) => [saved]);
           return {
             returning() {
-              return Promise.resolve([item]);
+              return promise;
             },
             then(resolve: (val: any) => any, reject?: (err: any) => any) {
-              return Promise.resolve([item]).then(resolve, reject);
+              return promise.then(resolve, reject);
             },
           };
         },
       };
     },
-    update(table: any) {
+    update(_table: any) {
       return {
         set(updates: any) {
           return {
             where(predicate: any) {
               const targetId = findIdFromPredicate(predicate);
-              const store = getStore();
-              let updatedItem: BookingItem | undefined;
-              if (targetId) {
-                const index = store.findIndex((r) => r.id === targetId);
-                if (index !== -1) {
-                  store[index] = { ...store[index], ...updates };
-                  updatedItem = store[index];
-                }
-              }
-              if (!updatedItem && store.length > 0) {
-                store[0] = { ...store[0], ...updates };
-                updatedItem = store[0];
-              }
+              const promise = (async () => {
+                if (!targetId) return [];
+                const current = await serverGetBookingById(targetId);
+                if (!current) return [];
+                const updated = await serverSaveBooking({ ...current, ...updates });
+                return [updated];
+              })();
+
               return {
                 returning() {
-                  return Promise.resolve(updatedItem ? [updatedItem] : []);
+                  return promise;
                 },
                 then(resolve: (val: any) => any, reject?: (err: any) => any) {
-                  return Promise.resolve(updatedItem ? [updatedItem] : []).then(resolve, reject);
+                  return promise.then(resolve, reject);
                 },
               };
             },
@@ -142,8 +106,4 @@ function createMemoryDb() {
       };
     },
   };
-}
-
-export function getDb(): any {
-  return createMemoryDb();
 }

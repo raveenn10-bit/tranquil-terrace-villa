@@ -211,7 +211,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
   const [guestNotesInput, setGuestNotesInput] = useState("");
 
   // ---------------------------------------------------------------------------
-  // IndexedDB Data Loading
+  // Database Data Loading
   // ---------------------------------------------------------------------------
   async function loadDataFromStorage() {
     try {
@@ -230,7 +230,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
       setStorageStats(counts);
     } catch (err) {
       console.error("Storage error:", err);
-      setError("Failed to load local records from IndexedDB.");
+      setError("Failed to load records from database.");
     } finally {
       setLoading(false);
     }
@@ -311,7 +311,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
     });
   }, [bookings, statusFilter, villaFilter, searchQuery]);
 
-  // Aggregated Guests list (syncing IndexedDB guests with bookings)
+  // Aggregated Guests list (syncing database guests with bookings)
   const aggregatedGuests = useMemo(() => {
     const guestMap = new Map<string, GuestRecord>();
 
@@ -362,7 +362,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
   }, [guests, bookings, guestSearchQuery]);
 
   // ---------------------------------------------------------------------------
-  // Booking CRUD Handlers (IndexedDB)
+  // Booking CRUD Handlers (Database)
   // ---------------------------------------------------------------------------
   function openNewBookingModal(defaultDate?: string) {
     setEditingBooking(null);
@@ -467,7 +467,7 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
       showToast(editingBooking ? "Reservation updated successfully." : "New reservation created.");
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Failed to save booking to IndexedDB.");
+      setError(err instanceof Error ? err.message : "Failed to save booking to database.");
     } finally {
       setSaving(false);
     }
@@ -693,7 +693,7 @@ Tranquil Terrace Galle Team`;
       setIcsRawText("");
       showToast(`Successfully imported ${toImport.length} reservations into Villa ${icsImportVilla}!`);
     } catch {
-      setError("Failed to save imported reservations into IndexedDB.");
+      setError("Failed to save imported reservations into database.");
     } finally {
       setSaving(false);
     }
@@ -767,7 +767,7 @@ Tranquil Terrace Galle Team`;
       setBackupValidation(null);
       showToast("Database restored successfully from backup.");
     } catch {
-      setError("Failed to restore backup into IndexedDB.");
+      setError("Failed to restore backup into database.");
     } finally {
       setSaving(false);
     }
@@ -1035,9 +1035,9 @@ Tranquil Terrace Galle Team`;
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C8A45D] opacity-75"></span>
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[#C8A45D]"></span>
                 </span>
-                IndexedDB Local Engine
+                Supabase Cloud Engine
               </span>
-              <span className="text-[10px] text-[#5A6660]">Offline-first</span>
+              <span className="text-[10px] text-[#5A6660]">Cloud Active</span>
             </div>
             <p className="mt-1.5 text-[10px] text-[#5A6660]">
               {bookings.length} reservations · {aggregatedGuests.length} guests stored
@@ -1199,10 +1199,10 @@ Tranquil Terrace Galle Team`;
                 </span>
                 <div>
                   <p className="text-sm font-medium text-[#183D32]">
-                    ✦ LOCAL BROWSER STORAGE NOTICE:
+                    ✦ CLOUD DATABASE STORAGE:
                   </p>
                   <p className="mt-0.5 text-xs text-[#5A6660]">
-                    Bookings and records are securely stored in this device&apos;s browser (IndexedDB). No external servers or databases are used. Please export a JSON backup regularly to keep your data safe across devices.
+                    Bookings and records are securely synchronized with Supabase Cloud Database. You can export JSON backups anytime for archival safety.
                   </p>
                 </div>
               </div>
@@ -1405,7 +1405,7 @@ Tranquil Terrace Galle Team`;
                         <tr>
                           <td colSpan={8} className="p-16 text-center text-[#5A6660]">
                             <LoaderCircle className="mx-auto animate-spin" size={24} />
-                            <p className="mt-2 text-xs">Loading IndexedDB records...</p>
+                            <p className="mt-2 text-xs">Loading database records...</p>
                           </td>
                         </tr>
                       ) : filteredBookings.length === 0 ? (
@@ -1899,7 +1899,7 @@ Tranquil Terrace Galle Team`;
                       Import Calendar (.ics file or text)
                     </h3>
                     <p className="text-xs text-[#5A6660] mt-1">
-                      Upload an exported .ics feed from Airbnb, Booking.com, or Agoda to import reservations into IndexedDB.
+                      Upload an exported .ics feed from Airbnb, Booking.com, or Agoda to import reservations into Supabase.
                     </p>
                   </div>
 
@@ -2049,7 +2049,7 @@ Tranquil Terrace Galle Team`;
                         Parsed Calendar Events ({icsParsedEvents.length})
                       </h3>
                       <p className="text-xs text-[#5A6660]">
-                        Review parsed dates and conflict analysis before committing to IndexedDB.
+                        Review parsed dates and conflict analysis before committing to database.
                       </p>
                     </div>
 
@@ -2587,11 +2587,11 @@ Tranquil Terrace Galle Team`;
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                       Database Health
                     </span>
-                    <h3 className="font-serif text-xl text-[#183D32]">Local Storage Engine Diagnostics</h3>
+                    <h3 className="font-serif text-xl text-[#183D32]">Supabase Database Diagnostics</h3>
                   </div>
                   <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    IndexedDB Online
+                    Cloud Database Connected
                   </span>
                 </div>
 
@@ -3031,7 +3031,7 @@ Tranquil Terrace Galle Team`;
                 className="flex items-center gap-2 rounded-xl bg-[#C8A45D] px-5 py-2.5 text-xs font-semibold text-[#131514] hover:bg-[#DFBF7A]"
               >
                 {saving && <LoaderCircle size={14} className="animate-spin" />}
-                {editingBooking ? "Update Reservation" : "Confirm & Save to IndexedDB"}
+                {editingBooking ? "Update Reservation" : "Confirm & Save Reservation"}
               </button>
             </div>
           </form>
