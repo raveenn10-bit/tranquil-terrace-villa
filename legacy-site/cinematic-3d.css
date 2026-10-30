@@ -1176,20 +1176,20 @@ body.luxury-drawer-open {
 .calendar-intro {
   position: relative;
   z-index: 1;
-  color: var(--cinematic-ivory);
+  color: var(--cinematic-forest, #173b30);
 }
 .calendar-intro>p, .calendar-intro .calendar-notice {
-  color: rgba(246,242,232,.72);
+  color: #38453F;
 }
 .calendar-selection {
-  border-color: rgba(246,242,232,.26);
+  border-color: rgba(24,61,50,.22);
 }
 .calendar-selection>div+div {
-  border-color: rgba(246,242,232,.26);
+  border-color: rgba(24,61,50,.22);
 }
 .calendar-intro select {
-  color: var(--cinematic-ivory);
-  color-scheme: dark;
+  color: var(--cinematic-forest, #173b30);
+  color-scheme: light;
 }
 .calendar-right {
   position: relative;
@@ -1416,10 +1416,12 @@ body.luxury-drawer-open {
 }
 .calendar-villa {
   margin-top: 18px;
+  color: var(--cinematic-forest, #173b30);
 }
 .calendar-villa select {
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid rgba(24,61,50,.25);
   padding: 7px 0;
+  color: var(--cinematic-forest, #173b30);
 }
 
 /* Verified Property Facts */
@@ -4966,7 +4968,7 @@ form.availability, .availability {
     flex-shrink: 0 !important;
   }
 
-  /* FAQ on mobile — fully centered column */
+  /* FAQ on mobile ï¿½ fully centered column */
   .meta-faq-section {
     padding: 4rem 16px !important;
   }
