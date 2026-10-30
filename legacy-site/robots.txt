@@ -1,6 +1,9 @@
 User-agent: *
-Disallow: /admin
-Disallow: /api/
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
 
-Sitemap: https://tranquilterracegalle.com/sitemap.xml
+Sitemap: https://www.tranquilterracegalle.com/sitemap.xml

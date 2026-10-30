@@ -601,52 +601,52 @@ const htmlFiles = [
 
 const pageMetadata = {
   "index.html": {
-    url: "https://tranquilterracegalle.com/",
-    title: "Tranquil Terrace Galle · Luxury Boutique Villas in Galle, Sri Lanka",
-    description: "Two private boutique villas in Galle, Sri Lanka: Villa Araliya & Villa Olu. Each with 1 king bedroom, private plunge pool, and capacity for up to two guests. Guaranteed best rates and direct concierge.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    url: "https://www.tranquilterracegalle.com/",
+    title: "Tranquil Terrace Galle | Private Pool Villas in Karapitiya, Galle",
+    description: "Discover Tranquil Terrace Galle — two luxury private pool villas in Karapitiya, Galle for couples. Villa Araliya & Villa Olu each feature 1 king bedroom suite, private bathroom & plunge pool.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
   },
   "villas.html": {
-    url: "https://tranquilterracegalle.com/villas.html",
-    title: "Our Private Villas · Tranquil Terrace Galle",
-    description: "Discover Villa Araliya and Villa Olu. Two private luxury villas in Galle, each with king bedroom suite, en-suite bathroom, and private plunge pool.",
-    image: "https://tranquilterracegalle.com/assets/villa-2.webp"
+    url: "https://www.tranquilterracegalle.com/villas.html",
+    title: "Private Luxury Villas in Galle | Villa Araliya & Villa Olu | Tranquil Terrace",
+    description: "Explore Villa Araliya and Villa Olu in Karapitiya, Galle. Each private villa features one king bedroom suite, private bathroom, and secluded plunge pool for two guests.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-2.webp"
   },
   "experiences.html": {
-    url: "https://tranquilterracegalle.com/experiences.html",
-    title: "Signature Experiences · Tranquil Terrace Galle",
-    description: "Floating breakfasts, cinnamon grove walks, and curated Galle Fort explorations.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    url: "https://www.tranquilterracegalle.com/experiences.html",
+    title: "Curated Villa Experiences & Floating Breakfast | Tranquil Terrace Galle",
+    description: "Indulge in signature plunge-pool floating breakfasts, in-villa romantic dining, and bespoke Galle Fort tours at Tranquil Terrace luxury villas in Karapitiya, Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-4.webp"
   },
   "gallery.html": {
-    url: "https://tranquilterracegalle.com/gallery.html",
-    title: "Visual Journal · Tranquil Terrace Galle",
-    description: "Explore photographs and moments from Villa Araliya and Villa Olu in Galle, Sri Lanka.",
-    image: "https://tranquilterracegalle.com/assets/villa-1.webp"
+    url: "https://www.tranquilterracegalle.com/gallery.html",
+    title: "Villa Gallery & Private Plunge Pool Photos | Tranquil Terrace Galle",
+    description: "View photos of Villa Araliya, Villa Olu, private plunge pools, king bedroom suites and tropical courtyard gardens at Tranquil Terrace in Karapitiya, Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-3.webp"
   },
   "explore-galle.html": {
-    url: "https://tranquilterracegalle.com/explore-galle.html",
-    title: "Explore Galle & Fort · Tranquil Terrace Galle",
-    description: "A curated insider guide to Galle Fort, pristine southern beaches, and tropical gems.",
-    image: "https://tranquilterracegalle.com/assets/villa-3.webp"
+    url: "https://www.tranquilterracegalle.com/explore-galle.html",
+    title: "Galle Travel Guide & Nearby Attractions | Tranquil Terrace Karapitiya",
+    description: "Explore Galle from Tranquil Terrace: 10–12 minutes to UNESCO Galle Fort & Lighthouse, 15 minutes to Unawatuna Beach, and 2 minutes to Karapitiya.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
   },
   "contact.html": {
-    url: "https://tranquilterracegalle.com/contact.html",
-    title: "Contact & Reservations · Tranquil Terrace Galle",
-    description: "Direct reservations, 24/7 WhatsApp concierge, location in Galle, Sri Lanka, and availability calendar.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    url: "https://www.tranquilterracegalle.com/contact.html",
+    title: "Contact & Direct Booking | Tranquil Terrace Luxury Villas Galle",
+    description: "Reserve your stay at Tranquil Terrace Galle. Located on Bogahawella Road, Karapitiya, Galle. Direct WhatsApp concierge (+94 77 068 2366), map directions & best rates guaranteed.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-1.webp"
   },
   "privacy-policy.html": {
-    url: "https://tranquilterracegalle.com/privacy-policy.html",
-    title: "Privacy Policy · Tranquil Terrace Galle",
-    description: "Privacy Policy and guest data protection practices at Tranquil Terrace Galle.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    url: "https://www.tranquilterracegalle.com/privacy-policy.html",
+    title: "Privacy Policy | Tranquil Terrace Galle",
+    description: "Privacy policy and guest data handling for reservations and inquiries at Tranquil Terrace Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/tranquil-terrace-mark.png"
   },
   "terms-and-conditions.html": {
-    url: "https://tranquilterracegalle.com/terms-and-conditions.html",
-    title: "Terms & Conditions · Tranquil Terrace Galle",
-    description: "Booking terms, check-in policies, and guest rules at Tranquil Terrace Galle.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    url: "https://www.tranquilterracegalle.com/terms-and-conditions.html",
+    title: "Terms & Conditions | Tranquil Terrace Galle",
+    description: "Terms, reservation policies, check-in schedules, and cancellation terms for Tranquil Terrace Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/tranquil-terrace-mark.png"
   }
 };
 
@@ -695,12 +695,19 @@ for (const fileName of htmlFiles) {
   html = html.replace(/<link[^>]*rel="canonical"[^>]*\/?>\s*/gi, "");
   html = html.replace(/<meta[^>]*property="og:[^"]*"[^>]*\/?>\s*/gi, "");
   html = html.replace(/<meta[^>]*name="twitter:[^"]*"[^>]*\/?>\s*/gi, "");
+  
+  if (pageMetadata[fileName]?.title) {
+    html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${pageMetadata[fileName].title}</title>`);
+  }
+  if (pageMetadata[fileName]?.description) {
+    html = html.replace(/<meta[^>]+(?:name=["']description["']|content=["'][^"']*["'][^>]+name=["']description["'])[^>]*\/?>/i, `<meta name="description" content="${pageMetadata[fileName].description}"/>`);
+  }
 
   const meta = pageMetadata[fileName] || {
-    url: `https://tranquilterracegalle.com/${fileName}`,
+    url: `https://www.tranquilterracegalle.com/${fileName}`,
     title: "Tranquil Terrace Galle",
     description: "Two private boutique villas in Galle, Sri Lanka.",
-    image: "https://tranquilterracegalle.com/assets/villa-0.webp"
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
   };
 
   const seoTags = `  <link rel="canonical" href="${meta.url}"/>
