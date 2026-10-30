@@ -298,3 +298,46 @@ section:first-of-type {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85) !important;
   }
 }
+
+
+/* ==========================================================
+   HERO TITLE CRYSTAL-CLEAR HIGH CONTRAST (Mobile, Tablet, Desktop)
+   ========================================================== */
+.meta-hero .meta-hero-title,
+.meta-hero-title,
+h1.meta-hero-title,
+.hero .meta-hero-title {
+  color: #FFFFFF !important;
+  font-family: var(--font-editorial, "Cormorant Garamond", Georgia, serif) !important;
+  font-weight: 500 !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+  letter-spacing: -0.015em !important;
+}
+
+.meta-hero .meta-hero-title em,
+.meta-hero-title em,
+h1.meta-hero-title em {
+  color: #F8E2BE !important; /* Luminous warm champagne gold */
+  font-family: var(--font-editorial, "Cormorant Garamond", Georgia, serif) !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.8) !important;
+}
+
+.meta-hero .meta-hero-copy .meta-eyebrow,
+.meta-hero-copy .meta-eyebrow {
+  color: #FFF2DB !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9) !important;
+  font-weight: 600 !important;
+}
+
+.meta-hero .meta-hero-copy .meta-eyebrow .sparkle {
+  color: #E6A770 !important;
+  text-shadow: 0 0 10px rgba(230, 167, 112, 0.8) !important;
+}
+
+.meta-hero .meta-hero-desc,
+.meta-hero-desc {
+  color: #F5EFE6 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
+}
