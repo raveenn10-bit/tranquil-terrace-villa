@@ -721,8 +721,12 @@
       if (backdrop) {
         backdrop.classList.remove("open");
         backdrop.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
       }
+      const nativeBooking = document.getElementById("booking");
+      if (nativeBooking && nativeBooking.open && typeof nativeBooking.close === "function") {
+        nativeBooking.close();
+      }
+      document.body.style.overflow = "";
     }
 
     // Compiles luxury formatted WhatsApp message strictly matching specification

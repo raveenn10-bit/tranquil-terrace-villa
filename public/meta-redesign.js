@@ -560,6 +560,12 @@
         if (bookingCard) {
           e.preventDefault();
           bookingCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          const bookingModal = document.getElementById("booking");
+          if (bookingModal && typeof bookingModal.showModal === "function") {
+            e.preventDefault();
+            if (!bookingModal.open) bookingModal.showModal();
+          }
         }
       });
     });
@@ -998,6 +1004,15 @@
         modal.removeAttribute("open");
       }
     }
+    const customEngine = window.ttWhatsAppBooking;
+    if (customEngine && typeof customEngine.closeModal === "function") {
+      customEngine.closeModal();
+    }
+    const nativeBooking = document.getElementById("booking");
+    if (nativeBooking && nativeBooking.open && typeof nativeBooking.close === "function") {
+      nativeBooking.close();
+    }
+    document.body.style.overflow = "";
   }
 
   function updateModalPricing() {
@@ -1175,6 +1190,11 @@
     // Bind any element with [data-book] or #meta-sticky-book-btn to open modal
     document.querySelectorAll("[data-book], #meta-sticky-book-btn, .meta-btn-sticky-book").forEach(el => {
       el.addEventListener("click", (e) => {
+        const nativeBooking = document.getElementById("booking");
+        if (nativeBooking && el.hasAttribute("data-book")) {
+          // Handled by native booking dialog in app.js
+          return;
+        }
         e.preventDefault();
         openWhatsAppModal();
       });

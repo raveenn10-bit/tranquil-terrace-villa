@@ -19,11 +19,12 @@
     btn.addEventListener('click', () => {
       const bookingDialog = document.getElementById('booking');
       if (bookingDialog && typeof bookingDialog.showModal === 'function') {
+        const nav = document.querySelector('.header-nav, .luxury-drawer');
         if (nav && nav.classList.contains('open')) {
           nav.classList.remove('open');
           document.body.style.overflow = '';
         }
-        bookingDialog.showModal();
+        if (!bookingDialog.open) bookingDialog.showModal();
       }
     });
   });
