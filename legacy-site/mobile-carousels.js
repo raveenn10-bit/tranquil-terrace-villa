@@ -1,7 +1,7 @@
 /**
- * TRANQUIL TERRACE GALLE — LUXURY 5-STAR MOBILE CAROUSEL ENGINE
- * Native Touch Swiping, Center Snapping & Subtle Pagination Dots
- * Breakpoint: <= 767px
+ * TRANQUIL TERRACE GALLE — LUXURY 5-STAR MOBILE CAROUSEL & AUTO-SCROLL ENGINE
+ * Fluid Native Touch Swiping + Gentle Left-to-Right Auto-Scroll + Center Snapping
+ * Breakpoint: <= 767px (Disabled on Tablet & Desktop)
  */
 
 (function () {
@@ -17,13 +17,26 @@
       this.dots = [];
       this.scrollRaf = null;
 
+      // Auto-scroll state
+      this.autoScrollRaf = null;
+      this.isInteracting = false;
+      this.isHovered = false;
+      this.isRewinding = false;
+      this.isVisible = false;
+      this.resumeTimer = null;
+      this.rewindTimer = null;
+      this.subPixelAccumulator = 0;
+      this.speed = 0.6; // ~36px/sec at 60fps — gentle luxury pace
+
+      // Performance & Battery Optimization
+      this.observer = null;
+
       this.init();
     }
 
     getItems() {
       if (this.itemSelector) {
         return Array.from(this.container.querySelectorAll(this.itemSelector)).filter(el => {
-          // Only visible items (for gallery filter support)
           return window.getComputedStyle(el).display !== "none";
         });
       }
@@ -35,12 +48,14 @@
 
     init() {
       if (window.innerWidth > 767) {
-        this.destroyDots();
+        this.destroy();
         return;
       }
 
       this.buildDots();
-      this.attachScrollListener();
+      this.setupTouchAndPointerListeners();
+      this.setupIntersectionObserver();
+      this.startAutoScroll();
     }
 
     buildDots() {
@@ -62,7 +77,9 @@
         
         dot.addEventListener("click", (e) => {
           e.preventDefault();
+          this.pauseAutoScroll();
           this.scrollToIndex(idx);
+          this.scheduleResume(3500);
         });
 
         this.dotsContainer.appendChild(dot);
@@ -75,7 +92,6 @@
                            this.container;
       insertTarget.parentNode.insertBefore(this.dotsContainer, insertTarget.nextSibling);
 
-      // Initial active dot update
       this.updateActiveDot();
     }
 
@@ -83,7 +99,6 @@
       if (this.dotsContainer && this.dotsContainer.parentNode) {
         this.dotsContainer.parentNode.removeChild(this.dotsContainer);
       }
-      // Also look for any existing orphaned dots
       const next = this.container.nextElementSibling;
       if (next && next.classList.contains("carousel-pagination-dots")) {
         next.remove();
@@ -98,54 +113,225 @@
 
       const item = items[idx];
       const cardOffset = item.offsetLeft - this.container.offsetLeft;
-      // Center card in container viewport
       const target = cardOffset - (this.container.clientWidth - item.clientWidth) / 2;
 
       this.container.scrollTo({
         left: Math.max(0, target),
         behavior: prefersReducedMotion ? "auto" : "smooth"
       });
+
+      this.updateActiveDot(idx);
     }
 
-    updateActiveDot() {
+    updateActiveDot(forcedIdx = null) {
       if (!this.dots.length) return;
       const items = this.getItems();
       if (!items.length) return;
 
-      const containerCenter = this.container.scrollLeft + (this.container.clientWidth / 2);
-      let closestIdx = 0;
-      let minDiff = Infinity;
+      let activeIdx = forcedIdx;
+      if (activeIdx === null) {
+        const containerCenter = this.container.scrollLeft + (this.container.clientWidth / 2);
+        let minDiff = Infinity;
+        activeIdx = 0;
 
-      items.forEach((item, idx) => {
-        const itemCenter = (item.offsetLeft - this.container.offsetLeft) + (item.offsetWidth / 2);
-        const diff = Math.abs(containerCenter - itemCenter);
-        if (diff < minDiff) {
-          minDiff = diff;
-          closestIdx = idx;
-        }
-      });
+        items.forEach((item, idx) => {
+          const itemCenter = (item.offsetLeft - this.container.offsetLeft) + (item.offsetWidth / 2);
+          const diff = Math.abs(containerCenter - itemCenter);
+          if (diff < minDiff) {
+            minDiff = diff;
+            activeIdx = idx;
+          }
+        });
+      }
 
       this.dots.forEach((dot, idx) => {
-        dot.classList.toggle("active", idx === closestIdx);
+        dot.classList.toggle("active", idx === activeIdx);
       });
     }
 
-    attachScrollListener() {
-      this.container.addEventListener(
-        "scroll",
-        () => {
-          if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
-          this.scrollRaf = requestAnimationFrame(() => this.updateActiveDot());
-        },
-        { passive: true }
-      );
+    // Touch & Pointer gesture handling (Zero scroll freezing, pause on touch, resume on release)
+    setupTouchAndPointerListeners() {
+      const onInteractionStart = () => {
+        this.pauseAutoScroll();
+        // Allow magnetic snapping when user is actively swiping with finger
+        this.container.style.setProperty("scroll-snap-type", "x proximity", "important");
+      };
+
+      const onInteractionEnd = () => {
+        this.scheduleResume(2500);
+      };
+
+      // Native touch events
+      this.container.addEventListener("touchstart", onInteractionStart, { passive: true });
+      this.container.addEventListener("touchmove", onInteractionStart, { passive: true });
+      this.container.addEventListener("touchend", onInteractionEnd, { passive: true });
+      this.container.addEventListener("touchcancel", onInteractionEnd, { passive: true });
+
+      // Pointer events
+      this.container.addEventListener("pointerdown", onInteractionStart, { passive: true });
+      this.container.addEventListener("pointerup", onInteractionEnd, { passive: true });
+      this.container.addEventListener("pointercancel", onInteractionEnd, { passive: true });
+
+      // Mouse hover (for desktop emulator testing)
+      this.container.addEventListener("mouseenter", () => {
+        this.isHovered = true;
+        this.pauseAutoScroll();
+      });
+      this.container.addEventListener("mouseleave", () => {
+        this.isHovered = false;
+        this.scheduleResume(1500);
+      });
+
+      // Update active dot during manual user scroll
+      this.container.addEventListener("scroll", () => {
+        if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
+        this.scrollRaf = requestAnimationFrame(() => {
+          this.updateActiveDot();
+        });
+      }, { passive: true });
+    }
+
+    pauseAutoScroll() {
+      this.isInteracting = true;
+      this.isRewinding = false;
+      if (this.resumeTimer) {
+        clearTimeout(this.resumeTimer);
+        this.resumeTimer = null;
+      }
+      if (this.rewindTimer) {
+        clearTimeout(this.rewindTimer);
+        this.rewindTimer = null;
+      }
+      if (this.autoScrollRaf) {
+        cancelAnimationFrame(this.autoScrollRaf);
+        this.autoScrollRaf = null;
+      }
+    }
+
+    scheduleResume(delayMs = 2500) {
+      if (this.resumeTimer) clearTimeout(this.resumeTimer);
+      this.resumeTimer = setTimeout(() => {
+        this.isInteracting = false;
+        if (!this.isHovered && window.innerWidth <= 767 && !prefersReducedMotion) {
+          // Temporarily disable snap-type during smooth programmatic glide
+          this.container.style.setProperty("scroll-snap-type", "none", "important");
+          this.startAutoScroll();
+        }
+      }, delayMs);
+    }
+
+    // Viewport intersection observer: only animate when visible on screen
+    setupIntersectionObserver() {
+      if ("IntersectionObserver" in window) {
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            this.isVisible = entry.isIntersecting;
+            if (this.isVisible) {
+              if (!this.isInteracting && !this.isHovered && window.innerWidth <= 767) {
+                this.startAutoScroll();
+              }
+            } else {
+              if (this.autoScrollRaf) {
+                cancelAnimationFrame(this.autoScrollRaf);
+                this.autoScrollRaf = null;
+              }
+            }
+          });
+        }, { threshold: 0.1 });
+
+        this.observer.observe(this.container);
+      } else {
+        this.isVisible = true;
+      }
+    }
+
+    // High-performance RAF Auto-Scroll Engine (Left to Right)
+    startAutoScroll() {
+      if (prefersReducedMotion || window.innerWidth > 767) return;
+      if (this.autoScrollRaf) cancelAnimationFrame(this.autoScrollRaf);
+
+      // Disable snap during smooth programmatic glide so browser doesn't snap fight
+      this.container.style.setProperty("scroll-snap-type", "none", "important");
+
+      this.subPixelAccumulator = 0;
+
+      const step = () => {
+        if (window.innerWidth > 767) {
+          this.destroy();
+          return;
+        }
+
+        if (this.isInteracting || this.isHovered || !this.isVisible || this.isRewinding) {
+          return;
+        }
+
+        const maxScroll = this.container.scrollWidth - this.container.clientWidth;
+        if (maxScroll > 15) {
+          // Reached the end: pause, then smooth rewind to start
+          if (this.container.scrollLeft >= maxScroll - 2) {
+            this.isRewinding = true;
+            this.rewindTimer = setTimeout(() => {
+              if (this.isInteracting) {
+                this.isRewinding = false;
+                return;
+              }
+              this.container.scrollTo({ left: 0, behavior: "smooth" });
+              this.rewindTimer = setTimeout(() => {
+                this.isRewinding = false;
+                if (!this.isInteracting && !this.isHovered && this.isVisible) {
+                  this.startAutoScroll();
+                }
+              }, 1200);
+            }, 1600);
+            return;
+          }
+
+          // Advance left-to-right (incrementing scrollLeft)
+          this.subPixelAccumulator += this.speed;
+          if (this.subPixelAccumulator >= 1) {
+            const pixelsToScroll = Math.floor(this.subPixelAccumulator);
+            this.container.scrollLeft += pixelsToScroll;
+            this.subPixelAccumulator -= pixelsToScroll;
+          }
+        }
+
+        this.autoScrollRaf = requestAnimationFrame(step);
+      };
+
+      this.autoScrollRaf = requestAnimationFrame(step);
+    }
+
+    destroy() {
+      if (this.autoScrollRaf) {
+        cancelAnimationFrame(this.autoScrollRaf);
+        this.autoScrollRaf = null;
+      }
+      if (this.scrollRaf) {
+        cancelAnimationFrame(this.scrollRaf);
+        this.scrollRaf = null;
+      }
+      if (this.resumeTimer) {
+        clearTimeout(this.resumeTimer);
+        this.resumeTimer = null;
+      }
+      if (this.rewindTimer) {
+        clearTimeout(this.rewindTimer);
+        this.rewindTimer = null;
+      }
+      if (this.observer) {
+        this.observer.disconnect();
+        this.observer = null;
+      }
+      this.container.style.removeProperty("scroll-snap-type");
+      this.destroyDots();
     }
 
     refresh() {
       if (window.innerWidth <= 767) {
         this.buildDots();
+        this.startAutoScroll();
       } else {
-        this.destroyDots();
+        this.destroy();
       }
     }
   }
@@ -169,6 +355,7 @@
   ];
 
   function initAllMobileCarousels() {
+    activeCarousels.forEach(c => c.destroy());
     activeCarousels.length = 0;
 
     CAROUSEL_TARGETS.forEach(target => {

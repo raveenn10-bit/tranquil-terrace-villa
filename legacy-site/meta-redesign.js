@@ -70,7 +70,7 @@
 
   // Update All Currency Displays Across The Site
   function updateCurrency(curr) {
-    currentCurrency = curr;
+    currentCurrency = curr; window.currentCurrency = curr;
 
     // Update active button state
     document.querySelectorAll(".currency-toggle button").forEach((btn) => {
@@ -425,6 +425,8 @@
   window.selectMetaPackage = selectPackage;
   window.selectMetaVilla = selectVilla;
   window.updateMetaCurrency = updateCurrency;
+  window.formatMoney = formatMoney;
+  window.currentCurrency = currentCurrency;
 })();
 
 
@@ -569,10 +571,23 @@
     initLuxuryNav();
   }
 
+    function formatMoney(lkrAmount, currency) {
+    if (typeof window.formatMoney === "function") {
+      return window.formatMoney(lkrAmount, currency || "LKR");
+    }
+    const curr = currency || (window.currentCurrency || "LKR");
+    if (curr === "USD") {
+      const usd = Math.round(lkrAmount / 308);
+      return `${usd} USD`;
+    }
+    return `LKR ${Number(lkrAmount).toLocaleString()}`;
+  }
+
   // ==========================================================================
   // REAL-TIME AVAILABILITY CALENDAR & WHATSAPP BOOKING CONTROLLERS
   // ==========================================================================
 
+  let currentCurrency = window.currentCurrency || "LKR";
   // State for Homepage Calendar
   let calActiveVilla = "Araliya";
   let calMonthOffset = 0;
@@ -1346,7 +1361,8 @@
   initHomepageCalendar();
   initSearchStrip();
   initWhatsAppModal();
-  initMobileCarousels();
+  // Mobile carousels unified and handled with auto-scroll in mobile-carousels.js
+  // initMobileCarousels();
 })();
 
 

@@ -51,9 +51,9 @@ async function runTests() {
   assert('Card width set to 85vw (82–88% viewport)', css.includes('85vw'));
   assert('Card gap set to 16px', css.includes('gap: 16px'));
   assert('Card radius set to 22px (20–24px)', css.includes('border-radius: 22px'));
-  assert('CSS scroll-snap-type: x mandatory used', css.includes('scroll-snap-type: x mandatory'));
+  assert('CSS scroll-snap-type: x proximity used for smooth snapping', css.includes('scroll-snap-type: x proximity'));
   assert('CSS scroll-snap-align: center used for active card center', css.includes('scroll-snap-align: center'));
-  assert('touch-action: pan-y used to ensure smooth vertical scrolling', css.includes('touch-action: pan-y'));
+  assert('touch-action: pan-x pan-y used to ensure fluid horizontal swipe + vertical scroll', css.includes('touch-action: pan-x pan-y'));
   assert('Hidden horizontal scrollbars', css.includes('scrollbar-width: none'));
   assert('Pagination dots styled with luxury gold and active pill', css.includes('.carousel-pagination-dots') && css.includes('.carousel-dot.active'));
 
@@ -79,7 +79,8 @@ async function runTests() {
   // 2. Verify JS Engine
   console.log('\n--- 2. Testing mobile-carousels.js engine ---');
   const js = fs.readFileSync('public/mobile-carousels.js', 'utf8');
-  assert('Zero continuous auto-scroll crawling (respects native swiping)', !js.includes('this.container.scrollLeft +='));
+  assert('Auto horizontal scrolling engine (left to right)', js.includes('this.container.scrollLeft +='));
+  assert('Touch swiping interaction handling (pause on touch, resume on release)', js.includes('touchstart') && js.includes('touchend'));
   assert('Checks window.innerWidth <= 767px for mobile activation', js.includes('window.innerWidth <= 767') || js.includes('window.innerWidth > 767'));
   assert('Builds subtle pagination dots on mobile', js.includes('carousel-pagination-dots'));
   assert('Smooth scrolling to active card on dot click', js.includes('scrollToIndex'));
