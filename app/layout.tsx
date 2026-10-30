@@ -5,8 +5,17 @@ export const metadata: Metadata = {
   title: "Tranquil Terrace Galle",
   description: "Private villa reservations and management.",
   icons: {
-    icon: "/assets/tranquil-terrace-mark.png",
-    shortcut: "/assets/tranquil-terrace-mark.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/assets/tranquil-terrace-mark.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 

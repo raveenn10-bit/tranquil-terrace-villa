@@ -30,6 +30,12 @@ for (const file of [
   "tranquil-sand-theme.css",
   "sticky-nav.css",
   "favicon.svg",
+  "favicon.ico",
+  "apple-touch-icon.png",
+  "favicon-16x16.png",
+  "favicon-32x32.png",
+  "android-chrome-192x192.png",
+  "android-chrome-512x512.png",
   "robots.txt",
   "sitemap.xml",
 ]) {
