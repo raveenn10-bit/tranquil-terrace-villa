@@ -449,22 +449,118 @@ html, body {
     margin-bottom: 12px !important;
   }
 
+  /* Timing Block — Perfect Center Alignment */
+  .pkg-timing-block {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 12px 0 10px !important;
+    padding: 10px 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  .pkg-timing-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .pkg-timing-item > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .timing-label {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .timing-value {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .timing-badge {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .timing-options-stack {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .timing-opt {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .opt-tag,
+  .opt-val {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .timing-or {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .pkg-divider {
+    width: 80% !important;
+    margin: 10px auto !important;
+  }
+
+  .pkg-inclusions-label {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 4px auto 8px !important;
+  }
+
   .pkg-amenities-list {
     width: 100% !important;
     list-style: none !important;
     padding: 0 !important;
-    margin: 14px 0 !important;
-    text-align: left !important;
+    margin: 8px 0 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
 
   .pkg-amenities-list li {
     font-size: 0.82rem !important;
     color: #4A4E49 !important;
-    padding: 5px 0 !important;
+    padding: 6px 0 !important;
     border-bottom: 1px dashed rgba(20, 22, 21, 0.06) !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
     gap: 8px !important;
+    width: 100% !important;
   }
 
   .pkg-card-cta,
