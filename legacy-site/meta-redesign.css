@@ -7041,3 +7041,254 @@ h1.meta-hero-title em {
   color: #F5EFE6 !important;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9) !important;
 }
+
+
+/* ==========================================================================
+   404 LUXURY NOT FOUND STYLES
+   ========================================================================== */
+.not-found-page {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 140px 24px 80px;
+  background: radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.08) 0%, rgba(20, 22, 21, 1) 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+.not-found-container {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.not-found-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 24px;
+}
+
+.not-found-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #FAF8F5;
+  margin: 0 0 20px;
+  letter-spacing: -0.02em;
+}
+
+.not-found-title em {
+  font-style: italic;
+  color: #C5A880;
+  display: block;
+}
+
+.not-found-desc {
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.6;
+  color: rgba(250, 248, 245, 0.75);
+  max-width: 640px;
+  margin: 0 auto 36px;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 64px;
+}
+
+.not-found-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #C5A880 0%, #A88352 100%);
+  color: #141615 !important;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(168, 131, 82, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.not-found-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(168, 131, 82, 0.4);
+  color: #141615 !important;
+}
+
+.not-found-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #FAF8F5 !important;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.not-found-btn-outline:hover {
+  border-color: #D4AF37;
+  background: rgba(212, 175, 55, 0.1);
+  color: #FAF8F5 !important;
+  transform: translateY(-2px);
+}
+
+.not-found-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(37, 211, 102, 0.08);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: #FAF8F5 !important;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-family: 'Manrope', -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.not-found-btn-whatsapp:hover {
+  background: rgba(37, 211, 102, 0.18);
+  border-color: #25D366;
+  color: #FAF8F5 !important;
+  transform: translateY(-2px);
+}
+
+.not-found-directory {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 48px;
+  text-align: left;
+}
+
+.not-found-dir-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #FAF8F5;
+  margin: 0 0 24px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.not-found-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.not-found-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.not-found-card:hover {
+  background: rgba(212, 175, 55, 0.04);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-4px);
+}
+
+.not-found-card-num {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #D4AF37;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.not-found-card h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #FAF8F5;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.not-found-card p {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(250, 248, 245, 0.65);
+  margin: 0 0 16px;
+  flex-grow: 1;
+}
+
+.not-found-card-link {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #C5A880;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+.not-found-card:hover .not-found-card-link {
+  color: #FAF8F5;
+}
+
+@media (max-width: 991px) {
+  .not-found-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .not-found-page {
+    padding: 110px 16px 60px;
+  }
+  .not-found-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .not-found-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .not-found-btn-primary,
+  .not-found-btn-outline,
+  .not-found-btn-whatsapp {
+    width: 100%;
+    justify-content: center;
+  }
+}

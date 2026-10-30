@@ -597,6 +597,7 @@ const htmlFiles = [
   "contact.html",
   "privacy-policy.html",
   "terms-and-conditions.html",
+  "404.html",
 ];
 
 const pageMetadata = {
@@ -641,6 +642,12 @@ const pageMetadata = {
     title: "Privacy Policy | Tranquil Terrace Galle",
     description: "Privacy policy and guest data handling for reservations and inquiries at Tranquil Terrace Galle.",
     image: "https://www.tranquilterracegalle.com/assets/tranquil-terrace-mark.png"
+  },
+  "404.html": {
+    url: "https://www.tranquilterracegalle.com/404.html",
+    title: "Page Not Found (404) | Tranquil Terrace Galle",
+    description: "The page you are looking for cannot be found. Return to Tranquil Terrace Galle, luxury private pool villas in Karapitiya, Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
   },
   "terms-and-conditions.html": {
     url: "https://www.tranquilterracegalle.com/terms-and-conditions.html",

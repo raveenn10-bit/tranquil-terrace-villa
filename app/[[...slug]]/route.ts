@@ -13,6 +13,17 @@ export async function GET(
   const html = getPageContent(fileName);
 
   if (!html) {
+    const notFoundHtml = getPageContent("404.html");
+    if (notFoundHtml) {
+      return new Response(notFoundHtml, {
+        status: 404,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-cache, no-store, must-revalidate",
+          "x-content-type-options": "nosniff",
+        },
+      });
+    }
     return new Response("Not found", { status: 404 });
   }
 
