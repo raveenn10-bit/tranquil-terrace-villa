@@ -52,33 +52,33 @@ export default function AdminLoginForm() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#131514] px-4 py-12 text-[#FAF7F2] antialiased selection:bg-[#C8A45D]/30 selection:text-[#FAF7F2]">
-      {/* Ambient background glows */}
+    <div className="relative flex min-h-screen items-center justify-center bg-[#F8F6F0] px-4 py-12 text-[#183D32] antialiased selection:bg-[#C8A45D]/30 selection:text-[#183D32]">
+      {/* Ambient luxury background glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-[20%] left-1/2 h-[550px] w-[550px] -translate-x-1/2 rounded-full bg-[#C8A45D]/8 blur-[120px]" />
-        <div className="absolute -bottom-[20%] right-[10%] h-[450px] w-[450px] rounded-full bg-[#17392f]/25 blur-[140px]" />
+        <div className="absolute -top-[20%] left-1/2 h-[550px] w-[550px] -translate-x-1/2 rounded-full bg-[#C8A45D]/15 blur-[120px]" />
+        <div className="absolute -bottom-[20%] right-[10%] h-[450px] w-[450px] rounded-full bg-[#183D32]/10 blur-[140px]" />
       </div>
 
-      <div className="relative w-full max-w-md rounded-2xl border border-[#C8A45D]/25 bg-[#171918]/95 p-8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:p-10">
+      <div className="relative w-full max-w-md rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-8 shadow-[0_20px_50px_rgba(24,61,50,0.06)] backdrop-blur-xl sm:p-10">
         {/* Top subtle gold highlight */}
-        <div className="absolute inset-x-8 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#C8A45D]/60 to-transparent" />
+        <div className="absolute inset-x-8 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#C8A45D] to-transparent" />
 
         {/* Header with Tranquil Terrace branding */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-5 flex h-20 w-auto max-w-[220px] items-center justify-center rounded-xl border border-[#C8A45D]/30 bg-[#FAF7F2] px-4 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.35)]">
+          <div className="mx-auto mb-5 flex h-20 w-auto max-w-[220px] items-center justify-center rounded-xl border border-[#E5DFD3] bg-[#FAF8F5] px-4 py-2 shadow-sm">
             <img
               src="/assets/tranquil-terrace-logo.webp"
               alt="Tranquil Terrace Galle"
               className="h-10 w-auto object-contain"
             />
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#C8A45D]/30 bg-[#C8A45D]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#C8A45D]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#C8A45D]/40 bg-[#C8A45D]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#93712D]">
             Staff Portal
           </div>
-          <h1 className="mt-4 font-serif text-2xl font-normal tracking-wide text-[#FAF7F2] sm:text-3xl">
+          <h1 className="mt-4 font-serif text-2xl font-normal tracking-wide text-[#183D32] sm:text-3xl">
             Staff &amp; Management Portal
           </h1>
-          <p className="mt-2 text-xs leading-relaxed text-[#FAF7F2]/65 sm:text-sm">
+          <p className="mt-2 text-xs leading-relaxed text-[#5A6660] sm:text-sm">
             Enter credentials to access live villa reservations, calendars and guest records.
           </p>
         </div>
@@ -87,9 +87,9 @@ export default function AdminLoginForm() {
         {error && (
           <div
             role="alert"
-            className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-950/40 p-4 text-xs text-red-200 backdrop-blur-md sm:text-sm"
+            className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-700 sm:text-sm"
           >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
             <span className="flex-1 leading-normal">{error}</span>
           </div>
         )}
@@ -98,9 +98,9 @@ export default function AdminLoginForm() {
         {success && (
           <div
             role="status"
-            className="mb-6 flex items-start gap-3 rounded-xl border border-[#C8A45D]/50 bg-[#C8A45D]/15 p-4 text-xs text-[#FAF7F2] backdrop-blur-md sm:text-sm"
+            className="mb-6 flex items-start gap-3 rounded-xl border border-[#C8A45D]/50 bg-[#C8A45D]/15 p-4 text-xs text-[#183D32] sm:text-sm"
           >
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#C8A45D]" />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#93712D]" />
             <span className="flex-1 leading-normal">{success}</span>
           </div>
         )}
@@ -110,12 +110,12 @@ export default function AdminLoginForm() {
           <div>
             <label
               htmlFor="username"
-              className="block text-xs font-medium uppercase tracking-wider text-[#FAF7F2]/75"
+              className="block text-xs font-semibold uppercase tracking-wider text-[#183D32]"
             >
               Username
             </label>
             <div className="relative mt-2">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#C8A45D]/75">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#93712D]">
                 <User size={16} />
               </div>
               <input
@@ -129,7 +129,7 @@ export default function AdminLoginForm() {
                 placeholder="Admin"
                 required
                 disabled={loading || Boolean(success)}
-                className="w-full rounded-xl border border-[#C8A45D]/30 bg-[#111312] py-3 pl-10 pr-4 text-sm text-[#FAF7F2] placeholder-[#FAF7F2]/30 transition-colors focus:border-[#C8A45D] focus:bg-[#141715] focus:outline-none focus:ring-1 focus:ring-[#C8A45D] disabled:opacity-50"
+                className="w-full rounded-xl border border-[#DCD5C9] bg-[#FDFBF7] py-3 pl-10 pr-4 text-sm text-[#183D32] placeholder-[#9CA3AF] transition-colors focus:border-[#183D32] focus:bg-[#FFFFFF] focus:outline-none focus:ring-1 focus:ring-[#183D32] disabled:opacity-50"
               />
             </div>
           </div>
@@ -138,13 +138,13 @@ export default function AdminLoginForm() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password"
-                className="block text-xs font-medium uppercase tracking-wider text-[#FAF7F2]/75"
+                className="block text-xs font-semibold uppercase tracking-wider text-[#183D32]"
               >
                 Password
               </label>
             </div>
             <div className="relative mt-2">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#C8A45D]/75">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#93712D]">
                 <Lock size={16} />
               </div>
               <input
@@ -157,13 +157,13 @@ export default function AdminLoginForm() {
                 placeholder="••••••••"
                 required
                 disabled={loading || Boolean(success)}
-                className="w-full rounded-xl border border-[#C8A45D]/30 bg-[#111312] py-3 pl-10 pr-11 text-sm text-[#FAF7F2] placeholder-[#FAF7F2]/30 transition-colors focus:border-[#C8A45D] focus:bg-[#141715] focus:outline-none focus:ring-1 focus:ring-[#C8A45D] disabled:opacity-50"
+                className="w-full rounded-xl border border-[#DCD5C9] bg-[#FDFBF7] py-3 pl-10 pr-11 text-sm text-[#183D32] placeholder-[#9CA3AF] transition-colors focus:border-[#183D32] focus:bg-[#FFFFFF] focus:outline-none focus:ring-1 focus:ring-[#183D32] disabled:opacity-50"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
-                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#FAF7F2]/50 transition-colors hover:text-[#C8A45D] focus:outline-none"
+                className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#7A8882] transition-colors hover:text-[#183D32] focus:outline-none"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -175,21 +175,21 @@ export default function AdminLoginForm() {
             <button
               type="submit"
               disabled={loading || Boolean(success)}
-              className="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#C8A45D] via-[#D8B56E] to-[#C8A45D] px-6 py-3.5 text-sm font-semibold text-[#141615] shadow-lg shadow-[#C8A45D]/20 transition-all hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-60"
+              className="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#183D32] via-[#225244] to-[#183D32] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#183D32]/20 transition-all hover:brightness-105 active:scale-[0.99] disabled:pointer-events-none disabled:opacity-60"
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin text-[#141615]" />
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
                   <span>Authenticating...</span>
                 </>
               ) : success ? (
                 <>
-                  <CheckCircle2 className="h-4 w-4 text-[#141615]" />
+                  <CheckCircle2 className="h-4 w-4 text-white" />
                   <span>Authenticated</span>
                 </>
               ) : (
                 <>
-                  <span>Log In to Dashboard ↗</span>
+                  <span>Log In to Dashboard →</span>
                 </>
               )}
             </button>
@@ -197,10 +197,10 @@ export default function AdminLoginForm() {
         </form>
 
         {/* Footer return link */}
-        <div className="mt-8 border-t border-white/5 pt-6 text-center">
+        <div className="mt-8 border-t border-[#E5DFD3] pt-6 text-center">
           <a
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-[#FAF7F2]/50 transition-colors hover:text-[#C8A45D]"
+            className="inline-flex items-center gap-1.5 text-xs text-[#5A6660] transition-colors hover:text-[#183D32]"
           >
             <span>← Return to Tranquil Terrace website</span>
           </a>

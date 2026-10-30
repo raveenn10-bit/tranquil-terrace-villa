@@ -7,52 +7,7 @@ declare global {
   var __tranquil_bookings_store: BookingItem[] | undefined;
 }
 
-const initialDemoBookings: BookingItem[] = [
-  {
-    id: "demo-1",
-    reference: "TTG-2410-A18F",
-    guestName: "Sarah & Daniel",
-    email: "sarah@example.com",
-    phone: "+44 7700 900123",
-    villaName: "Araliya",
-    checkin: "2026-10-24 17:00",
-    checkout: "2026-10-27 09:00",
-    guests: 2,
-    source: "website",
-    status: "confirmed",
-    paymentStatus: "partial",
-    totalAmount: 75000,
-    paidAmount: 37500,
-    specialRequest: "Airport pickup information, please.",
-    adminNotes: "Arrival around 3.30 PM.",
-    packageId: "night-package",
-    timingOption: "",
-    createdAt: "2026-10-18 10:30:00",
-    updatedAt: "2026-10-21 08:15:00",
-  },
-  {
-    id: "demo-2",
-    reference: "TTG-2810-C92B",
-    guestName: "Nimal Perera",
-    email: "nimal@example.com",
-    phone: "+94 77 123 4567",
-    villaName: "Olu",
-    checkin: "2026-10-28 11:00",
-    checkout: "2026-10-30 09:00",
-    guests: 2,
-    source: "WhatsApp",
-    status: "pending",
-    paymentStatus: "unpaid",
-    totalAmount: 50000,
-    paidAmount: 0,
-    specialRequest: "Floating breakfast availability?",
-    adminNotes: "Follow up this evening.",
-    packageId: "day-night-package",
-    timingOption: "A",
-    createdAt: "2026-10-21 13:10:00",
-    updatedAt: "2026-10-21 13:10:00",
-  },
-];
+const initialDemoBookings: BookingItem[] = [];
 
 function getStore(): BookingItem[] {
   if (!globalThis.__tranquil_bookings_store) {

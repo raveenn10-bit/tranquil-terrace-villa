@@ -60,6 +60,7 @@ import {
   deleteGuest as dbDeleteGuest,
   getStorageCounts,
   clearAllData,
+  purgeLegacyDemoData,
   initialDemoBookings,
   initialDemoGuests,
   type GuestRecord,
@@ -213,6 +214,9 @@ export default function AdminDashboard({ live, displayName, authHref }: Props) {
   // IndexedDB Data Loading
   // ---------------------------------------------------------------------------
   async function loadDataFromStorage() {
+    try {
+      await purgeLegacyDemoData();
+    } catch {}
     setLoading(true);
     setError("");
     try {
@@ -770,20 +774,15 @@ Tranquil Terrace Galle Team`;
   }
 
   async function handleResetToDemoData() {
-    if (!confirm("Are you sure you want to reset all records to the original demo data? Any unsaved entries will be replaced.")) return;
+    if (!confirm("Are you sure you want to clear all reservation and guest records? All bookings and guest entries will be permanently erased for a completely clean database.")) return;
     setSaving(true);
     try {
       await clearAllData();
-      for (const b of initialDemoBookings) {
-        await dbSaveBooking(b);
-      }
-      for (const g of initialDemoGuests) {
-        await dbSaveGuest(g);
-      }
+      await purgeLegacyDemoData();
       await loadDataFromStorage();
-      showToast("Reset to factory demo records.");
+      showToast("All reservation and guest records cleared.");
     } catch {
-      setError("Failed to reset storage.");
+      setError("Failed to clear database.");
     } finally {
       setSaving(false);
     }
@@ -944,11 +943,11 @@ Tranquil Terrace Galle Team`;
   // RENDER MAIN COMPONENT
   // ---------------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#131514] text-[#F4F1E8] antialiased selection:bg-[#C8A45D]/30 selection:text-[#F4F1E8]">
+    <div className="min-h-screen bg-[#F8F6F0] text-[#183D32] antialiased selection:bg-[#C8A45D]/30 selection:text-[#183D32]">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed right-6 top-6 z-[100] flex items-center gap-3 rounded-xl border border-[#C8A45D]/40 bg-[#1A1D1B] px-5 py-3.5 text-sm text-[#F4F1E8] shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#C8A45D] text-[#131514]">
+        <div className="fixed right-6 top-6 z-[100] flex items-center gap-3 rounded-xl border border-[#C8A45D]/40 bg-[#FFFFFF] px-5 py-3.5 text-sm text-[#183D32] shadow-[0_12px_40px_rgba(24,61,50,0.12)] backdrop-blur-md transition-all">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#183D32] text-white">
             <Check size={13} strokeWidth={3} />
           </span>
           <span>{toastMessage}</span>
@@ -997,20 +996,20 @@ Tranquil Terrace Galle Team`;
       {/* SIDEBAR NAVIGATION (Desktop & Mobile Drawer)                           */}
       {/* ----------------------------------------------------------------------- */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col justify-between border-r border-[#2A2F2C] bg-[#161917] p-6 text-[#F4F1E8] transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col justify-between border-r border-[#E5DFD3] bg-[#FFFFFF] p-6 text-[#183D32] transition-transform duration-300 lg:translate-x-0 ${
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div>
           {/* Logo / Header */}
-          <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-5">
+          <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-5">
             <a href="/" className="group block">
               <div className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#C8A45D]/40 bg-[#C8A45D]/10 font-serif text-lg font-bold text-[#C8A45D]">
                   TT
                 </span>
                 <div>
-                  <span className="block font-serif text-base tracking-wide text-[#F4F1E8]">
+                  <span className="block font-serif text-base tracking-wide text-[#183D32]">
                     Tranquil Terrace
                   </span>
                   <span className="block text-[10px] uppercase tracking-[0.25em] text-[#C8A45D]">
@@ -1021,7 +1020,7 @@ Tranquil Terrace Galle Team`;
             </a>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 lg:hidden"
+              className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0] lg:hidden"
               aria-label="Close menu"
             >
               <X size={20} />
@@ -1029,7 +1028,7 @@ Tranquil Terrace Galle Team`;
           </div>
 
           {/* Local Storage Engine Badge */}
-          <div className="mt-5 rounded-xl border border-[#C8A45D]/20 bg-[#1A1D1B] p-3 text-xs">
+          <div className="mt-5 rounded-xl border border-[#C8A45D]/20 bg-[#FFFFFF] p-3 text-xs">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-2 text-[11px] font-medium text-[#C8A45D]">
                 <span className="relative flex h-2 w-2">
@@ -1038,9 +1037,9 @@ Tranquil Terrace Galle Team`;
                 </span>
                 IndexedDB Local Engine
               </span>
-              <span className="text-[10px] text-zinc-400">Offline-first</span>
+              <span className="text-[10px] text-[#5A6660]">Offline-first</span>
             </div>
-            <p className="mt-1.5 text-[10px] text-zinc-400">
+            <p className="mt-1.5 text-[10px] text-[#5A6660]">
               {bookings.length} reservations · {aggregatedGuests.length} guests stored
             </p>
           </div>
@@ -1067,12 +1066,12 @@ Tranquil Terrace Galle Team`;
                   }}
                   className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                     isActive
-                      ? "border border-[#C8A45D]/30 bg-[#C8A45D]/15 text-[#C8A45D] shadow-[0_4px_20px_rgba(200,164,93,0.1)]"
-                      : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                      ? "border border-[#183D32]/25 bg-[#183D32]/10 text-[#183D32] font-semibold shadow-xs"
+                      : "text-[#5A6660] hover:bg-[#F8F6F0] hover:text-[#183D32]"
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <Icon size={18} className={isActive ? "text-[#C8A45D]" : "text-zinc-400"} />
+                    <Icon size={18} className={isActive ? "text-[#183D32]" : "text-[#7A8882]"} />
                     {tab.name}
                   </span>
                   {tab.id === "calendar" && systemConflicts.length > 0 && (
@@ -1087,7 +1086,7 @@ Tranquil Terrace Galle Team`;
         </div>
 
         {/* Sidebar Footer */}
-        <div className="space-y-3 pt-6 border-t border-[#2A2F2C]">
+        <div className="space-y-3 pt-6 border-t border-[#E5DFD3]">
           <button
             onClick={() => openNewBookingModal()}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#C8A45D] to-[#DFBF7A] py-3 text-xs font-semibold text-[#131514] shadow-lg transition-transform hover:opacity-95 active:scale-95"
@@ -1099,12 +1098,12 @@ Tranquil Terrace Galle Team`;
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-xl border border-[#2A2F2C] py-2.5 text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
+            className="flex items-center justify-center gap-2 rounded-xl border border-[#E5DFD3] py-2.5 text-xs text-[#5A6660] hover:bg-[#F8F6F0] hover:text-[#183D32] transition-colors"
           >
             <Eye size={15} /> View Guest Website
           </a>
 
-          <div className="flex items-center justify-between pt-2 text-xs text-zinc-500">
+          <div className="flex items-center justify-between pt-2 text-xs text-[#7A8882]">
             <span className="truncate">Host: {displayName}</span>
             <a
               href={authHref}
@@ -1121,11 +1120,11 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       <main className="min-h-screen lg:ml-[280px]">
         {/* Top Sticky Header */}
-        <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#2A2F2C] bg-[#131514]/90 px-6 backdrop-blur-xl sm:px-8">
+        <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#E5DFD3] bg-[#FDFBF7]/90 px-6 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="rounded-xl border border-[#2A2F2C] p-2 text-zinc-300 hover:bg-zinc-800 lg:hidden"
+              className="rounded-xl border border-[#E5DFD3] p-2 text-[#183D32] hover:bg-[#F8F6F0] lg:hidden"
               aria-label="Open navigation menu"
             >
               <Menu size={20} />
@@ -1134,7 +1133,7 @@ Tranquil Terrace Galle Team`;
               <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C8A45D]">
                 Tranquil Terrace Admin
               </p>
-              <h1 className="font-serif text-xl sm:text-2xl text-[#F4F1E8]">
+              <h1 className="font-serif text-xl sm:text-2xl text-[#183D32]">
                 {activeTab === "reservations" && "Reservation Management"}
                 {activeTab === "calendar" && "Multi-View Calendar"}
                 {activeTab === "ics-sync" && "OTA & iCalendar Synchronization"}
@@ -1148,13 +1147,13 @@ Tranquil Terrace Galle Team`;
 
           <div className="flex items-center gap-3">
             {/* Currency Toggle */}
-            <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#1A1D1B] p-1">
+            <div className="flex items-center rounded-xl border border-[#E5DFD3] bg-[#F8F6F0] p-1">
               <button
                 onClick={() => setCurrency("LKR")}
                 className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
                   currency === "LKR"
                     ? "bg-[#C8A45D] text-[#131514] shadow"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    : "text-[#5A6660] hover:text-[#183D32]"
                 }`}
               >
                 LKR
@@ -1164,7 +1163,7 @@ Tranquil Terrace Galle Team`;
                 className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
                   currency === "USD"
                     ? "bg-[#C8A45D] text-[#131514] shadow"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    : "text-[#5A6660] hover:text-[#183D32]"
                 }`}
               >
                 USD
@@ -1175,7 +1174,7 @@ Tranquil Terrace Galle Team`;
             <button
               onClick={handleExportJsonBackup}
               title="Download JSON Backup"
-              className="hidden sm:flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#1A1D1B] px-3 py-2 text-xs text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+              className="hidden sm:flex items-center gap-1.5 rounded-xl border border-[#E5DFD3] bg-[#FFFFFF] px-3 py-2 text-xs text-[#183D32] hover:border-[#C8A45D]/40 hover:text-[#183D32] transition-colors"
             >
               <Download size={15} /> Backup
             </button>
@@ -1193,16 +1192,16 @@ Tranquil Terrace Galle Team`;
         <div className="mx-auto max-w-7xl p-5 sm:p-8">
           {/* Module 11/10: Prominent Local Browser Storage Disclosure Banner */}
           {!noticeDismissed && (
-            <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[#C8A45D]/30 bg-[#1A1D1B] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
+            <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[#C8A45D]/30 bg-[#FFFFFF] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
               <div className="flex items-start gap-3.5">
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#C8A45D]/15 text-[#C8A45D]">
                   <ShieldAlert size={18} />
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-[#F4F1E8]">
+                  <p className="text-sm font-medium text-[#183D32]">
                     ✦ LOCAL BROWSER STORAGE NOTICE:
                   </p>
-                  <p className="mt-0.5 text-xs text-zinc-400">
+                  <p className="mt-0.5 text-xs text-[#5A6660]">
                     Bookings and records are securely stored in this device&apos;s browser (IndexedDB). No external servers or databases are used. Please export a JSON backup regularly to keep your data safe across devices.
                   </p>
                 </div>
@@ -1216,7 +1215,7 @@ Tranquil Terrace Galle Team`;
                 </button>
                 <button
                   onClick={() => setNoticeDismissed(true)}
-                  className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                  className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0] hover:text-[#183D32]"
                   aria-label="Dismiss notice"
                 >
                   <X size={16} />
@@ -1282,72 +1281,72 @@ Tranquil Terrace Galle Team`;
             <div className="space-y-6">
               {/* Summary Cards */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
-                  <div className="flex items-center justify-between text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-[#5A6660]">
                     <span className="text-xs uppercase tracking-wider">Total Bookings</span>
                     <CalendarDays size={18} className="text-[#C8A45D]" />
                   </div>
-                  <div className="mt-3 font-serif text-3xl font-medium text-[#F4F1E8]">
+                  <div className="mt-3 font-serif text-3xl font-medium text-[#183D32]">
                     {bookings.length}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">All registered stays</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">All registered stays</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
-                  <div className="flex items-center justify-between text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-[#5A6660]">
                     <span className="text-xs uppercase tracking-wider">Active Bookings</span>
                     <BedDouble size={18} className="text-emerald-400" />
                   </div>
                   <div className="mt-3 font-serif text-3xl font-medium text-emerald-400">
                     {bookings.filter((b) => ["confirmed", "checked_in"].includes(b.status)).length}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Confirmed & Checked-in</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Confirmed & Checked-in</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
-                  <div className="flex items-center justify-between text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-[#5A6660]">
                     <span className="text-xs uppercase tracking-wider">Pending Balances</span>
                     <CreditCard size={18} className="text-amber-400" />
                   </div>
                   <div className="mt-3 font-serif text-3xl font-medium text-amber-400">
                     {formatMoney(financialSummary.pendingRevenueLKR)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Awaiting guest settlement</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Awaiting guest settlement</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 shadow-sm">
-                  <div className="flex items-center justify-between text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5 shadow-sm">
+                  <div className="flex items-center justify-between text-[#5A6660]">
                     <span className="text-xs uppercase tracking-wider">Total Collected</span>
                     <CircleDollarSign size={18} className="text-[#C8A45D]" />
                   </div>
                   <div className="mt-3 font-serif text-3xl font-medium text-[#C8A45D]">
                     {formatMoney(financialSummary.paidRevenueLKR)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Gross advance payments</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Gross advance payments</p>
                 </div>
               </div>
 
               {/* Reservations Table Box */}
-              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+              <div className="overflow-hidden rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] shadow-xl">
                 {/* Search & Filter Header */}
-                <div className="flex flex-col gap-4 border-b border-[#2A2F2C] p-5 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col gap-4 border-b border-[#E5DFD3] p-5 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <h2 className="font-serif text-xl text-[#F4F1E8]">Reservation Records</h2>
-                    <p className="text-xs text-zinc-400">
+                    <h2 className="font-serif text-xl text-[#183D32]">Reservation Records</h2>
+                    <p className="text-xs text-[#5A6660]">
                       Showing {filteredBookings.length} of {bookings.length} reservations
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2.5">
                     {/* Search */}
-                    <div className="flex items-center gap-2 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-1.5">
-                      <Search size={15} className="text-zinc-400" />
+                    <div className="flex items-center gap-2 rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-1.5">
+                      <Search size={15} className="text-[#5A6660]" />
                       <input
                         type="text"
                         placeholder="Search guest, phone, ref..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-48 bg-transparent text-xs text-[#F4F1E8] placeholder-zinc-500 outline-none"
+                        className="w-48 bg-transparent text-xs text-[#183D32] placeholder-zinc-500 outline-none"
                       />
                     </div>
 
@@ -1355,7 +1354,7 @@ Tranquil Terrace Galle Team`;
                     <select
                       value={villaFilter}
                       onChange={(e) => setVillaFilter(e.target.value as any)}
-                      className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-300 outline-none"
+                      className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-2 text-xs text-[#183D32] outline-none"
                     >
                       <option value="all">All Villas</option>
                       <option value="Araliya">Villa Araliya</option>
@@ -1366,7 +1365,7 @@ Tranquil Terrace Galle Team`;
                     <select
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-300 outline-none"
+                      className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-2 text-xs text-[#183D32] outline-none"
                     >
                       <option value="all">All Statuses</option>
                       {bookingStatuses.map((s) => (
@@ -1379,7 +1378,7 @@ Tranquil Terrace Galle Team`;
                     {/* CSV Export */}
                     <button
                       onClick={handleExportCsv}
-                      className="flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs font-semibold text-[#183D32] hover:text-[#183D32] transition-colors"
                     >
                       <Download size={14} /> CSV
                     </button>
@@ -1389,7 +1388,7 @@ Tranquil Terrace Galle Team`;
                 {/* Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[980px] text-left text-xs">
-                    <thead className="border-b border-[#2A2F2C] bg-[#131514]/60 text-[10px] uppercase tracking-wider text-zinc-400">
+                    <thead className="border-b border-[#E5DFD3] bg-[#FDFBF7]/60 text-[10px] uppercase tracking-wider text-[#5A6660]">
                       <tr>
                         <th className="px-5 py-4">Guest & Ref</th>
                         <th className="px-4 py-4">Villa</th>
@@ -1401,21 +1400,21 @@ Tranquil Terrace Galle Team`;
                         <th className="px-5 py-4 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-[#183D32]">
                       {loading ? (
                         <tr>
-                          <td colSpan={8} className="p-16 text-center text-zinc-400">
+                          <td colSpan={8} className="p-16 text-center text-[#5A6660]">
                             <LoaderCircle className="mx-auto animate-spin" size={24} />
                             <p className="mt-2 text-xs">Loading IndexedDB records...</p>
                           </td>
                         </tr>
                       ) : filteredBookings.length === 0 ? (
                         <tr>
-                          <td colSpan={8} className="p-16 text-center text-zinc-500">
+                          <td colSpan={8} className="p-16 text-center text-[#7A8882]">
                             <Calendar className="mx-auto text-zinc-600 mb-2" size={28} />
-                            <p className="text-sm font-medium">No matching reservations found.</p>
-                            <p className="text-xs text-zinc-500 mt-1">
-                              Try clearing filters or add a new booking.
+                            <p className="text-sm font-semibold text-[#183D32]">No reservations in database.</p>
+                            <p className="text-xs text-[#7A8882] mt-1">
+                              Your database is clean and ready. Click "+ New Reservation" or import a calendar to add bookings.
                             </p>
                           </td>
                         </tr>
@@ -1436,7 +1435,7 @@ Tranquil Terrace Galle Team`;
                           return (
                             <tr
                               key={b.id}
-                              className={`hover:bg-zinc-800/30 transition-colors ${
+                              className={`hover:bg-[#FAF8F5] transition-colors ${
                                 hasConflict ? "bg-rose-950/10" : ""
                               }`}
                             >
@@ -1446,10 +1445,10 @@ Tranquil Terrace Galle Team`;
                                   onClick={() => openEditBookingModal(b)}
                                   className="text-left group"
                                 >
-                                  <span className="block font-medium text-[#F4F1E8] group-hover:text-[#C8A45D] transition-colors">
+                                  <span className="block font-medium text-[#183D32] group-hover:text-[#C8A45D] transition-colors">
                                     {b.guestName}
                                   </span>
-                                  <span className="block text-[11px] text-zinc-500">
+                                  <span className="block text-[11px] text-[#7A8882]">
                                     Ref: {b.reference} · {b.phone || b.email || "No contact"}
                                   </span>
                                 </button>
@@ -1469,10 +1468,10 @@ Tranquil Terrace Galle Team`;
 
                               {/* Stay Dates */}
                               <td className="px-4 py-4">
-                                <span className="block text-[#F4F1E8]">
+                                <span className="block text-[#183D32]">
                                   {formatDateDisplay(b.checkin)} → {formatDateDisplay(b.checkout)}
                                 </span>
-                                <span className="block text-[11px] text-zinc-500">
+                                <span className="block text-[11px] text-[#7A8882]">
                                   {nightsCount} night{nightsCount === 1 ? "" : "s"} · {b.guests} guest{b.guests === 1 ? "" : "s"}
                                 </span>
                               </td>
@@ -1486,18 +1485,18 @@ Tranquil Terrace Galle Team`;
                                   }
                                   className={`rounded-lg border px-2.5 py-1 text-[11px] font-medium outline-none ${
                                     b.status === "confirmed"
-                                      ? "border-emerald-500/30 bg-emerald-950/60 text-emerald-300"
+                                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
                                       : b.status === "checked_in"
-                                      ? "border-indigo-500/30 bg-indigo-950/60 text-indigo-300"
+                                      ? "border-indigo-200 bg-indigo-50 text-indigo-800"
                                       : b.status === "cancelled"
-                                      ? "border-rose-500/30 bg-rose-950/60 text-rose-300"
+                                      ? "border-rose-200 bg-rose-50 text-rose-800"
                                       : b.status === "inquiry"
-                                      ? "border-sky-500/30 bg-sky-950/60 text-sky-300"
-                                      : "border-amber-500/30 bg-amber-950/60 text-amber-300"
+                                      ? "border-sky-200 bg-sky-50 text-sky-800"
+                                      : "border-amber-200 bg-amber-50 text-amber-800"
                                   }`}
                                 >
                                   {bookingStatuses.map((s) => (
-                                    <option key={s} value={s} className="bg-[#161917] text-white">
+                                    <option key={s} value={s} className="bg-[#FFFFFF] text-white">
                                       {label(s)}
                                     </option>
                                   ))}
@@ -1510,11 +1509,11 @@ Tranquil Terrace Galle Team`;
                                   onClick={() => openPaymentModal(b)}
                                   className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-medium ${
                                     b.paymentStatus === "paid"
-                                      ? "border-emerald-500/30 bg-emerald-950/50 text-emerald-300"
+                                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
                                       : b.paymentStatus === "partial"
-                                      ? "border-amber-500/30 bg-amber-950/50 text-amber-300"
+                                      ? "border-amber-200 bg-amber-50 text-amber-800"
                                       : b.paymentStatus === "refunded"
-                                      ? "border-zinc-700 bg-zinc-800 text-zinc-400"
+                                      ? "border-zinc-700 bg-zinc-800 text-[#5A6660]"
                                       : "border-rose-500/30 bg-rose-950/50 text-rose-300"
                                   }`}
                                 >
@@ -1524,12 +1523,12 @@ Tranquil Terrace Galle Team`;
 
                               {/* Total & Balance */}
                               <td className="px-4 py-4">
-                                <span className="block font-medium text-[#F4F1E8]">
+                                <span className="block font-medium text-[#183D32]">
                                   {formatMoney(b.totalAmount)}
                                 </span>
                                 <span
                                   className={`block text-[11px] ${
-                                    balanceDue > 0 ? "text-amber-400" : "text-zinc-500"
+                                    balanceDue > 0 ? "text-amber-400" : "text-[#7A8882]"
                                   }`}
                                 >
                                   {balanceDue > 0 ? `Due: ${formatMoney(balanceDue)}` : "Fully Paid"}
@@ -1538,7 +1537,7 @@ Tranquil Terrace Galle Team`;
 
                               {/* Source */}
                               <td className="px-4 py-4">
-                                <span className="capitalize text-zinc-400">{b.source}</span>
+                                <span className="capitalize text-[#5A6660]">{b.source}</span>
                               </td>
 
                               {/* Actions */}
@@ -1548,7 +1547,7 @@ Tranquil Terrace Galle Team`;
                                   <button
                                     onClick={() => openMessageGenerator(b)}
                                     title="Open WhatsApp & Email Generator"
-                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
+                                    className="rounded-lg border border-[#E5DFD3] p-1.5 text-[#5A6660] hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
                                   >
                                     <MessageSquare size={14} />
                                   </button>
@@ -1557,7 +1556,7 @@ Tranquil Terrace Galle Team`;
                                   <button
                                     onClick={() => setInvoiceModalBooking(b)}
                                     title="Generate 5-Star PDF Invoice"
-                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
+                                    className="rounded-lg border border-[#E5DFD3] p-1.5 text-[#5A6660] hover:border-[#C8A45D]/40 hover:text-[#C8A45D] transition-colors"
                                   >
                                     <Printer size={14} />
                                   </button>
@@ -1566,7 +1565,7 @@ Tranquil Terrace Galle Team`;
                                   <button
                                     onClick={() => openEditBookingModal(b)}
                                     title="Edit Reservation"
-                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                                    className="rounded-lg border border-[#E5DFD3] p-1.5 text-[#5A6660] hover:border-[#C8A45D]/40 hover:text-[#183D32] transition-colors"
                                   >
                                     <ChevronRight size={14} />
                                   </button>
@@ -1575,7 +1574,7 @@ Tranquil Terrace Galle Team`;
                                   <button
                                     onClick={() => setDeleteConfirmId(b.id)}
                                     title="Delete Reservation"
-                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:border-rose-500/40 hover:text-rose-400 transition-colors"
+                                    className="rounded-lg border border-[#E5DFD3] p-1.5 text-[#5A6660] hover:border-rose-500/40 hover:text-rose-400 transition-colors"
                                   >
                                     <Trash2 size={14} />
                                   </button>
@@ -1598,9 +1597,9 @@ Tranquil Terrace Galle Team`;
           {activeTab === "calendar" && (
             <div className="space-y-6">
               {/* Calendar Controls Bar */}
-              <div className="flex flex-col gap-4 rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
+              <div className="flex flex-col gap-4 rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5 sm:flex-row sm:items-center sm:justify-between shadow-lg">
                 {/* Villa Filter Tabs */}
-                <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#131514] p-1">
+                <div className="flex items-center rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-1">
                   {(["All", "Araliya", "Olu"] as const).map((v) => (
                     <button
                       key={v}
@@ -1608,7 +1607,7 @@ Tranquil Terrace Galle Team`;
                       className={`rounded-lg px-4 py-1.5 text-xs font-semibold transition-all ${
                         calendarVilla === v
                           ? "bg-[#C8A45D] text-[#131514] shadow"
-                          : "text-zinc-400 hover:text-zinc-200"
+                          : "text-[#5A6660] hover:text-[#183D32]"
                       }`}
                     >
                       {v === "All" ? "All Villas" : `Villa ${v}`}
@@ -1620,12 +1619,12 @@ Tranquil Terrace Galle Team`;
                 <div className="flex items-center gap-3">
                   <button
                     onClick={prevMonth}
-                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                    className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-2 text-[#183D32] hover:border-[#C8A45D]/40 hover:text-[#183D32] transition-colors"
                     aria-label="Previous Month"
                   >
                     <ChevronLeft size={16} />
                   </button>
-                  <span className="font-serif text-lg font-medium text-[#F4F1E8] min-w-44 text-center">
+                  <span className="font-serif text-lg font-medium text-[#183D32] min-w-44 text-center">
                     {new Date(calendarYear, calendarMonth, 1).toLocaleDateString("en-US", {
                       month: "long",
                       year: "numeric",
@@ -1633,14 +1632,14 @@ Tranquil Terrace Galle Team`;
                   </span>
                   <button
                     onClick={nextMonth}
-                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                    className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-2 text-[#183D32] hover:border-[#C8A45D]/40 hover:text-[#183D32] transition-colors"
                     aria-label="Next Month"
                   >
                     <ChevronRight size={16} />
                   </button>
                   <button
                     onClick={goToToday}
-                    className="rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs font-semibold text-zinc-300 hover:border-[#C8A45D]/40 hover:text-white transition-colors"
+                    className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-2 text-xs font-semibold text-[#183D32] hover:border-[#C8A45D]/40 hover:text-[#183D32] transition-colors"
                   >
                     Today
                   </button>
@@ -1648,8 +1647,8 @@ Tranquil Terrace Galle Team`;
               </div>
 
               {/* Status Color Legend */}
-              <div className="flex flex-wrap items-center gap-4 text-[11px] text-zinc-400">
-                <span className="font-semibold text-zinc-500 uppercase tracking-wider text-[10px]">
+              <div className="flex flex-wrap items-center gap-4 text-[11px] text-[#5A6660]">
+                <span className="font-semibold text-[#7A8882] uppercase tracking-wider text-[10px]">
                   Status Guide:
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -1670,9 +1669,9 @@ Tranquil Terrace Galle Team`;
               </div>
 
               {/* Calendar Month Grid */}
-              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+              <div className="overflow-hidden rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] shadow-xl">
                 {/* Day Headers (Mon to Sun) */}
-                <div className="grid grid-cols-7 border-b border-[#2A2F2C] bg-[#131514]/70 text-center text-xs font-semibold uppercase tracking-wider text-zinc-400 py-3">
+                <div className="grid grid-cols-7 border-b border-[#E5DFD3] bg-[#FDFBF7]/70 text-center text-xs font-semibold uppercase tracking-wider text-[#5A6660] py-3">
                   <span>Mon</span>
                   <span>Tue</span>
                   <span>Wed</span>
@@ -1683,7 +1682,7 @@ Tranquil Terrace Galle Team`;
                 </div>
 
                 {/* Day Cells */}
-                <div className="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-[#2A2F2C]/60 bg-[#161917]">
+                <div className="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-[#2A2F2C]/60 bg-[#FFFFFF]">
                   {calendarDaysMatrix.map((cell, idx) => {
                     const isToday = cell.dateStr === getTodayIsoDate();
 
@@ -1712,8 +1711,8 @@ Tranquil Terrace Galle Team`;
                         }}
                         className={`group relative min-h-[110px] p-2 transition-colors cursor-pointer ${
                           !cell.isCurrentMonth
-                            ? "bg-[#131514]/40 text-zinc-600"
-                            : "hover:bg-zinc-800/40"
+                            ? "bg-[#FDFBF7]/40 text-zinc-600"
+                            : "hover:bg-[#F8F6F0]/40"
                         } ${isToday ? "ring-1 ring-[#C8A45D]/60 bg-[#C8A45D]/5" : ""}`}
                       >
                         {/* Day Number Header */}
@@ -1723,7 +1722,7 @@ Tranquil Terrace Galle Team`;
                               isToday
                                 ? "bg-[#C8A45D] font-bold text-[#131514]"
                                 : cell.isCurrentMonth
-                                ? "text-zinc-300"
+                                ? "text-[#183D32]"
                                 : "text-zinc-600"
                             }`}
                           >
@@ -1780,13 +1779,13 @@ Tranquil Terrace Galle Team`;
                     if (e.target === e.currentTarget) setSelectedDayBookings(null);
                   }}
                 >
-                  <div className="w-full max-w-lg rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-2xl">
-                    <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+                  <div className="w-full max-w-lg rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-4">
                       <div>
                         <span className="text-[10px] uppercase tracking-wider text-[#C8A45D]">
                           Daily Schedule
                         </span>
-                        <h3 className="font-serif text-xl text-[#F4F1E8]">
+                        <h3 className="font-serif text-xl text-[#183D32]">
                           {formatDateDisplay(selectedDayBookings.date, {
                             monthFormat: "long",
                             showDayOfWeek: true,
@@ -1795,7 +1794,7 @@ Tranquil Terrace Galle Team`;
                       </div>
                       <button
                         onClick={() => setSelectedDayBookings(null)}
-                        className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                        className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0]"
                       >
                         <X size={18} />
                       </button>
@@ -1805,21 +1804,21 @@ Tranquil Terrace Galle Team`;
                       {selectedDayBookings.bookings.map((b) => (
                         <div
                           key={b.id}
-                          className="rounded-xl border border-[#2A2F2C] bg-[#161917] p-4 flex flex-col gap-2"
+                          className="rounded-xl border border-[#E5DFD3] bg-[#FFFFFF] p-4 flex flex-col gap-2"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="font-serif text-base text-[#F4F1E8]">
+                            <span className="font-serif text-base text-[#183D32]">
                               {b.guestName}
                             </span>
                             <span className="rounded-md border border-[#C8A45D]/30 bg-[#C8A45D]/10 px-2 py-0.5 text-xs text-[#C8A45D]">
                               Villa {b.villaName}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-xs text-[#5A6660]">
                             Stay: {formatDateDisplay(b.checkin)} → {formatDateDisplay(b.checkout)} (
                             {calculateNights(b.checkin, b.checkout)} nights)
                           </p>
-                          <div className="flex items-center justify-between text-xs text-zinc-400 pt-2 border-t border-[#2A2F2C]">
+                          <div className="flex items-center justify-between text-xs text-[#5A6660] pt-2 border-t border-[#E5DFD3]">
                             <span>
                               Total: {formatMoney(b.totalAmount)} · {b.paymentStatus}
                             </span>
@@ -1838,7 +1837,7 @@ Tranquil Terrace Galle Team`;
                                   setSelectedDayBookings(null);
                                   openEditBookingModal(b);
                                 }}
-                                className="text-xs text-zinc-200 hover:underline"
+                                className="text-xs text-[#183D32] hover:underline"
                               >
                                 Edit
                               </button>
@@ -1872,16 +1871,16 @@ Tranquil Terrace Galle Team`;
           {activeTab === "ics-sync" && (
             <div className="space-y-6">
               {/* Manual RFC 5545 Sync Notice Banner */}
-              <div className="rounded-2xl border border-[#C8A45D]/30 bg-[#1A1D1B] p-6 shadow-xl">
+              <div className="rounded-2xl border border-[#C8A45D]/30 bg-[#FFFFFF] p-6 shadow-xl">
                 <div className="flex items-start gap-4">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#C8A45D]/15 text-[#C8A45D]">
                     <RefreshCw size={22} />
                   </span>
                   <div>
-                    <h2 className="font-serif text-xl text-[#F4F1E8]">
+                    <h2 className="font-serif text-xl text-[#183D32]">
                       Manual RFC 5545 iCalendar Synchronization
                     </h2>
-                    <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+                    <p className="mt-1 text-xs text-[#5A6660] leading-relaxed">
                       Manual RFC 5545 ICS sync. No external backend required. Tranquil Terrace enables universal calendar importing and exporting compatible with Booking.com, Airbnb, and Agoda right from your browser.
                     </p>
                   </div>
@@ -1891,28 +1890,28 @@ Tranquil Terrace Galle Team`;
               {/* 2-Column: Inbound Import & Outbound Export */}
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Left: Inbound ICS Import */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <div className="border-b border-[#2A2F2C] pb-4">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#E5DFD3] pb-4">
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                       Inbound Channel Sync
                     </span>
-                    <h3 className="font-serif text-lg text-[#F4F1E8]">
+                    <h3 className="font-serif text-lg text-[#183D32]">
                       Import Calendar (.ics file or text)
                     </h3>
-                    <p className="text-xs text-zinc-400 mt-1">
+                    <p className="text-xs text-[#5A6660] mt-1">
                       Upload an exported .ics feed from Airbnb, Booking.com, or Agoda to import reservations into IndexedDB.
                     </p>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                      <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                         Target Villa
                       </label>
                       <select
                         value={icsImportVilla}
                         onChange={(e) => setIcsImportVilla(e.target.value as VillaName)}
-                        className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-200 outline-none"
+                        className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-2 text-xs text-[#183D32] outline-none"
                       >
                         <option value="Araliya">Villa Araliya</option>
                         <option value="Olu">Villa Olu</option>
@@ -1920,13 +1919,13 @@ Tranquil Terrace Galle Team`;
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                      <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                         Channel Source
                       </label>
                       <select
                         value={icsImportSource}
                         onChange={(e) => setIcsImportSource(e.target.value)}
-                        className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3 py-2 text-xs text-zinc-200 outline-none"
+                        className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3 py-2 text-xs text-[#183D32] outline-none"
                       >
                         <option value="Booking.com">Booking.com</option>
                         <option value="Airbnb">Airbnb</option>
@@ -1937,19 +1936,19 @@ Tranquil Terrace Galle Team`;
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                    <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                       Upload .ics File
                     </label>
                     <input
                       type="file"
                       accept=".ics,text/calendar"
                       onChange={handleFileUploadIcs}
-                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
+                      className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-2 text-xs text-[#5A6660] file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                    <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                       Or Paste Raw ICS Content
                     </label>
                     <textarea
@@ -1957,7 +1956,7 @@ Tranquil Terrace Galle Team`;
                       placeholder="BEGIN:VCALENDAR&#10;VERSION:2.0&#10;BEGIN:VEVENT&#10;DTSTART;VALUE=DATE:20261110&#10;DTEND;VALUE=DATE:20261114&#10;SUMMARY:Reserved...&#10;END:VEVENT&#10;END:VCALENDAR"
                       value={icsRawText}
                       onChange={(e) => setIcsRawText(e.target.value)}
-                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs font-mono text-zinc-300 placeholder-zinc-600 outline-none"
+                      className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-3 text-xs font-mono text-[#183D32] placeholder-zinc-600 outline-none"
                     />
                   </div>
 
@@ -1972,26 +1971,26 @@ Tranquil Terrace Galle Team`;
                 </div>
 
                 {/* Right: Outbound ICS Export */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-5 flex flex-col justify-between">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-5 flex flex-col justify-between">
                   <div>
-                    <div className="border-b border-[#2A2F2C] pb-4">
+                    <div className="border-b border-[#E5DFD3] pb-4">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                         Outbound Channel Sync
                       </span>
-                      <h3 className="font-serif text-lg text-[#F4F1E8]">
+                      <h3 className="font-serif text-lg text-[#183D32]">
                         Export RFC 5545 iCalendar Feeds
                       </h3>
-                      <p className="text-xs text-zinc-400 mt-1">
+                      <p className="text-xs text-[#5A6660] mt-1">
                         Generate and download standardized .ics calendar files containing all active reservations to import into your OTA accounts.
                       </p>
                     </div>
 
                     <div className="mt-5 space-y-4">
                       {/* Villa Araliya Export */}
-                      <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4 flex items-center justify-between">
+                      <div className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-4 flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-semibold text-[#F4F1E8]">Villa Araliya</p>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-sm font-semibold text-[#183D32]">Villa Araliya</p>
+                          <p className="text-xs text-[#5A6660]">
                             {bookings.filter((b) => b.villaName === "Araliya" && b.status !== "cancelled").length} active reservations
                           </p>
                         </div>
@@ -2008,10 +2007,10 @@ Tranquil Terrace Galle Team`;
                       </div>
 
                       {/* Villa Olu Export */}
-                      <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4 flex items-center justify-between">
+                      <div className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-4 flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-semibold text-[#F4F1E8]">Villa Olu</p>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-sm font-semibold text-[#183D32]">Villa Olu</p>
+                          <p className="text-xs text-[#5A6660]">
                             {bookings.filter((b) => b.villaName === "Olu" && b.status !== "cancelled").length} active reservations
                           </p>
                         </div>
@@ -2030,9 +2029,9 @@ Tranquil Terrace Galle Team`;
                   </div>
 
                   {/* Channel instructions */}
-                  <div className="rounded-xl border border-[#2A2F2C] bg-[#161917] p-4 text-xs text-zinc-400 space-y-2">
-                    <p className="font-semibold text-zinc-300">How to sync with OTAs:</p>
-                    <ol className="list-decimal pl-4 space-y-1 text-[11px] text-zinc-400">
+                  <div className="rounded-xl border border-[#E5DFD3] bg-[#FFFFFF] p-4 text-xs text-[#5A6660] space-y-2">
+                    <p className="font-semibold text-[#183D32]">How to sync with OTAs:</p>
+                    <ol className="list-decimal pl-4 space-y-1 text-[11px] text-[#5A6660]">
                       <li>Export the .ics file for each villa using the buttons above.</li>
                       <li>In Airbnb / Booking.com / Agoda portal, navigate to &quot;Sync Calendar&quot;.</li>
                       <li>Import the respective villa .ics file to block occupied dates immediately.</li>
@@ -2043,13 +2042,13 @@ Tranquil Terrace Galle Team`;
 
               {/* Parsed Events Preview Table */}
               {icsParsedEvents.length > 0 && (
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-4">
                     <div>
-                      <h3 className="font-serif text-lg text-[#F4F1E8]">
+                      <h3 className="font-serif text-lg text-[#183D32]">
                         Parsed Calendar Events ({icsParsedEvents.length})
                       </h3>
-                      <p className="text-xs text-zinc-400">
+                      <p className="text-xs text-[#5A6660]">
                         Review parsed dates and conflict analysis before committing to IndexedDB.
                       </p>
                     </div>
@@ -2059,7 +2058,7 @@ Tranquil Terrace Galle Team`;
                         onClick={() =>
                           setIcsParsedEvents((list) => list.map((item) => ({ ...item, selected: true })))
                         }
-                        className="text-xs text-zinc-400 hover:text-white"
+                        className="text-xs text-[#5A6660] hover:text-[#183D32]"
                       >
                         Select All
                       </button>
@@ -2067,7 +2066,7 @@ Tranquil Terrace Galle Team`;
                         onClick={() =>
                           setIcsParsedEvents((list) => list.map((item) => ({ ...item, selected: false })))
                         }
-                        className="text-xs text-zinc-400 hover:text-white"
+                        className="text-xs text-[#5A6660] hover:text-[#183D32]"
                       >
                         Deselect All
                       </button>
@@ -2084,7 +2083,7 @@ Tranquil Terrace Galle Team`;
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                      <thead className="border-b border-[#E5DFD3] bg-[#FDFBF7] text-[10px] uppercase tracking-wider text-[#5A6660]">
                         <tr>
                           <th className="px-4 py-3">Import</th>
                           <th className="px-4 py-3">Guest / Summary</th>
@@ -2093,13 +2092,13 @@ Tranquil Terrace Galle Team`;
                           <th className="px-4 py-3">Conflict Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                      <tbody className="divide-y divide-[#2A2F2C]/60 text-[#183D32]">
                         {icsParsedEvents.map((item, idx) => {
                           const nights = calculateNights(item.event.checkin, item.event.checkout);
                           const hasConflicts = item.conflicts.length > 0;
 
                           return (
-                            <tr key={idx} className="hover:bg-zinc-800/30">
+                            <tr key={idx} className="hover:bg-[#FAF8F5]">
                               <td className="px-4 py-3">
                                 <input
                                   type="checkbox"
@@ -2110,12 +2109,12 @@ Tranquil Terrace Galle Team`;
                                       list.map((it, i) => (i === idx ? { ...it, selected: checked } : it))
                                     );
                                   }}
-                                  className="rounded border-[#2A2F2C] bg-[#131514] text-[#C8A45D]"
+                                  className="rounded border-[#E5DFD3] bg-[#FDFBF7] text-[#C8A45D]"
                                 />
                               </td>
-                              <td className="px-4 py-3 font-medium text-[#F4F1E8]">
+                              <td className="px-4 py-3 font-medium text-[#183D32]">
                                 {item.event.guestName}
-                                <span className="block text-[11px] text-zinc-500">
+                                <span className="block text-[11px] text-[#7A8882]">
                                   UID: {item.event.reference}
                                 </span>
                               </td>
@@ -2152,56 +2151,56 @@ Tranquil Terrace Galle Team`;
             <div className="space-y-6">
               {/* Financial Summary KPI Cards */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Gross Revenue</span>
-                  <div className="mt-2 font-serif text-3xl font-medium text-[#F4F1E8]">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Total Gross Revenue</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-[#183D32]">
                     {formatMoney(financialSummary.totalRevenueLKR)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">All non-cancelled reservations</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">All non-cancelled reservations</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Collected</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Total Collected</span>
                   <div className="mt-2 font-serif text-3xl font-medium text-emerald-400">
                     {formatMoney(financialSummary.paidRevenueLKR)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Advance payments in hand</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Advance payments in hand</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Outstanding Balances</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Outstanding Balances</span>
                   <div className="mt-2 font-serif text-3xl font-medium text-amber-400">
                     {formatMoney(financialSummary.pendingRevenueLKR)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Due upon guest check-in</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Due upon guest check-in</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Exchange Rate Active</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Exchange Rate Active</span>
                   <div className="mt-2 font-serif text-2xl font-medium text-[#C8A45D]">
                     1 USD = {USD_EXCHANGE_RATE} LKR
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Standard hospitality conversion</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Standard hospitality conversion</p>
                 </div>
               </div>
 
               {/* Pending Balances Settlement Table */}
-              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
-                <div className="border-b border-[#2A2F2C] p-5 flex items-center justify-between">
+              <div className="overflow-hidden rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] shadow-xl">
+                <div className="border-b border-[#E5DFD3] p-5 flex items-center justify-between">
                   <div>
-                    <h3 className="font-serif text-xl text-[#F4F1E8]">Guest Balance & Payment Ledger</h3>
-                    <p className="text-xs text-zinc-400">
+                    <h3 className="font-serif text-xl text-[#183D32]">Guest Balance & Payment Ledger</h3>
+                    <p className="text-xs text-[#5A6660]">
                       Track advance deposits, unpaid bookings, and balance settlement.
                     </p>
                   </div>
-                  <div className="text-xs text-zinc-400">
+                  <div className="text-xs text-[#5A6660]">
                     Showing {bookings.filter((b) => b.status !== "cancelled").length} active bookings
                   </div>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                    <thead className="border-b border-[#E5DFD3] bg-[#FDFBF7] text-[10px] uppercase tracking-wider text-[#5A6660]">
                       <tr>
                         <th className="px-5 py-3">Guest & Ref</th>
                         <th className="px-4 py-3">Stay Dates</th>
@@ -2212,16 +2211,16 @@ Tranquil Terrace Galle Team`;
                         <th className="px-5 py-3 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-[#183D32]">
                       {bookings
                         .filter((b) => b.status !== "cancelled")
                         .map((b) => {
                           const balanceDue = Math.max(0, b.totalAmount - b.paidAmount);
                           return (
-                            <tr key={b.id} className="hover:bg-zinc-800/30">
-                              <td className="px-5 py-3 font-medium text-[#F4F1E8]">
+                            <tr key={b.id} className="hover:bg-[#FAF8F5]">
+                              <td className="px-5 py-3 font-medium text-[#183D32]">
                                 {b.guestName}
-                                <span className="block text-[11px] text-zinc-500">
+                                <span className="block text-[11px] text-[#7A8882]">
                                   Ref: {b.reference} · Villa {b.villaName}
                                 </span>
                               </td>
@@ -2232,18 +2231,18 @@ Tranquil Terrace Galle Team`;
                                 <span
                                   className={`inline-flex rounded-lg border px-2.5 py-0.5 text-[11px] font-semibold ${
                                     b.paymentStatus === "paid"
-                                      ? "border-emerald-500/30 bg-emerald-950/60 text-emerald-300"
+                                      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
                                       : b.paymentStatus === "partial"
-                                      ? "border-amber-500/30 bg-amber-950/60 text-amber-300"
+                                      ? "border-amber-200 bg-amber-50 text-amber-800"
                                       : b.paymentStatus === "refunded"
-                                      ? "border-zinc-700 bg-zinc-800 text-zinc-400"
-                                      : "border-rose-500/30 bg-rose-950/60 text-rose-300"
+                                      ? "border-zinc-700 bg-zinc-800 text-[#5A6660]"
+                                      : "border-rose-200 bg-rose-50 text-rose-800"
                                   }`}
                                 >
                                   {label(b.paymentStatus)}
                                 </span>
                               </td>
-                              <td className="px-4 py-3 font-medium text-[#F4F1E8]">
+                              <td className="px-4 py-3 font-medium text-[#183D32]">
                                 {formatMoney(b.totalAmount)}
                               </td>
                               <td className="px-4 py-3 text-emerald-400 font-medium">
@@ -2252,7 +2251,7 @@ Tranquil Terrace Galle Team`;
                               <td className="px-4 py-3">
                                 <span
                                   className={`font-semibold ${
-                                    balanceDue > 0 ? "text-amber-400" : "text-zinc-500"
+                                    balanceDue > 0 ? "text-amber-400" : "text-[#7A8882]"
                                   }`}
                                 >
                                   {balanceDue > 0 ? formatMoney(balanceDue) : "Cleared"}
@@ -2281,24 +2280,24 @@ Tranquil Terrace Galle Team`;
           {/* ------------------------------------------------------------------- */}
           {activeTab === "guests" && (
             <div className="space-y-6">
-              <div className="overflow-hidden rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] shadow-xl">
+              <div className="overflow-hidden rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] shadow-xl">
                 {/* Search Bar Header */}
-                <div className="flex flex-col gap-4 border-b border-[#2A2F2C] p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 border-b border-[#E5DFD3] p-5 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h2 className="font-serif text-xl text-[#F4F1E8]">Guest Directory & CRM</h2>
-                    <p className="text-xs text-zinc-400">
+                    <h2 className="font-serif text-xl text-[#183D32]">Guest Directory & CRM</h2>
+                    <p className="text-xs text-[#5A6660]">
                       Aggregated guest records with WhatsApp and Email quick actions.
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2">
-                    <Search size={15} className="text-zinc-400" />
+                  <div className="flex items-center gap-2 rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2">
+                    <Search size={15} className="text-[#5A6660]" />
                     <input
                       type="text"
                       placeholder="Search name, phone, email..."
                       value={guestSearchQuery}
                       onChange={(e) => setGuestSearchQuery(e.target.value)}
-                      className="w-56 bg-transparent text-xs text-[#F4F1E8] placeholder-zinc-500 outline-none"
+                      className="w-56 bg-transparent text-xs text-[#183D32] placeholder-zinc-500 outline-none"
                     />
                   </div>
                 </div>
@@ -2306,7 +2305,7 @@ Tranquil Terrace Galle Team`;
                 {/* Guests Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[850px] text-left text-xs">
-                    <thead className="border-b border-[#2A2F2C] bg-[#131514] text-[10px] uppercase tracking-wider text-zinc-400">
+                    <thead className="border-b border-[#E5DFD3] bg-[#FDFBF7] text-[10px] uppercase tracking-wider text-[#5A6660]">
                       <tr>
                         <th className="px-5 py-4">Guest Name</th>
                         <th className="px-4 py-4">Phone / WhatsApp</th>
@@ -2317,10 +2316,10 @@ Tranquil Terrace Galle Team`;
                         <th className="px-5 py-4 text-right">Quick Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#2A2F2C]/60 text-zinc-300">
+                    <tbody className="divide-y divide-[#2A2F2C]/60 text-[#183D32]">
                       {aggregatedGuests.length === 0 ? (
                         <tr>
-                          <td colSpan={7} className="p-16 text-center text-zinc-500">
+                          <td colSpan={7} className="p-16 text-center text-[#7A8882]">
                             <Users className="mx-auto text-zinc-600 mb-2" size={28} />
                             <p className="text-sm font-medium">No guests registered yet.</p>
                           </td>
@@ -2329,19 +2328,19 @@ Tranquil Terrace Galle Team`;
                         aggregatedGuests.map((g) => {
                           const cleanPhone = (g.phone || "").replace(/[^0-9]/g, "");
                           return (
-                            <tr key={g.id} className="hover:bg-zinc-800/30">
-                              <td className="px-5 py-4 font-semibold text-[#F4F1E8]">
+                            <tr key={g.id} className="hover:bg-[#FAF8F5]">
+                              <td className="px-5 py-4 font-semibold text-[#183D32]">
                                 {g.name}
                                 {g.notes && (
-                                  <span className="block text-[11px] font-normal text-zinc-400 mt-0.5">
+                                  <span className="block text-[11px] font-normal text-[#5A6660] mt-0.5">
                                     &ldquo;{g.notes}&rdquo;
                                   </span>
                                 )}
                               </td>
-                              <td className="px-4 py-4 font-mono text-zinc-300">
+                              <td className="px-4 py-4 font-mono text-[#183D32]">
                                 {g.phone || "—"}
                               </td>
-                              <td className="px-4 py-4 text-zinc-300">
+                              <td className="px-4 py-4 text-[#183D32]">
                                 {g.email || "—"}
                               </td>
                               <td className="px-4 py-4 font-medium">
@@ -2352,7 +2351,7 @@ Tranquil Terrace Galle Team`;
                               <td className="px-4 py-4 font-serif text-sm font-medium text-[#C8A45D]">
                                 {formatMoney(g.totalSpentLKR)}
                               </td>
-                              <td className="px-4 py-4 text-zinc-400">
+                              <td className="px-4 py-4 text-[#5A6660]">
                                 {g.lastStay ? formatDateDisplay(g.lastStay) : "—"}
                               </td>
                               <td className="px-5 py-4 text-right">
@@ -2391,7 +2390,7 @@ Tranquil Terrace Galle Team`;
                                       setEditingGuestNotes(g);
                                       setGuestNotesInput(g.notes || "");
                                     }}
-                                    className="rounded-lg border border-[#2A2F2C] p-1.5 text-zinc-400 hover:text-white"
+                                    className="rounded-lg border border-[#E5DFD3] p-1.5 text-[#5A6660] hover:text-[#183D32]"
                                     title="Add or edit notes"
                                   >
                                     <FileText size={14} />
@@ -2416,49 +2415,49 @@ Tranquil Terrace Galle Team`;
             <div className="space-y-6">
               {/* Analytics Metric Cards */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Total Bookings</span>
-                  <div className="mt-2 font-serif text-3xl font-medium text-[#F4F1E8]">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Total Bookings</span>
+                  <div className="mt-2 font-serif text-3xl font-medium text-[#183D32]">
                     {analyticsData.total}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">
+                  <p className="mt-2 text-[11px] text-[#7A8882]">
                     {analyticsData.confirmed} confirmed stays
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Cancellation Rate</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Cancellation Rate</span>
                   <div className="mt-2 font-serif text-3xl font-medium text-rose-400">
                     {analyticsData.cancelRate}%
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">
+                  <p className="mt-2 text-[11px] text-[#7A8882]">
                     {analyticsData.cancelled} cancelled of {analyticsData.total}
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Average Daily Rate (ADR)</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Average Daily Rate (ADR)</span>
                   <div className="mt-2 font-serif text-3xl font-medium text-[#C8A45D]">
                     {formatMoney(analyticsData.adrLkr)}
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Per occupied villa night</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Per occupied villa night</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-5">
-                  <span className="text-xs uppercase tracking-wider text-zinc-400">Avg. Length of Stay</span>
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-5">
+                  <span className="text-xs uppercase tracking-wider text-[#5A6660]">Avg. Length of Stay</span>
                   <div className="mt-2 font-serif text-3xl font-medium text-indigo-400">
                     {analyticsData.avgStay} nights
                   </div>
-                  <p className="mt-2 text-[11px] text-zinc-500">Total {analyticsData.totalNights} nights</p>
+                  <p className="mt-2 text-[11px] text-[#7A8882]">Total {analyticsData.totalNights} nights</p>
                 </div>
               </div>
 
               {/* Monthly Revenue Bar Chart (Custom Luxury Visualization) */}
-              <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl">
-                <div className="border-b border-[#2A2F2C] pb-4 flex items-center justify-between">
+              <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl">
+                <div className="border-b border-[#E5DFD3] pb-4 flex items-center justify-between">
                   <div>
-                    <h3 className="font-serif text-xl text-[#F4F1E8]">Monthly Revenue Performance</h3>
-                    <p className="text-xs text-zinc-400">
+                    <h3 className="font-serif text-xl text-[#183D32]">Monthly Revenue Performance</h3>
+                    <p className="text-xs text-[#5A6660]">
                       Revenue and booked nights breakdown over the last 6 months.
                     </p>
                   </div>
@@ -2469,7 +2468,7 @@ Tranquil Terrace Galle Team`;
                   {analyticsData.monthlyTrends.map((m, idx) => {
                     const heightPercent = Math.max(12, Math.round((m.revenue / analyticsData.maxMonthlyRevenue) * 100));
                     return (
-                      <div key={idx} className="flex flex-col items-center justify-end h-64 p-3 rounded-xl bg-[#131514] border border-[#2A2F2C]">
+                      <div key={idx} className="flex flex-col items-center justify-end h-64 p-3 rounded-xl bg-[#FDFBF7] border border-[#E5DFD3]">
                         <span className="text-[11px] font-semibold text-[#C8A45D] mb-1">
                           {formatMoney(m.revenue)}
                         </span>
@@ -2479,8 +2478,8 @@ Tranquil Terrace Galle Team`;
                             className="w-12 rounded-t-lg bg-gradient-to-t from-[#B38F46] to-[#DFBF7A] transition-all duration-500 shadow-md"
                           />
                         </div>
-                        <span className="mt-3 text-xs font-medium text-zinc-300">{m.label}</span>
-                        <span className="text-[10px] text-zinc-500">{m.nights} nights</span>
+                        <span className="mt-3 text-xs font-medium text-[#183D32]">{m.label}</span>
+                        <span className="text-[10px] text-[#7A8882]">{m.nights} nights</span>
                       </div>
                     );
                   })}
@@ -2490,9 +2489,9 @@ Tranquil Terrace Galle Team`;
               {/* 2-Column: Villa Occupancy & Booking Sources */}
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Villa Comparison */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <h3 className="font-serif text-lg text-[#F4F1E8]">Villa Occupancy Comparison</h3>
-                  <p className="text-xs text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <h3 className="font-serif text-lg text-[#183D32]">Villa Occupancy Comparison</h3>
+                  <p className="text-xs text-[#5A6660]">
                     Comparative booked nights and revenue split between properties.
                   </p>
 
@@ -2500,8 +2499,8 @@ Tranquil Terrace Galle Team`;
                     {/* Araliya */}
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1.5">
-                        <span className="font-medium text-[#F4F1E8]">Villa Araliya</span>
-                        <span className="text-zinc-400">
+                        <span className="font-medium text-[#183D32]">Villa Araliya</span>
+                        <span className="text-[#5A6660]">
                           {analyticsData.araliyaNights} nights · {formatMoney(analyticsData.araliyaRevenue)}
                         </span>
                       </div>
@@ -2522,8 +2521,8 @@ Tranquil Terrace Galle Team`;
                     {/* Olu */}
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1.5">
-                        <span className="font-medium text-[#F4F1E8]">Villa Olu</span>
-                        <span className="text-zinc-400">
+                        <span className="font-medium text-[#183D32]">Villa Olu</span>
+                        <span className="text-[#5A6660]">
                           {analyticsData.oluNights} nights · {formatMoney(analyticsData.oluRevenue)}
                         </span>
                       </div>
@@ -2544,9 +2543,9 @@ Tranquil Terrace Galle Team`;
                 </div>
 
                 {/* Booking Sources */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <h3 className="font-serif text-lg text-[#F4F1E8]">Booking Channel Distribution</h3>
-                  <p className="text-xs text-zinc-400">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <h3 className="font-serif text-lg text-[#183D32]">Booking Channel Distribution</h3>
+                  <p className="text-xs text-[#5A6660]">
                     Distribution of reservations across websites, OTAs, and direct channels.
                   </p>
 
@@ -2556,8 +2555,8 @@ Tranquil Terrace Galle Team`;
                       return (
                         <div key={src}>
                           <div className="flex items-center justify-between text-xs mb-1">
-                            <span className="text-zinc-300 font-medium">{src}</span>
-                            <span className="text-zinc-400">
+                            <span className="text-[#183D32] font-medium">{src}</span>
+                            <span className="text-[#5A6660]">
                               {count} bookings ({pct}%)
                             </span>
                           </div>
@@ -2582,13 +2581,13 @@ Tranquil Terrace Galle Team`;
           {activeTab === "backup" && (
             <div className="space-y-6">
               {/* Storage Diagnostic Card */}
-              <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl">
-                <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+              <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-4">
                   <div>
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                       Database Health
                     </span>
-                    <h3 className="font-serif text-xl text-[#F4F1E8]">Local Storage Engine Diagnostics</h3>
+                    <h3 className="font-serif text-xl text-[#183D32]">Local Storage Engine Diagnostics</h3>
                   </div>
                   <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/40 px-3 py-1 text-xs text-emerald-300">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -2597,16 +2596,16 @@ Tranquil Terrace Galle Team`;
                 </div>
 
                 <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
-                    <p className="text-xs text-zinc-400">Stored Reservations</p>
-                    <p className="mt-1 font-serif text-2xl font-medium text-[#F4F1E8]">{bookings.length}</p>
+                  <div className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-4">
+                    <p className="text-xs text-[#5A6660]">Stored Reservations</p>
+                    <p className="mt-1 font-serif text-2xl font-medium text-[#183D32]">{bookings.length}</p>
                   </div>
-                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
-                    <p className="text-xs text-zinc-400">Stored Guests</p>
-                    <p className="mt-1 font-serif text-2xl font-medium text-[#F4F1E8]">{aggregatedGuests.length}</p>
+                  <div className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-4">
+                    <p className="text-xs text-[#5A6660]">Stored Guests</p>
+                    <p className="mt-1 font-serif text-2xl font-medium text-[#183D32]">{aggregatedGuests.length}</p>
                   </div>
-                  <div className="rounded-xl border border-[#2A2F2C] bg-[#131514] p-4">
-                    <p className="text-xs text-zinc-400">Active Conflicts</p>
+                  <div className="rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-4">
+                    <p className="text-xs text-[#5A6660]">Active Conflicts</p>
                     <p className={`mt-1 font-serif text-2xl font-medium ${systemConflicts.length > 0 ? "text-rose-400" : "text-emerald-400"}`}>
                       {systemConflicts.length}
                     </p>
@@ -2617,10 +2616,10 @@ Tranquil Terrace Galle Team`;
               {/* Backup Actions Grid */}
               <div className="grid gap-6 lg:grid-cols-2">
                 {/* Export Card */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <div className="border-b border-[#2A2F2C] pb-4">
-                    <h3 className="font-serif text-lg text-[#F4F1E8]">Export Complete Data Backup</h3>
-                    <p className="text-xs text-zinc-400 mt-1">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#E5DFD3] pb-4">
+                    <h3 className="font-serif text-lg text-[#183D32]">Export Complete Data Backup</h3>
+                    <p className="text-xs text-[#5A6660] mt-1">
                       Download full database state into JSON format for secure offline safekeeping or CSV for spreadsheet accounting.
                     </p>
                   </div>
@@ -2638,7 +2637,7 @@ Tranquil Terrace Galle Team`;
 
                     <button
                       onClick={handleExportCsv}
-                      className="flex w-full items-center justify-between rounded-xl border border-[#2A2F2C] bg-[#131514] px-4 py-3 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+                      className="flex w-full items-center justify-between rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-4 py-3 text-xs font-semibold text-[#183D32] hover:text-[#183D32] transition-colors"
                     >
                       <span className="flex items-center gap-2">
                         <FileSpreadsheet size={16} /> Export Bookings CSV (.csv)
@@ -2649,10 +2648,10 @@ Tranquil Terrace Galle Team`;
                 </div>
 
                 {/* Restore Card */}
-                <div className="rounded-2xl border border-[#2A2F2C] bg-[#1A1D1B] p-6 shadow-xl space-y-4">
-                  <div className="border-b border-[#2A2F2C] pb-4">
-                    <h3 className="font-serif text-lg text-[#F4F1E8]">Restore Database from JSON</h3>
-                    <p className="text-xs text-zinc-400 mt-1">
+                <div className="rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-xl space-y-4">
+                  <div className="border-b border-[#E5DFD3] pb-4">
+                    <h3 className="font-serif text-lg text-[#183D32]">Restore Database from JSON</h3>
+                    <p className="text-xs text-[#5A6660] mt-1">
                       Load a previously exported Tranquil Terrace JSON backup with full schema validation.
                     </p>
                   </div>
@@ -2662,7 +2661,7 @@ Tranquil Terrace Galle Team`;
                       type="file"
                       accept=".json,application/json"
                       onChange={handleSelectBackupFile}
-                      className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-2 text-xs text-zinc-400 file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
+                      className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-2 text-xs text-[#5A6660] file:mr-3 file:rounded-lg file:border-0 file:bg-[#C8A45D]/15 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#C8A45D]"
                     />
 
                     {backupValidation && (
@@ -2674,7 +2673,7 @@ Tranquil Terrace Galle Team`;
                         {backupValidation.valid ? (
                           <div className="space-y-2">
                             <p className="font-semibold text-emerald-300">✓ Valid Tranquil Terrace Backup</p>
-                            <p className="text-[11px] text-zinc-400">
+                            <p className="text-[11px] text-[#5A6660]">
                               Contains {backupValidation.data.bookings.length} reservations and {backupValidation.data.guests.length} guest records.
                             </p>
                             <div className="flex gap-4 pt-1">
@@ -2719,9 +2718,9 @@ Tranquil Terrace Galle Team`;
               {/* Danger Zone: Reset to Factory Demo */}
               <div className="rounded-2xl border border-rose-900/30 bg-rose-950/10 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h4 className="text-sm font-semibold text-rose-300">Reset to Factory Demo Records</h4>
+                  <h4 className="text-sm font-semibold text-rose-300">Clear All Reservation & Guest Records</h4>
                   <p className="text-xs text-rose-200/70 mt-0.5">
-                    Clear all custom entries and restore the initial 3 demonstration reservations.
+                    Permanently wipe all demo and test bookings to start with a fresh, empty production database.
                   </p>
                 </div>
                 <button
@@ -2741,29 +2740,29 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       {bookingModalOpen && (
         <div
-          className="fixed inset-0 z-[80] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[80] grid place-items-center bg-black/45 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setBookingModalOpen(false);
           }}
         >
           <form
             onSubmit={handleSaveBooking}
-            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-5"
+            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-2xl space-y-5"
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-4">
+            <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-4">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                   {editingBooking ? `Reference: ${editingBooking.reference}` : "New Reservation"}
                 </span>
-                <h3 className="font-serif text-2xl text-[#F4F1E8]">
+                <h3 className="font-serif text-2xl text-[#183D32]">
                   {editingBooking ? "Edit Reservation" : "Add Villa Reservation"}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setBookingModalOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0]"
               >
                 <X size={18} />
               </button>
@@ -2791,7 +2790,7 @@ Tranquil Terrace Galle Team`;
             {/* Form Fields Grid */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Guest Name *
                 </label>
                 <input
@@ -2800,12 +2799,12 @@ Tranquil Terrace Galle Team`;
                   placeholder="e.g. Sarah & Daniel"
                   value={bookingForm.guestName}
                   onChange={(e) => setBookingForm({ ...bookingForm, guestName: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none focus:border-[#C8A45D]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Phone / WhatsApp *
                 </label>
                 <input
@@ -2814,12 +2813,12 @@ Tranquil Terrace Galle Team`;
                   placeholder="+44 7700 900123"
                   value={bookingForm.phone}
                   onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none focus:border-[#C8A45D]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Email Address
                 </label>
                 <input
@@ -2827,18 +2826,18 @@ Tranquil Terrace Galle Team`;
                   placeholder="guest@example.com"
                   value={bookingForm.email}
                   onChange={(e) => setBookingForm({ ...bookingForm, email: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none focus:border-[#C8A45D]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Target Villa *
                 </label>
                 <select
                   value={bookingForm.villaName}
                   onChange={(e) => setBookingForm({ ...bookingForm, villaName: e.target.value as VillaName })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 >
                   <option value="Araliya">Villa Araliya (Courtyard & Pool)</option>
                   <option value="Olu">Villa Olu (Tropical Veranda)</option>
@@ -2847,7 +2846,7 @@ Tranquil Terrace Galle Team`;
 
               {/* Checkin & Checkout */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Check-in Date *
                 </label>
                 <input
@@ -2862,12 +2861,12 @@ Tranquil Terrace Galle Team`;
                     }
                     setBookingForm({ ...bookingForm, checkin: newIn, checkout: newOut });
                   }}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none focus:border-[#C8A45D]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Check-out Date *
                 </label>
                 <input
@@ -2876,12 +2875,12 @@ Tranquil Terrace Galle Team`;
                   min={bookingForm.checkin ? addDaysToDate(bookingForm.checkin, 1) : undefined}
                   value={bookingForm.checkout}
                   onChange={(e) => setBookingForm({ ...bookingForm, checkout: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none focus:border-[#C8A45D]"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none focus:border-[#C8A45D]"
                 />
               </div>
 
               {/* Calculated Nights Display */}
-              <div className="sm:col-span-2 text-xs text-zinc-400 bg-[#131514] p-3 rounded-xl border border-[#2A2F2C] flex items-center justify-between">
+              <div className="sm:col-span-2 text-xs text-[#5A6660] bg-[#FDFBF7] p-3 rounded-xl border border-[#E5DFD3] flex items-center justify-between">
                 <span>
                   Stay Duration:{" "}
                   <strong className="text-[#C8A45D]">
@@ -2894,13 +2893,13 @@ Tranquil Terrace Galle Team`;
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Number of Guests
                 </label>
                 <select
                   value={bookingForm.guests}
                   onChange={(e) => setBookingForm({ ...bookingForm, guests: Number(e.target.value) })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 >
                   <option value={1}>1 Guest</option>
                   <option value={2}>2 Guests (Standard)</option>
@@ -2909,13 +2908,13 @@ Tranquil Terrace Galle Team`;
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Booking Source
                 </label>
                 <select
                   value={bookingForm.source}
                   onChange={(e) => setBookingForm({ ...bookingForm, source: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 >
                   <option value="website">Website Direct</option>
                   <option value="WhatsApp">WhatsApp</option>
@@ -2927,13 +2926,13 @@ Tranquil Terrace Galle Team`;
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Reservation Status
                 </label>
                 <select
                   value={bookingForm.status}
                   onChange={(e) => setBookingForm({ ...bookingForm, status: e.target.value as BookingStatus })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 >
                   {bookingStatuses.map((s) => (
                     <option key={s} value={s}>
@@ -2944,13 +2943,13 @@ Tranquil Terrace Galle Team`;
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Payment Status
                 </label>
                 <select
                   value={bookingForm.paymentStatus}
                   onChange={(e) => setBookingForm({ ...bookingForm, paymentStatus: e.target.value as PaymentStatus })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 >
                   {paymentStatuses.map((s) => (
                     <option key={s} value={s}>
@@ -2962,7 +2961,7 @@ Tranquil Terrace Galle Team`;
 
               {/* Financials in Form */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Total Amount (LKR) *
                 </label>
                 <input
@@ -2971,12 +2970,12 @@ Tranquil Terrace Galle Team`;
                   step="500"
                   value={bookingForm.totalAmount}
                   onChange={(e) => setBookingForm({ ...bookingForm, totalAmount: Number(e.target.value) })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Advance Paid Amount (LKR)
                 </label>
                 <input
@@ -2985,13 +2984,13 @@ Tranquil Terrace Galle Team`;
                   step="500"
                   value={bookingForm.paidAmount}
                   onChange={(e) => setBookingForm({ ...bookingForm, paidAmount: Number(e.target.value) })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
                 />
               </div>
 
               {/* Notes */}
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Special Guest Requests
                 </label>
                 <textarea
@@ -2999,12 +2998,12 @@ Tranquil Terrace Galle Team`;
                   placeholder="e.g. Airport pickup, anniversary cake, floating breakfast"
                   value={bookingForm.specialRequest}
                   onChange={(e) => setBookingForm({ ...bookingForm, specialRequest: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-3 text-xs text-[#183D32] outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                   Private Admin Notes
                 </label>
                 <textarea
@@ -3012,17 +3011,17 @@ Tranquil Terrace Galle Team`;
                   placeholder="Staff instructions or internal notes"
                   value={bookingForm.adminNotes}
                   onChange={(e) => setBookingForm({ ...bookingForm, adminNotes: e.target.value })}
-                  className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+                  className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-3 text-xs text-[#183D32] outline-none"
                 />
               </div>
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2A2F2C]">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5DFD3]">
               <button
                 type="button"
                 onClick={() => setBookingModalOpen(false)}
-                className="rounded-xl border border-[#2A2F2C] px-4 py-2.5 text-xs font-semibold text-zinc-400 hover:text-white"
+                className="rounded-xl border border-[#E5DFD3] px-4 py-2.5 text-xs font-semibold text-[#5A6660] hover:text-[#183D32]"
               >
                 Cancel
               </button>
@@ -3049,10 +3048,10 @@ Tranquil Terrace Galle Team`;
             if (e.target === e.currentTarget) setInvoiceModalBooking(null);
           }}
         >
-          <div className="my-8 w-full max-w-3xl rounded-2xl border border-[#2A2F2C] bg-white text-zinc-900 shadow-2xl p-8 sm:p-10 invoice-printable">
+          <div className="my-8 w-full max-w-3xl rounded-2xl border border-[#E5DFD3] bg-white text-zinc-900 shadow-2xl p-8 sm:p-10 invoice-printable">
             {/* Modal Top Actions (Hidden in Print) */}
             <div className="no-print mb-6 flex items-center justify-between border-b border-zinc-200 pb-4">
-              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#7A8882] uppercase tracking-wider">
                 Luxury Printable Invoice
               </span>
               <div className="flex items-center gap-3">
@@ -3064,7 +3063,7 @@ Tranquil Terrace Galle Team`;
                 </button>
                 <button
                   onClick={() => setInvoiceModalBooking(null)}
-                  className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100"
+                  className="rounded-lg p-2 text-[#7A8882] hover:bg-zinc-100"
                 >
                   <X size={18} />
                 </button>
@@ -3101,10 +3100,10 @@ Tranquil Terrace Galle Team`;
                 <p className="mt-2 font-mono text-sm font-semibold text-zinc-900">
                   INV-{invoiceModalBooking.reference}
                 </p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[#7A8882]">
                   Date: {formatDateDisplay(getTodayIsoDate(), { monthFormat: "short" })}
                 </p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[#7A8882]">
                   Status: <strong className="uppercase text-emerald-800">{invoiceModalBooking.paymentStatus}</strong>
                 </p>
               </div>
@@ -3113,7 +3112,7 @@ Tranquil Terrace Galle Team`;
             {/* Bill To & Stay Details Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6 border-b border-zinc-200 text-xs">
               <div>
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#5A6660]">
                   Billed To (Guest)
                 </h4>
                 <p className="mt-1 font-serif text-lg font-bold text-zinc-900">
@@ -3124,7 +3123,7 @@ Tranquil Terrace Galle Team`;
               </div>
 
               <div>
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#5A6660]">
                   Reservation Details
                 </h4>
                 <p className="mt-1 text-sm font-semibold text-zinc-900">
@@ -3153,7 +3152,7 @@ Tranquil Terrace Galle Team`;
             <div className="py-6">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-zinc-300 text-zinc-500 uppercase tracking-wider text-[10px]">
+                  <tr className="border-b border-zinc-300 text-[#7A8882] uppercase tracking-wider text-[10px]">
                     <th className="py-2.5">Description</th>
                     <th className="py-2.5 text-center">Nights</th>
                     <th className="py-2.5 text-right">Rate</th>
@@ -3166,7 +3165,7 @@ Tranquil Terrace Galle Team`;
                       <p className="font-semibold text-zinc-900">
                         Villa {invoiceModalBooking.villaName} - Exclusive Stay
                       </p>
-                      <p className="text-[11px] text-zinc-500">
+                      <p className="text-[11px] text-[#7A8882]">
                         Includes complimentary welcome refreshment, Wi-Fi, housekeeping, and pool access.
                       </p>
                     </td>
@@ -3215,7 +3214,7 @@ Tranquil Terrace Galle Team`;
                 <p><strong>Account Number:</strong> 1000 8923 4410</p>
                 <p><strong>Branch / SWIFT:</strong> Galle Fort (CCEYLKLX)</p>
               </div>
-              <p className="text-[10px] text-zinc-500 pt-2 border-t border-zinc-200">
+              <p className="text-[10px] text-[#7A8882] pt-2 border-t border-zinc-200">
                 Please quote reference <strong>{invoiceModalBooking.reference}</strong> when completing payments. Thank you for choosing Tranquil Terrace Galle!
               </p>
             </div>
@@ -3228,31 +3227,31 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       {messageModalBooking && (
         <div
-          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[85] grid place-items-center bg-black/45 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setMessageModalBooking(null);
           }}
         >
-          <div className="w-full max-w-xl rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+          <div className="w-full max-w-xl rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-3">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                   Message Generator
                 </span>
-                <h3 className="font-serif text-xl text-[#F4F1E8]">
+                <h3 className="font-serif text-xl text-[#183D32]">
                   WhatsApp & Email Templates
                 </h3>
               </div>
               <button
                 onClick={() => setMessageModalBooking(null)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0]"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Template Selector Tabs */}
-            <div className="flex items-center rounded-xl border border-[#2A2F2C] bg-[#131514] p-1">
+            <div className="flex items-center rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-1">
               {[
                 { id: "confirmation", label: "Booking Confirmation" },
                 { id: "reminder", label: "Payment Reminder" },
@@ -3267,7 +3266,7 @@ Tranquil Terrace Galle Team`;
                   className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
                     messageTemplateType === t.id
                       ? "bg-[#C8A45D] text-[#131514] shadow"
-                      : "text-zinc-400 hover:text-zinc-200"
+                      : "text-[#5A6660] hover:text-[#183D32]"
                   }`}
                 >
                   {t.label}
@@ -3277,22 +3276,22 @@ Tranquil Terrace Galle Team`;
 
             {/* Live Message Preview / Editor */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+              <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                 Editable Message Content
               </label>
               <textarea
                 rows={12}
                 value={customMessageBody}
                 onChange={(e) => setCustomMessageBody(e.target.value)}
-                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3.5 text-xs text-[#F4F1E8] font-mono leading-relaxed outline-none"
+                className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-3.5 text-xs text-[#183D32] font-mono leading-relaxed outline-none"
               />
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#2A2F2C]">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#E5DFD3]">
               <button
                 onClick={handleCopyMessage}
-                className="flex items-center gap-1.5 rounded-xl border border-[#2A2F2C] bg-[#131514] px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:text-white"
+                className="flex items-center gap-1.5 rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-4 py-2.5 text-xs font-semibold text-[#183D32] hover:text-[#183D32]"
               >
                 {copiedNotice ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 {copiedNotice ? "Copied!" : "Copy Text"}
@@ -3327,28 +3326,28 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       {paymentModalBooking && (
         <div
-          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[85] grid place-items-center bg-black/45 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setPaymentModalBooking(null);
           }}
         >
-          <div className="w-full max-w-md rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+          <div className="w-full max-w-md rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-3">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                   Payment Ledger
                 </span>
-                <h3 className="font-serif text-xl text-[#F4F1E8]">Record Guest Payment</h3>
+                <h3 className="font-serif text-xl text-[#183D32]">Record Guest Payment</h3>
               </div>
               <button
                 onClick={() => setPaymentModalBooking(null)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0]"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="rounded-xl bg-[#131514] p-3 text-xs text-zinc-400 space-y-1">
+            <div className="rounded-xl bg-[#FDFBF7] p-3 text-xs text-[#5A6660] space-y-1">
               <p>
                 Guest: <strong className="text-white">{paymentModalBooking.guestName}</strong>
               </p>
@@ -3361,7 +3360,7 @@ Tranquil Terrace Galle Team`;
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+              <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                 Paid Amount to Date (LKR)
               </label>
               <input
@@ -3380,21 +3379,21 @@ Tranquil Terrace Galle Team`;
                     setPaymentStatusInput("unpaid");
                   }
                 }}
-                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
               />
-              <p className="mt-1 text-[11px] text-zinc-500">
+              <p className="mt-1 text-[11px] text-[#7A8882]">
                 Remaining Balance: {formatMoney(Math.max(0, paymentModalBooking.totalAmount - paymentAmountInput))}
               </p>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+              <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                 Payment Status
               </label>
               <select
                 value={paymentStatusInput}
                 onChange={(e) => setPaymentStatusInput(e.target.value as PaymentStatus)}
-                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] px-3.5 py-2 text-xs text-[#F4F1E8] outline-none"
+                className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] px-3.5 py-2 text-xs text-[#183D32] outline-none"
               >
                 {paymentStatuses.map((s) => (
                   <option key={s} value={s}>
@@ -3404,10 +3403,10 @@ Tranquil Terrace Galle Team`;
               </select>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#2A2F2C]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#E5DFD3]">
               <button
                 onClick={() => setPaymentModalBooking(null)}
-                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400"
+                className="rounded-xl border border-[#E5DFD3] px-4 py-2 text-xs text-[#5A6660]"
               >
                 Cancel
               </button>
@@ -3427,29 +3426,29 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       {editingGuestNotes && (
         <div
-          className="fixed inset-0 z-[85] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[85] grid place-items-center bg-black/45 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setEditingGuestNotes(null);
           }}
         >
-          <div className="w-full max-w-md rounded-2xl border border-[#2A2F2C] bg-[#161917] p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2A2F2C] pb-3">
+          <div className="w-full max-w-md rounded-2xl border border-[#E5DFD3] bg-[#FFFFFF] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E5DFD3] pb-3">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-[#C8A45D]">
                   Guest Preferences
                 </span>
-                <h3 className="font-serif text-xl text-[#F4F1E8]">{editingGuestNotes.name}</h3>
+                <h3 className="font-serif text-xl text-[#183D32]">{editingGuestNotes.name}</h3>
               </div>
               <button
                 onClick={() => setEditingGuestNotes(null)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-800"
+                className="rounded-lg p-1.5 text-[#5A6660] hover:bg-[#F8F6F0]"
               >
                 <X size={18} />
               </button>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+              <label className="block text-[11px] font-semibold text-[#5A6660] mb-1">
                 Guest Notes & VIP Preferences
               </label>
               <textarea
@@ -3457,14 +3456,14 @@ Tranquil Terrace Galle Team`;
                 value={guestNotesInput}
                 onChange={(e) => setGuestNotesInput(e.target.value)}
                 placeholder="e.g. Likes extra towels, vegetarian breakfast, quiet suite"
-                className="w-full rounded-xl border border-[#2A2F2C] bg-[#131514] p-3 text-xs text-[#F4F1E8] outline-none"
+                className="w-full rounded-xl border border-[#E5DFD3] bg-[#FDFBF7] p-3 text-xs text-[#183D32] outline-none"
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-[#2A2F2C]">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#E5DFD3]">
               <button
                 onClick={() => setEditingGuestNotes(null)}
-                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400"
+                className="rounded-xl border border-[#E5DFD3] px-4 py-2 text-xs text-[#5A6660]"
               >
                 Cancel
               </button>
@@ -3498,23 +3497,23 @@ Tranquil Terrace Galle Team`;
       {/* ----------------------------------------------------------------------- */}
       {deleteConfirmId && (
         <div
-          className="fixed inset-0 z-[95] grid place-items-center bg-[#070908]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[95] grid place-items-center bg-black/45 p-4 backdrop-blur-sm"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setDeleteConfirmId(null);
           }}
         >
-          <div className="w-full max-w-sm rounded-2xl border border-rose-900/40 bg-[#161917] p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-sm rounded-2xl border border-rose-900/40 bg-[#FFFFFF] p-6 shadow-2xl space-y-4">
             <div className="flex items-center gap-3 text-rose-400">
               <AlertTriangle size={24} />
               <h3 className="font-serif text-lg font-bold">Delete Reservation?</h3>
             </div>
-            <p className="text-xs text-zinc-300">
+            <p className="text-xs text-[#183D32]">
               Are you sure you want to delete this reservation from local storage? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="rounded-xl border border-[#2A2F2C] px-4 py-2 text-xs text-zinc-400 hover:text-white"
+                className="rounded-xl border border-[#E5DFD3] px-4 py-2 text-xs text-[#5A6660] hover:text-[#183D32]"
               >
                 Cancel
               </button>

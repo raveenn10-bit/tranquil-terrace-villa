@@ -30,119 +30,40 @@ const STORES = {
 } as const;
 
 /**
- * Initial demo bookings seeded ONLY if the database store is completely empty.
+ * Initial demo bookings - set to empty for a clean production database.
  */
-export const initialDemoBookings: BookingRecord[] = [
-  {
-    id: "demo-1",
-    reference: "TTG-2410-A18F",
-    guestName: "Sarah & Daniel",
-    email: "sarah@example.com",
-    phone: "+44 7700 900123",
-    villaName: "Araliya",
-    checkin: "2026-10-24",
-    checkout: "2026-10-27",
-    guests: 2,
-    source: "website",
-    status: "confirmed",
-    paymentStatus: "partial",
-    totalAmount: 75000,
-    paidAmount: 37500,
-    specialRequest: "Airport pickup information, please.",
-    adminNotes: "Arrival around 3.30 PM.",
-    packageId: "night-package",
-    timingOption: "",
-    createdAt: "2026-10-18 10:30:00",
-    updatedAt: "2026-10-21 08:15:00",
-  },
-  {
-    id: "demo-2",
-    reference: "TTG-2810-C92B",
-    guestName: "Nimal Perera",
-    email: "nimal@example.com",
-    phone: "+94 77 123 4567",
-    villaName: "Olu",
-    checkin: "2026-10-28",
-    checkout: "2026-10-30",
-    guests: 2,
-    source: "WhatsApp",
-    status: "pending",
-    paymentStatus: "unpaid",
-    totalAmount: 50000,
-    paidAmount: 0,
-    specialRequest: "Floating breakfast availability?",
-    adminNotes: "Follow up this evening.",
-    packageId: "day-night-package",
-    timingOption: "A",
-    createdAt: "2026-10-21 13:10:00",
-    updatedAt: "2026-10-21 13:10:00",
-  },
-  {
-    id: "demo-3",
-    reference: "TTG-0211-F71D",
-    guestName: "Maya Chen",
-    email: "maya@example.com",
-    phone: "+65 8123 4567",
-    villaName: "Araliya",
-    checkin: "2026-11-02",
-    checkout: "2026-11-06",
-    guests: 2,
-    source: "Airbnb",
-    status: "inquiry",
-    paymentStatus: "unpaid",
-    totalAmount: 100000,
-    paidAmount: 0,
-    specialRequest: "Late check-in after 8 PM.",
-    adminNotes: "",
-    createdAt: "2026-10-22 09:00:00",
-    updatedAt: "2026-10-22 09:00:00",
-  },
-];
+export const initialDemoBookings: BookingRecord[] = [];
 
 /**
- * Initial demo guests seeded ONLY if the database store is completely empty.
+ * Initial demo guests - set to empty for a clean production database.
  */
-export const initialDemoGuests: GuestRecord[] = [
-  {
-    id: "guest-sarah-daniel",
-    name: "Sarah & Daniel",
-    email: "sarah@example.com",
-    phone: "+44 7700 900123",
-    country: "United Kingdom",
-    totalBookings: 1,
-    totalSpentLKR: 75000,
-    notes: "Prefers quiet courtyard and extra towels.",
-    lastStay: "2026-10-24",
-    createdAt: "2026-10-18 10:30:00",
-    updatedAt: "2026-10-21 08:15:00",
-  },
-  {
-    id: "guest-nimal-perera",
-    name: "Nimal Perera",
-    email: "nimal@example.com",
-    phone: "+94 77 123 4567",
-    country: "Sri Lanka",
-    totalBookings: 1,
-    totalSpentLKR: 50000,
-    notes: "Local weekend getaway guest.",
-    lastStay: "2026-10-28",
-    createdAt: "2026-10-21 13:10:00",
-    updatedAt: "2026-10-21 13:10:00",
-  },
-  {
-    id: "guest-maya-chen",
-    name: "Maya Chen",
-    email: "maya@example.com",
-    phone: "+65 8123 4567",
-    country: "Singapore",
-    totalBookings: 1,
-    totalSpentLKR: 100000,
-    notes: "Photography and architectural enthusiast.",
-    lastStay: "2026-11-02",
-    createdAt: "2026-10-22 09:00:00",
-    updatedAt: "2026-10-22 09:00:00",
-  },
-];
+export const initialDemoGuests: GuestRecord[] = [];
+
+export function isDemoBooking(b: BookingRecord): boolean {
+  if (!b) return false;
+  return (
+    (typeof b.id === "string" && b.id.startsWith("demo-")) ||
+    (typeof b.reference === "string" && (
+      b.reference.startsWith("TTG-2410-A18F") ||
+      b.reference.startsWith("TTG-2810-C92B") ||
+      b.reference.startsWith("TTG-0211-F71D")
+    )) ||
+    (typeof b.email === "string" && b.email.toLowerCase().includes("example.com"))
+  );
+}
+
+export function isDemoGuest(g: GuestRecord): boolean {
+  if (!g) return false;
+  return (
+    (typeof g.id === "string" && (
+      g.id.startsWith("guest-sarah") ||
+      g.id.startsWith("guest-nimal") ||
+      g.id.startsWith("guest-maya") ||
+      g.id.startsWith("demo-")
+    )) ||
+    (typeof g.email === "string" && g.email.toLowerCase().includes("example.com"))
+  );
+}
 
 export const defaultSettings: Record<string, any> = {
   rates: {
@@ -177,18 +98,10 @@ declare global {
 function getMemoryStorage() {
   if (!globalThis.__tt_memory_bookings) {
     globalThis.__tt_memory_bookings = new Map();
-    // Seed initial bookings
-    for (const b of initialDemoBookings) {
-      globalThis.__tt_memory_bookings.set(b.id, { ...b });
-    }
   }
 
   if (!globalThis.__tt_memory_guests) {
     globalThis.__tt_memory_guests = new Map();
-    // Seed initial guests
-    for (const g of initialDemoGuests) {
-      globalThis.__tt_memory_guests.set(g.id, { ...g });
-    }
   }
 
   if (!globalThis.__tt_memory_settings) {
@@ -327,21 +240,12 @@ async function getDatabase(): Promise<IDBDatabase | null> {
 async function seedIfEmpty(db: IDBDatabase): Promise<void> {
   return new Promise((resolve) => {
     try {
-      const tx = db.transaction([STORES.BOOKINGS, STORES.GUESTS, STORES.SETTINGS], "readwrite");
-      const bookingStore = tx.objectStore(STORES.BOOKINGS);
-      const guestStore = tx.objectStore(STORES.GUESTS);
+      const tx = db.transaction([STORES.SETTINGS], "readwrite");
       const settingsStore = tx.objectStore(STORES.SETTINGS);
 
-      const countReq = bookingStore.count();
+      const countReq = settingsStore.count();
       countReq.onsuccess = () => {
         if (countReq.result === 0) {
-          // Store is completely empty - perform initial seed
-          for (const b of initialDemoBookings) {
-            bookingStore.put(b);
-          }
-          for (const g of initialDemoGuests) {
-            guestStore.put(g);
-          }
           for (const [k, v] of Object.entries(defaultSettings)) {
             settingsStore.put({ key: k, value: v, updatedAt: new Date().toISOString() });
           }
@@ -372,7 +276,7 @@ export async function getAllBookings(): Promise<BookingRecord[]> {
         const store = tx.objectStore(STORES.BOOKINGS);
         const req = store.getAll();
         req.onsuccess = () => {
-          const list = (req.result || []) as BookingRecord[];
+          const list = ((req.result || []) as BookingRecord[]).filter((b) => !isDemoBooking(b));
           // Sort chronologically by checkin descending or createdAt descending
           list.sort((a, b) => (b.checkin || "").localeCompare(a.checkin || ""));
           resolve(list);
@@ -388,13 +292,14 @@ export async function getAllBookings(): Promise<BookingRecord[]> {
   if (hasLocalStorage()) {
     const local = readFromLocalStorage<BookingRecord>("tt_bookings");
     if (local && local.length > 0) {
-      local.sort((a, b) => (b.checkin || "").localeCompare(a.checkin || ""));
-      return local;
+      const filtered = local.filter((b) => !isDemoBooking(b));
+      filtered.sort((a, b) => (b.checkin || "").localeCompare(a.checkin || ""));
+      return filtered;
     }
   }
 
   const mem = getMemoryStorage();
-  const list = Array.from(mem.bookings.values());
+  const list = Array.from(mem.bookings.values()).filter((b) => !isDemoBooking(b));
   list.sort((a, b) => (b.checkin || "").localeCompare(a.checkin || ""));
   return list;
 }
@@ -539,7 +444,7 @@ export async function getAllGuests(): Promise<GuestRecord[]> {
         const store = tx.objectStore(STORES.GUESTS);
         const req = store.getAll();
         req.onsuccess = () => {
-          const list = (req.result || []) as GuestRecord[];
+          const list = ((req.result || []) as GuestRecord[]).filter((g) => !isDemoGuest(g));
           list.sort((a, b) => a.name.localeCompare(b.name));
           resolve(list);
         };
@@ -560,7 +465,7 @@ export async function getAllGuests(): Promise<GuestRecord[]> {
   }
 
   const mem = getMemoryStorage();
-  const list = Array.from(mem.guests.values());
+  const list = Array.from(mem.guests.values()).filter((g) => !isDemoGuest(g));
   list.sort((a, b) => a.name.localeCompare(b.name));
   return list;
 }
@@ -860,4 +765,73 @@ export async function getStorageCounts(): Promise<{ bookings: number; guests: nu
     bookings: bookings.length,
     guests: guests.length,
   };
+}
+
+/**
+ * Automatically purges legacy demonstration data from IndexedDB, LocalStorage, and memory.
+ */
+export async function purgeLegacyDemoData(): Promise<void> {
+  const db = await getDatabase();
+  if (db) {
+    await new Promise<void>((resolve) => {
+      try {
+        const tx = db.transaction([STORES.BOOKINGS, STORES.GUESTS], "readwrite");
+        const bStore = tx.objectStore(STORES.BOOKINGS);
+        const gStore = tx.objectStore(STORES.GUESTS);
+
+        const reqB = bStore.getAll();
+        reqB.onsuccess = () => {
+          const list = (reqB.result || []) as BookingRecord[];
+          for (const b of list) {
+            if (isDemoBooking(b)) {
+              bStore.delete(b.id);
+            }
+          }
+        };
+
+        const reqG = gStore.getAll();
+        reqG.onsuccess = () => {
+          const list = (reqG.result || []) as GuestRecord[];
+          for (const g of list) {
+            if (isDemoGuest(g)) {
+              gStore.delete(g.id);
+            }
+          }
+        };
+
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      } catch {
+        resolve();
+      }
+    });
+  }
+
+  if (globalThis.__tt_memory_bookings) {
+    for (const [id, b] of Array.from(globalThis.__tt_memory_bookings.entries())) {
+      if (isDemoBooking(b)) globalThis.__tt_memory_bookings.delete(id);
+    }
+  }
+  if (globalThis.__tt_memory_guests) {
+    for (const [id, g] of Array.from(globalThis.__tt_memory_guests.entries())) {
+      if (isDemoGuest(g)) globalThis.__tt_memory_guests.delete(id);
+    }
+  }
+
+  if (hasLocalStorage()) {
+    try {
+      const localB = readFromLocalStorage<BookingRecord>("tt_bookings");
+      if (localB) {
+        const cleaned = localB.filter((b) => !isDemoBooking(b));
+        writeToLocalStorage("tt_bookings", cleaned);
+      }
+      const localG = readFromLocalStorage<GuestRecord>("tt_guests");
+      if (localG) {
+        const cleaned = localG.filter((g) => !isDemoGuest(g));
+        writeToLocalStorage("tt_guests", cleaned);
+      }
+    } catch {
+      // ignore
+    }
+  }
 }
