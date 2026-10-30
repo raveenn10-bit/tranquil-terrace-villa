@@ -1,0 +1,346 @@
+================================================================================
+               TRANQUIL TERRACE VILLA - GALLE, SRI LANKA
+          ADMIN DASHBOARD COMPLETE MANUAL & CLIENT GUIDE (BILINGUAL)
+                (සිංහල සහ ඉංග්‍රීසි මිශ්‍ර සම්පූර්ණ අත්පොත)
+================================================================================
+
+Official Website   : https://www.tranquilterracegalle.com/
+Staff Portal / Login: https://www.tranquilterracegalle.com/admin
+Database System    : Cloud Supabase PostgreSQL (Fully Cloud Synced)
+Property Units     : Villa Araliya & Villa Olu (Karapitiya, Galle)
+Property Timezone  : Asia/Colombo (Sri Lanka Standard Time)
+
+================================================================================
+1. DASHBOARD OVERVIEW (මොකක්ද මේ Admin Dashboard එක?)
+================================================================================
+
+[English]
+The Tranquil Terrace Admin Dashboard is a custom, cloud-connected Property 
+Management System (PMS) built specifically for your two luxury private pool 
+villas (Villa Araliya & Villa Olu) in Karapitiya, Galle. It brings your website 
+inquiries, direct phone/WhatsApp bookings, Airbnb/Booking.com calendars, guest 
+records, and financial accounting together into one secure screen.
+
+[සිංහල]
+ට්‍රැන්ක්විල් ටෙරස් (Tranquil Terrace) ඇඩ්මින් ඩෑෂ්බෝඩ් (Admin Dashboard) එක 
+යනු ඔබේ Villa දෙකෙහිම (Villa Araliya සහ Villa Olu) දෛනික මෙහෙයුම්, බුකින්ස්, 
+අමුත්තන්ගේ තොරතුරු, දින දර්ශනය සහ මුදල් ගනුදෙනු එකම තැනකින් ඉතා පහසුවෙන් 
+පාලනය කිරීමට සකස් කරන ලද සම්පූර්ණ Cloud Property Management System (PMS) එකකි. 
+
+ඕනෑම මොහොතක ජංගම දුරකථනයෙන් (Mobile Phone), ටැබ්ලට් එකෙන් (Tablet) හෝ පරිගණකයෙන් 
+(Computer) ලොග් වී Villa එකේ සියලුම වැඩ කටයුතු සජීවීව බලාගත හැක.
+
+
+================================================================================
+2. THE 7 CORE SECTIONS & WHAT YOU CAN DO (ප්‍රධාන අංශ 7 සහ කළ හැකි දේ)
+================================================================================
+
+--------------------------------------------------------------------------------
+TAB 1: RESERVATIONS MANAGEMENT (වෙන්කිරීම් කළමනාකරණය)
+--------------------------------------------------------------------------------
+[English]
+This is your main daily operational hub for managing all guest bookings.
+Key Capabilities:
+1. Search & Filter:
+   - Filter by Villa: View Araliya, Olu, or All.
+   - Filter by Status: Inquiry, Pending, Confirmed, Checked In, Checked Out, 
+     Cancelled.
+   - Filter by Payment: Unpaid, Partial, Paid, Refunded.
+   - Instant search by Guest Name, Phone, Email, or Reference ID.
+2. Add New Booking (+ Add Reservation):
+   - Manually enter walk-in, phone, or direct WhatsApp bookings.
+   - Choose stay packages with built-in official timings:
+     * Day Package: 10:00 AM – 3:00 PM
+     * Night Package: 5:00 PM – 9:00 AM (Next Day)
+     * Day & Night Package: 10:00 AM – 9:00 AM (Next Day) / Option B
+   - Set price in LKR or USD, enter advance payments, and calculate balance due.
+3. Overbooking Prevention:
+   - The cloud database strictly prevents double-booking the same villa on 
+     the same date. Overlapping stays are blocked automatically.
+4. 1-Click WhatsApp Concierge:
+   - Click the green WhatsApp button next to any guest to open WhatsApp Web or 
+     mobile app with a personalized message (Booking confirmation, directions, 
+     payment receipt, check-in instructions).
+5. Print / Export Vouchers:
+   - Generate official, beautifully formatted booking confirmation vouchers 
+     and invoices to print or save as PDF for guests.
+
+[සිංහල]
+මෙය දිනපතා බුකින්ස් පාලනය කරන ප්‍රධානම අංශයයි.
+මෙහිදී ඔබට කළ හැකි දේ:
+1. සියලුම බුකින්ස් සෙවීම සහ පෙරා බැලීම:
+   - Villa Araliya හෝ Villa Olu වෙන වෙනම හෝ දෙකම එකවර බලාගැනීම.
+   - බුකින් එකේ තත්ත්වය අනුව (Inquiry, Pending, Confirmed, Checked In, 
+     Checked Out, Cancelled) පහසුවෙන් Filter කර බැලීම.
+   - මුදල් ගෙවූ තත්ත්වය අනුව (Unpaid - නොගෙවූ, Partial - අත්තිකාරම් ගෙවූ, 
+     Paid - සම්පූර්ණයෙන් ගෙවූ, Refunded - ආපසු දුන්) බැලීම.
+   - අමුත්තාගේ නම, දුරකථන අංකය, ඊමේල් හෝ Reference අංකය මඟින් ක්ෂණිකව සෙවීම.
+2. අලුත් බුකින් එකතු කිරීම (+ Add Reservation):
+   - Phone call වලින් හෝ WhatsApp මඟින් ලැබෙන බුකින්ස් පහසුවෙන් ඇතුළත් කිරීම.
+   - නිල පැකේජ වේලාවන් ස්වයංක්‍රීයව තෝරාගත හැක:
+     * Day Package: උදෑසන 10:00 සිට සවස 3:00 දක්වා
+     * Night Package: සවස 5:00 සිට පසුදා උදෑසන 9:00 දක්වා
+     * Day & Night Package: උදෑසන 10:00 සිට පසුදා උදෑසන 9:00 දක්වා
+   - අත්තිකාරම් මුදල (Advance paid) සහ ඉතිරි මුදල (Balance due) ස්වයංක්‍රීයව 
+     ගණනය වේ.
+3. එකම දිනට දෙදෙනෙකුට බුක්වීම වැළැක්වීම (Double-Booking Protection):
+   - එකම Villa එක එකම දිනයට දෙදෙනෙකුට වැරදීමකින් හෝ බුක් කිරීමට පද්ධතිය 
+     ඉඩ නොදේ. Overlapping stays ස්වයංක්‍රීයව බ්ලොක් කරයි.
+4. ක්ෂණික WhatsApp පණිවිඩ යැවීම (1-Click WhatsApp):
+   - අමුත්තාගේ නම ළඟ ඇති WhatsApp අයිකනය ක්ලික් කළ සැනින්, බුකින් තොරතුරු සහ 
+     ස්තූති පණිවිඩය සකස් වී අමුත්තාගේ WhatsApp එකට කෙළින්ම යැවිය හැක.
+5. බිල්පත් සහ Vouchers මුද්‍රණය කිරීම (Print Confirmation):
+   - අමුත්තාට ලබාදීමට නිල Booking Confirmation Voucher / Invoice එකක් ක්ලික් 
+     එකකින් Print කරගැනීමට හෝ PDF එකක් ලෙස Save කරගැනීමට හැක.
+
+
+--------------------------------------------------------------------------------
+TAB 2: DUAL-VILLA VISUAL CALENDAR (සජීවී දින දර්ශනය)
+--------------------------------------------------------------------------------
+[English]
+Visual overview of villa occupancy across the month.
+Key Capabilities:
+- Side-by-side comparison of Villa Araliya and Villa Olu.
+- Color-coded badges indicating booking status (Confirmed, Checked-in, Pending).
+- Visual check-in / check-out turnover indicators (helps housekeeping prepare 
+  rooms on tight changeovers between Day and Night packages).
+- Click any reservation directly on the calendar grid to view full guest details.
+
+[සිංහල]
+මාසය පුරා Villa දෙකෙහිම කාමර වෙන්වීම් පැහැදිලිව පෙන්වන දින දර්ශනය.
+මෙහිදී ඔබට කළ හැකි දේ:
+- Villa Araliya සහ Villa Olu දෙකෙහිම බුකින්ස් එකිනෙකට යාබදව (Side-by-side) 
+  දින දර්ශනයේ බලාගැනීම.
+- වර්ණ සංකේත මඟින් බුකින් එකේ තත්ත්වය බැලීම (කොළ පාට: Confirmed, 
+  නිල් පාට: Checked In, කහ පාට: Pending).
+- කාමර සූදානම් කිරීමේ වේලාවන් (Turnover windows) බලාගැනීම (Day package එකක් 
+  සවස 3:00ට අවසන් වී Night package එකක් සවස 5:00ට පැමිණෙන විට කාමරය සූදානම් 
+  කිරීමට පැය 2ක් ඇති බව පැහැදිලිව හඳුනාගැනීම).
+- දින දර්ශනයේ ඇති ඕනෑම බුකින් එකක් ක්ලික් කර අමුත්තාගේ සියලු විස්තර බැලීම.
+
+
+--------------------------------------------------------------------------------
+TAB 3: CALENDAR SYNC & OTA INTEGRATION (Airbnb / Booking.com Sync)
+--------------------------------------------------------------------------------
+[English]
+Two-way automated iCal synchronization with global travel portals.
+Key Capabilities:
+- Live export feeds for Villa Araliya and Villa Olu (`.ics` URLs).
+- Connect to Airbnb, Booking.com, Agoda, Vrbo, and Google Calendar.
+- When a direct booking is placed on your website, it automatically marks those 
+  dates as blocked on Airbnb and Booking.com.
+- When an external guest books via Booking.com or Airbnb, the imported feed blocks 
+  those dates on your website to ensure zero double-bookings.
+
+[සිංහල]
+Airbnb, Booking.com, Agoda වැනි ජාත්‍යන්තර Booking Platforms සමඟ සම්බන්ධ වීම.
+මෙහිදී ඔබට කළ හැකි දේ:
+- Villa Araliya සහ Villa Olu සඳහා වෙන වෙනම සජීවී iCal (`.ics`) ලින්ක් ලබාගැනීම.
+- මෙම ලින්ක් Airbnb හෝ Booking.com එකට දැමූ විට, ඔබගේ වෙබ්සයිට් එකෙන් බුකින් එකක් 
+  ලැබුණු වහාම Airbnb / Booking.com වල එම දින ස්වයංක්‍රීයව Block වේ!
+- එමෙන්ම Airbnb හෝ Booking.com හරහා බුකින් එකක් ආ විට, එම දින ඔබගේ දින දර්ශනයට 
+  එකතු වී වෙබ් අඩවියේ අදාළ දිනය ස්වයංක්‍රීයව වසා දමයි (No double-booking).
+
+
+--------------------------------------------------------------------------------
+TAB 4: FINANCIALS & REVENUE TRACKING (මුදල් සහ ආදායම් වාර්තා)
+--------------------------------------------------------------------------------
+[English]
+Comprehensive revenue accounting and financial reporting.
+Key Capabilities:
+- Live Financial Cards:
+  * Total Gross Revenue (Total value of all bookings)
+  * Cash Collected (Actual advances & payments received)
+  * Pending Balance (Outstanding money owed by arriving guests)
+  * Total Refunds issued
+- Dual Currency Switcher:
+  * Switch between LKR (Sri Lankan Rupees) and USD ($) in real-time.
+- Revenue Breakdown by Villa:
+  * Compare revenue generated by Villa Araliya vs Villa Olu.
+- Revenue Breakdown by Package:
+  * See income split between Day Packages, Night Packages, and Full 24h Stays.
+- 1-Click Excel / CSV Export:
+  * Download full financial records as a spreadsheet for accountants or tax 
+    reporting.
+
+[සිංහල]
+ආදායම් සහ ගිණුම් විස්තර එකම තැනකින් බලාගැනීම.
+මෙහිදී ඔබට කළ හැකි දේ:
+- ප්‍රධාන මුදල් වාර්තා (Live Cards):
+  * Total Gross Revenue: ලැබුණු සියලු බුකින් වල එකතුව (සමස්ත වටිනාකම).
+  * Cash Collected: ඔබට අතට ලැබුණු අත්තිකාරම් සහ සම්පූර්ණ මුදල් එකතුව.
+  * Pending Balance: අමුත්තන්ගෙන් තවමත් ලැබීමට ඇති හිඟ මුදල් එකතුව.
+  * Total Refunds: ආපසු ගෙවන ලද මුදල්.
+- LKR සහ USD මුදල් ඒකක මාරු කිරීම:
+  * ශ්‍රී ලංකා රුපියල් (LKR) සහ ඇමරිකානු ඩොලර් (USD) අතර ක්ෂණිකව මාරු වී 
+    ගණනය කිරීම් බැලීමේ හැකියාව.
+- Villa සහ Packages අනුව ආදායම වෙන්කර බැලීම:
+  * Villa Araliya සහ Villa Olu වලින් වැඩිපුර ආදායම ලැබෙන්නේ කුමන Villa එකෙන්දැයි 
+    සැසඳීම.
+  * Day Package, Night Package සහ Full Day පැකේජ වලින් ලැබුණු ආදායම් වෙන වෙනම 
+    බලාගැනීම.
+- Excel / CSV වාර්තා Download කිරීම:
+  * සියලුම මුදල් වාර්තා එක ක්ලික් එකකින් Excel (CSV) ගොනුවක් ලෙස Download කර 
+    ගිණුම් කටයුතු වලට යොදාගැනීම.
+
+
+--------------------------------------------------------------------------------
+TAB 5: GUEST DIRECTORY & CRM (අමුත්තන්ගේ දත්ත ගබඩාව)
+================================================================================
+[English]
+Customer Relationship Management (CRM) for tracking your villa guests.
+Key Capabilities:
+- Automatic Profile Creation: Every guest booking through the website, 
+  WhatsApp, or phone is saved into a permanent guest record.
+- Guest Loyalty Insights:
+  * Total bookings made by this guest
+  * Total lifetime spend (LKR/USD)
+  * Country of residence
+  * Contact info (Phone & Email)
+  * Date of their last stay
+- Custom Staff Notes:
+  * Record guest preferences (e.g. "Prefers floating breakfast at 9:00 AM", 
+    "Anniversary couple", "Vegetarian", "Allergic to shellfish").
+- Direct Contact Links:
+  * Call, Email, or WhatsApp the guest directly from their profile card.
+
+[සිංහල]
+ඔබගේ Villa එකට පැමිණි අමුත්තන්ගේ ස්ථිර දත්ත ගබඩාව (Customer Directory).
+මෙහිදී ඔබට කළ හැකි දේ:
+- අමුත්තන්ගේ තොරතුරු ස්වයංක්‍රීයව සුරැකීම: වෙබ් අඩවියෙන් හෝ දුරකථනයෙන් වෙන්කිරීමක් 
+  කළ සෑම අමුත්තෙකුගේම විස්තර ස්ථිරවම ගබඩා වේ.
+- අමුත්තාගේ වටිනාකම බැලීම (Guest Lifetime Value):
+  * මෙම අමුත්තා කී වතාවක් ඔබේ Villa එකට පැමිණ ඇත්ද? (Total Bookings).
+  * ඔහු මෙතෙක් වියදම් කර ඇති සම්පූර්ණ මුදල (Total Spend in LKR/USD).
+  * අමුත්තාගේ රට, දුරකථන අංකය, ඊමේල් සහ අවසන් වරට පැමිණි දිනය.
+- අමුත්තාගේ විශේෂ රුචිකත්වයන් සටහන් කිරීම (Staff Notes):
+  * "උදෑසන 9ට Floating breakfast කැමතියි", "විවාහ සංවත්සරය සමරයි", 
+    "නිර්මාංශ ආහාර ගනී" වැනි දේ සටහන් කර තබා ඊළඟ වතාවේ විශේෂ සත්කාර ලබාදීම.
+- ඍජු ඇමතුම් සහ WhatsApp:
+  * Profile එක ළඟ ඇති බොත්තම් මඟින් කෙළින්ම Call එකක් හෝ WhatsApp පණිවිඩයක් යැවීම.
+
+
+--------------------------------------------------------------------------------
+TAB 6: PERFORMANCE ANALYTICS (ව්‍යාපාර වර්ධන දත්ත)
+--------------------------------------------------------------------------------
+[English]
+Business intelligence metrics to help optimize rates and occupancy.
+Key Capabilities:
+- Occupancy Rate (%): Percentage of nights booked per month for Araliya & Olu.
+- Average Daily Rate (ADR): Average room revenue earned per occupied day.
+- Revenue Per Available Room (RevPAR): Overall performance metric.
+- Booking Sources Breakdown:
+  * Shows the percentage of bookings originating from Website Direct, 
+    WhatsApp, Booking.com, Airbnb, Walk-ins, or Phone.
+  * Helps you determine where to focus your marketing.
+
+[සිංහල]
+Villa ව්‍යාපාරයේ දියුණුව සහ ප්‍රගතිය මනින සංඛ්‍යාලේඛන.
+මෙහිදී ඔබට කළ හැකි දේ:
+- Occupancy Rate (%): එක් එක් Villa එක මාසය තුළ පිරී තිබූ ප්‍රතිශතය (Occupancy).
+- සාමාන්‍ය දෛනික ආදායම (Average Daily Rate - ADR): දිනකට ලැබුණු සාමාන්‍ය මුදල.
+- බුකින් ලැබුණු මාර්ග (Booking Sources):
+  * වැඩිපුරම බුකින් ලැබෙන්නේ Direct Website එකෙන්ද, WhatsApp වලින්ද, 
+    Booking.com ද නැතහොත් Airbnb ද යන්න ප්‍රස්තාර මඟින් පෙන්වීම.
+
+
+--------------------------------------------------------------------------------
+TAB 7: CLOUD DATABASE, BACKUP & SECURITY (ආරක්ෂාව සහ Backup)
+--------------------------------------------------------------------------------
+[English]
+Data security, cloud storage, and backup management.
+Key Capabilities:
+- Cloud-Native Database (Supabase PostgreSQL):
+  * Industrial-grade cloud database with SSL encryption and Row-Level Security.
+  * No data loss if a phone or laptop is lost or damaged.
+- 1-Click System Backup Export:
+  * Download a complete JSON or CSV backup of all bookings, guests, and settings 
+    at any time.
+- Authenticated Cloud Restore:
+  * Secure import utility to restore records if ever required.
+
+[සිංහල]
+දත්ත ආරක්ෂාව සහ සජීවී Cloud Backup පද්ධතිය.
+මෙහිදී ඔබට කළ හැකි දේ:
+- Cloud Database (Supabase PostgreSQL):
+  * සියලුම දත්ත Cloud සර්වර් වල ආරක්ෂිතව ගබඩා වේ. පරිගණකය කැඩුණද හෝ දුරකථනය 
+    නැති වුවද ඔබගේ කිසිදු බුකින් එකක් හෝ මුදල් වාර්තාවක් නැති නොවේ.
+- 1-Click Backup Download:
+  * ඕනෑම වෙලාවක ඔබේ සම්පූර්ණ දත්ත ගබඩාවම (Bookings & Guests) JSON හෝ CSV 
+    ගොනුවක් ලෙස පරිගණකයට බාගත කර තබාගත හැක.
+
+
+================================================================================
+3. DAILY WORKFLOW FOR VILLA STAFF (දිනපතා වැඩ කරන ආකාරය පියවරෙන් පියවර)
+================================================================================
+
+[English]
+1. Morning Check (8:30 AM):
+   - Log in to https://tranquilterracegalle.com/admin
+   - Open "Calendar" or "Reservations" tab.
+   - Check who is arriving today:
+     * Day Package guests arriving at 10:00 AM (Villa Araliya or Olu).
+     * Night Package guests arriving at 5:00 PM.
+2. When a New Booking Arrives:
+   - Click "+ Add Reservation".
+   - Enter Guest Name, Mobile Number, Package, and Dates.
+   - Enter Advance Paid amount -> Click "Save Booking".
+3. When Guest Arrives (Check-In):
+   - Open booking -> Change status to "Checked In".
+   - Collect remaining balance -> Change payment status to "Paid".
+   - Click WhatsApp icon to send welcoming WiFi & Villa rules message.
+4. When Guest Departs (Check-Out):
+   - Open booking -> Change status to "Checked Out".
+   - Housekeeping is notified that the room is ready for cleaning.
+
+[සිංහල]
+1. උදෑසන ආරම්භය (පෙරවරු 8:30):
+   - https://tranquilterracegalle.com/admin වෙත ගොස් Log in වන්න.
+   - "Calendar" හෝ "Reservations" බලා අද දිනයේ පැමිණීමට නියමිත අමුත්තන් කවුදැයි 
+     බලන්න (උදෑසන 10:00ට Day package එකක්ද, සවස 5:00ට Night package එකක්ද?).
+2. අලුත් බුකින් එකක් ආ විට:
+   - "+ Add Reservation" ක්ලික් කරන්න.
+   - අමුත්තාගේ නම, දුරකථන අංකය, දින, පැකේජය සහ ගෙවූ අත්තිකාරම් මුදල දමන්න.
+   - "Save Booking" ක්ලික් කරන්න.
+3. අමුත්තා පැමිණි විට (Check-In):
+   - බුකින් එක විවෘත කර Status එක "Checked In" කරන්න.
+   - ඉතිරි මුදල ලබාගෙන Payment Status එක "Paid" කරන්න.
+   - WhatsApp අයිකනය ක්ලික් කර අමුත්තාට Welcome message එක සහ WiFi විස්තර යවන්න.
+4. අමුත්තා පිටව යන විට (Check-Out):
+   - Status එක "Checked Out" කරන්න.
+   - කාමරය පිරිසිදු කිරීමට සේවක මණ්ඩලය සූදානම් වේ.
+
+
+================================================================================
+4. FREQUENTLY ASKED CLIENT QUESTIONS (නිතර අසන ප්‍රශ්න)
+================================================================================
+
+Q1: මට Phone එකෙන් මේක පාවිච්චි කරන්න පුළුවන්ද? (Can I use mobile phone?)
+A1: [Bilingual]
+    ඔව්, සම්පූර්ණයෙන්ම පුළුවන් (Yes, 100%). Admin Dashboard එක Mobile Phone 
+    සහ Tablets සඳහා Responsive ලෙස නිර්මාණය කර ඇත. ලෝකයේ කොහේ සිටියත් Phone 
+    එකෙන් බුකින් දැමීමට, WhatsApp යැවීමට සහ ආදායම් බැලීමට හැක.
+
+Q2: Website එකෙන් කෙනෙක් බුක් කළාම මොකද වෙන්නේ? (Website booking flow?)
+A2: [Bilingual]
+    වෙබ් අඩවියෙන් අමුත්තෙක් Enquire කළ සැනින් Admin Dashboard එකේ 
+    "Inquiry" ලෙස එය සටහන් වන අතර WhatsApp එකට විස්තර පැමිණේ. ඔබ එය තහවුරු කළ 
+    විට "Confirmed" ලෙස මාරු කළ හැක.
+
+Q3: වැරදීමකින් එකම දවසට බුකින් 2ක් වැටෙන්න පුළුවන්ද? (Can double-booking happen?)
+A3: [Bilingual]
+    නැත (No). Cloud Database එක තුළ Double-booking Prevention සක්‍රීය කර ඇති 
+    බැවින් එකම Villa එක එකම දිනයකදී දෙදෙනෙකුට කිසිසේත්ම වෙන් කළ නොහැක.
+
+Q4: පරිගණකය Format කළොත් හෝ නැති වුවහොත් දත්ත නැතිවේද? (Data safety?)
+A4: [Bilingual]
+    නැත (No). සියලුම තොරතුරු Supabase Cloud Server එකෙහි සුරක්ෂිතව ඇති බැවින් 
+    ඕනෑම නව පරිගණකයකින් හෝ දුරකථනයකින් Log වූ සැනින් පෙර තිබූ දත්ත ඒ අයුරින්ම 
+    ලබාගත හැක.
+
+================================================================================
+Document: Tranquil Terrace Villa Admin Dashboard Manual (Bilingual Edition)
+Version : 2.0 (Official Client Handover)
+Property: Tranquil Terrace Villa, Bogahawella Road, Karapitiya, Galle, Sri Lanka
+Date    : October 2026
+================================================================================
