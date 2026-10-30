@@ -36,6 +36,11 @@ for (const file of [
   "favicon-32x32.png",
   "android-chrome-192x192.png",
   "android-chrome-512x512.png",
+  "favicon-48x48.png",
+  "favicon-96x96.png",
+  "favicon-192x192.png",
+  "site.webmanifest",
+  "manifest.json",
   "robots.txt",
   "sitemap.xml",
 ]) {
@@ -603,56 +608,62 @@ const htmlFiles = [
 const pageMetadata = {
   "index.html": {
     url: "https://www.tranquilterracegalle.com/",
-    title: "Tranquil Terrace Galle | Private Pool Villas in Karapitiya, Galle",
-    description: "Discover Tranquil Terrace Galle — two luxury private pool villas in Karapitiya, Galle for couples. Villa Araliya & Villa Olu each feature 1 king bedroom suite, private bathroom & plunge pool.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
+    title: "Tranquil Terrace Villa Galle | Luxury Private Pool Villas in Karapitiya",
+    description: "Discover Tranquil Terrace Villa in Karapitiya, Galle — luxury private pool villas for couples. Villa Araliya & Villa Olu each feature 1 king bedroom suite, private bathroom & plunge pool.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp",
+    keywords: "Tranquil Terrace Villa, Tranquil Terrace Galle, Tranquil Terrace, Villa in Karapitiya, Private pool villa in Galle, Karapitiya villa, Luxury villa Galle, Sri Lanka private pool villa, Villa Araliya, Villa Olu, couples villa Galle"
   },
   "villas.html": {
     url: "https://www.tranquilterracegalle.com/villas.html",
-    title: "Private Luxury Villas in Galle | Villa Araliya & Villa Olu | Tranquil Terrace",
-    description: "Explore Villa Araliya and Villa Olu in Karapitiya, Galle. Each private villa features one king bedroom suite, private bathroom, and secluded plunge pool for two guests.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-2.webp"
+    title: "Tranquil Terrace Villa | Villa Araliya & Villa Olu | Private Pool Villas in Galle",
+    description: "Explore Villa Araliya and Villa Olu at Tranquil Terrace Villa in Karapitiya, Galle. Each private villa features one king bedroom suite, private bathroom, and secluded plunge pool for two guests.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-2.webp",
+    keywords: "Tranquil Terrace Villa, Villa Araliya, Villa Olu, Private pool villa in Galle, Villa in Karapitiya, Couples villa Galle, Luxury villas Sri Lanka"
   },
   "experiences.html": {
     url: "https://www.tranquilterracegalle.com/experiences.html",
-    title: "Curated Villa Experiences & Floating Breakfast | Tranquil Terrace Galle",
-    description: "Indulge in signature plunge-pool floating breakfasts, in-villa romantic dining, and bespoke Galle Fort tours at Tranquil Terrace luxury villas in Karapitiya, Galle.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-4.webp"
+    title: "Curated Experiences & Floating Breakfast | Tranquil Terrace Villa Galle",
+    description: "Indulge in signature plunge-pool floating breakfasts, in-villa romantic dining, and bespoke Galle Fort tours at Tranquil Terrace Villa in Karapitiya, Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-4.webp",
+    keywords: "Floating breakfast Galle, Tranquil Terrace Villa experiences, Private pool dining Galle, Romantic villa Galle, Galle Fort tours, Villa in Karapitiya"
   },
   "gallery.html": {
     url: "https://www.tranquilterracegalle.com/gallery.html",
-    title: "Villa Gallery & Private Plunge Pool Photos | Tranquil Terrace Galle",
-    description: "View photos of Villa Araliya, Villa Olu, private plunge pools, king bedroom suites and tropical courtyard gardens at Tranquil Terrace in Karapitiya, Galle.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-3.webp"
+    title: "Photo Gallery | Tranquil Terrace Villa Galle | Luxury Private Pool Villas",
+    description: "View photos of Tranquil Terrace Villa: Villa Araliya, Villa Olu, private plunge pools, king bedroom suites and tropical courtyard gardens at Tranquil Terrace in Karapitiya, Galle.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-3.webp",
+    keywords: "Tranquil Terrace Villa photos, Galle villa gallery, Private pool villa photos Galle, Karapitiya villa pictures"
   },
   "explore-galle.html": {
     url: "https://www.tranquilterracegalle.com/explore-galle.html",
-    title: "Galle Travel Guide & Nearby Attractions | Tranquil Terrace Karapitiya",
-    description: "Explore Galle from Tranquil Terrace: 10–12 minutes to UNESCO Galle Fort & Lighthouse, 15 minutes to Unawatuna Beach, and 2 minutes to Karapitiya.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
+    title: "Galle Travel Guide & Attractions | Tranquil Terrace Villa Karapitiya",
+    description: "Explore Galle from Tranquil Terrace Villa: 10–12 minutes to UNESCO Galle Fort & Lighthouse, 15 minutes to Unawatuna Beach, and 2 minutes to central Karapitiya.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-0.webp",
+    keywords: "Galle travel guide, Things to do in Galle, Karapitiya to Galle Fort, Unawatuna Beach, Tranquil Terrace Villa guide"
   },
   "contact.html": {
     url: "https://www.tranquilterracegalle.com/contact.html",
-    title: "Contact & Direct Booking | Tranquil Terrace Luxury Villas Galle",
-    description: "Reserve your stay at Tranquil Terrace Galle. Located on Bogahawella Road, Karapitiya, Galle. Direct WhatsApp concierge (+94 77 068 2366), map directions & best rates guaranteed.",
-    image: "https://www.tranquilterracegalle.com/assets/villa-1.webp"
+    title: "Contact & Direct Booking | Tranquil Terrace Villa Galle",
+    description: "Reserve your stay at Tranquil Terrace Villa Galle. Located on Bogahawella Road, Karapitiya, Galle. Direct WhatsApp concierge (+94 77 068 2366), map directions & best rates guaranteed.",
+    image: "https://www.tranquilterracegalle.com/assets/villa-1.webp",
+    keywords: "Book Tranquil Terrace Villa, Tranquil Terrace Galle contact, WhatsApp villa booking Galle, Karapitiya villa address"
   },
   "privacy-policy.html": {
     url: "https://www.tranquilterracegalle.com/privacy-policy.html",
-    title: "Privacy Policy | Tranquil Terrace Galle",
-    description: "Privacy policy and guest data handling for reservations and inquiries at Tranquil Terrace Galle.",
+    title: "Privacy Policy | Tranquil Terrace Villa Galle",
+    description: "Privacy policy and guest data handling for reservations and inquiries at Tranquil Terrace Villa Galle.",
     image: "https://www.tranquilterracegalle.com/assets/tranquil-terrace-mark.png"
   },
   "404.html": {
     url: "https://www.tranquilterracegalle.com/404.html",
-    title: "Page Not Found (404) | Tranquil Terrace Galle",
-    description: "The page you are looking for cannot be found. Return to Tranquil Terrace Galle, luxury private pool villas in Karapitiya, Galle.",
+    title: "Page Not Found (404) | Tranquil Terrace Villa Galle",
+    description: "The page you are looking for cannot be found. Return to Tranquil Terrace Villa Galle, luxury private pool villas in Karapitiya, Galle.",
     image: "https://www.tranquilterracegalle.com/assets/villa-0.webp"
   },
   "terms-and-conditions.html": {
     url: "https://www.tranquilterracegalle.com/terms-and-conditions.html",
-    title: "Terms & Conditions | Tranquil Terrace Galle",
-    description: "Terms, reservation policies, check-in schedules, and cancellation terms for Tranquil Terrace Galle.",
+    title: "Terms & Conditions | Tranquil Terrace Villa Galle",
+    description: "Terms, reservation policies, check-in schedules, and cancellation terms for Tranquil Terrace Villa Galle.",
     image: "https://www.tranquilterracegalle.com/assets/tranquil-terrace-mark.png"
   }
 };
@@ -698,8 +709,13 @@ for (const fileName of htmlFiles) {
     '<span><small>CHECK-IN</small><strong>Day: 10:00 AM<br/>Night: 5:00 PM</strong></span><span><small>CHECK-OUT</small><strong>Day: 3:00 PM<br/>Night: 9:00 AM</strong></span>'
   );
 
-  // Clean up any existing canonical, og, and twitter tags
+  // Clean up any existing canonical, robots, og, twitter, keywords, and author tags
   html = html.replace(/<link[^>]*rel="canonical"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="robots"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="googlebot"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="bingbot"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="keywords"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<meta[^>]*name="author"[^>]*\/?>\s*/gi, "");
   html = html.replace(/<meta[^>]*property="og:[^"]*"[^>]*\/?>\s*/gi, "");
   html = html.replace(/<meta[^>]*name="twitter:[^"]*"[^>]*\/?>\s*/gi, "");
   
@@ -718,12 +734,17 @@ for (const fileName of htmlFiles) {
   };
 
   const seoTags = `  <link rel="canonical" href="${meta.url}"/>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+  <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+  ${meta.keywords ? `<meta name="keywords" content="${meta.keywords}"/>\n  ` : ''}<meta name="author" content="Tranquil Terrace Villa"/>
   <meta property="og:url" content="${meta.url}"/>
   <meta property="og:type" content="website"/>
   <meta property="og:title" content="${meta.title}"/>
   <meta property="og:description" content="${meta.description}"/>
   <meta property="og:image" content="${meta.image}"/>
-  <meta property="og:site_name" content="Tranquil Terrace Galle"/>
+  <meta property="og:site_name" content="Tranquil Terrace Villa"/>
+  <meta property="og:locale" content="en_US"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="${meta.title}"/>
   <meta name="twitter:description" content="${meta.description}"/>
@@ -735,13 +756,19 @@ for (const fileName of htmlFiles) {
     html = html.replace(/<head>/i, `<head>\n${seoTags}`);
   }
 
-  // Ensure Google Fonts Cormorant Garamond & Manrope are loaded
-  if (!html.includes("family=Cormorant+Garamond")) {
-    html = html.replace(
-      /<head>/i,
-      `<head>\n  <link href="https://fonts.googleapis.com" rel="preconnect"/>\n  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>\n  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>`
-    );
-  }
+  // Ensure Google Fonts Cormorant Garamond & Manrope are loaded with proper preconnect & dns-prefetch
+  html = html.replace(/<link[^>]*href="https:\/\/fonts\.googleapis\.com"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<link[^>]*href="https:\/\/fonts\.gstatic\.com"[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<link[^>]*rel="(?:preconnect|dns-prefetch)"[^>]*fonts\.(?:googleapis|gstatic)\.com[^>]*\/?>\s*/gi, "");
+  html = html.replace(/<link[^>]*href="https:\/\/fonts\.googleapis\.com\/css2\?[^>]*\/?>\s*/gi, "");
+
+  const fontTags = `  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com"/>
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>`;
+
+  html = html.replace(/<head>/i, `<head>\n${fontTags}`);
 
   // Ensure cinematic-3d.css and meta-redesign.css are both linked in head
   if (!html.includes('href="meta-redesign.css"')) {
@@ -813,6 +840,61 @@ for (const fileName of htmlFiles) {
   // Update Instagram URL in LodgingBusiness schema in index.html
   html = html.replace(/https:\/\/www\.instagram\.com\/tranquil\.terrace\.galle\//g, "https://www.instagram.com/tranquil_terrace_galle/");
 
+  // Update brand entity names in structured data schemas across all pages
+  html = html.replace(
+    /"@id":\s*"https:\/\/www\.tranquilterracegalle\.com\/#website",\s*"name":\s*"[^"]*",\s*"alternateName":\s*\[[^\]]*\]/g,
+    `"@id": "https://www.tranquilterracegalle.com/#website",\n    "name": "Tranquil Terrace Villa",\n    "alternateName": [\n      "Tranquil Terrace Villa Galle",\n      "Tranquil Terrace Galle",\n      "Tranquil Terrace",\n      "Tranquil Terrace Karapitiya",\n      "Villa in Karapitiya",\n      "Private pool villa in Galle"\n    ]`
+  );
+  html = html.replace(
+    /"@id":\s*"https:\/\/www\.tranquilterracegalle\.com\/#lodging",\s*"name":\s*"[^"]*",\s*"alternateName":\s*\[[^\]]*\]/g,
+    `"@id": "https://www.tranquilterracegalle.com/#lodging",\n    "name": "Tranquil Terrace Villa",\n    "alternateName": [\n      "Tranquil Terrace Villa Galle",\n      "Tranquil Terrace Galle",\n      "Tranquil Terrace",\n      "Tranquil Terrace Karapitiya",\n      "Villa in Karapitiya",\n      "Private pool villa in Galle",\n      "Couples villa Galle"\n    ]`
+  );
+  html = html.replace(
+    /"@type":\s*"ContactPage",\s*"name":\s*"[^"]*",/g,
+    `"@type": "ContactPage",\n    "name": "Contact Tranquil Terrace Villa Galle",`
+  );
+  html = html.replace(
+    /"description":\s*"Two private luxury pool villas in Karapitiya, Galle, Sri Lanka\. Designed for couples, Villa Araliya and Villa Olu each feature one king bedroom suite, private bathroom, and private plunge pool for up to two guests\."/g,
+    `"description": "Tranquil Terrace Villa offers two private luxury pool villas in Karapitiya, Galle, Sri Lanka. Designed for couples, Villa Araliya and Villa Olu each feature one king bedroom suite, private bathroom, and private plunge pool for up to two guests."`
+  );
+
+  // Update H1 to prominently feature "Tranquil Terrace Villa" for Search Engine & AEO indexing
+  if (fileName === "index.html") {
+    html = html.replace(
+      /<h1 class="meta-hero-title">[\s\S]*?<\/h1>/,
+      `<h1 class="meta-hero-title">Tranquil Terrace Villa —<br/><em>Private Pool Villas in Galle</em></h1>`
+    );
+    html = html.replace(
+      /<p class="meta-hero-desc">[\s\S]*?<\/p>/,
+      `<p class="meta-hero-desc">Welcome to Tranquil Terrace Villa in Karapitiya, Galle. Designed as an intimate couples villa retreat, Villa Araliya and Villa Olu each feature one king bedroom suite, private bathroom, and secluded plunge pool for up to two guests.</p>`
+    );
+  } else if (fileName === "villas.html") {
+    html = html.replace(
+      /<h1 class="enter">Two private villas\.<br\/><em>Entirely yours\.<\/em><\/h1>/,
+      `<h1 class="enter">Tranquil Terrace Villa —<br/><em>Private Pool Villas in Galle</em></h1>`
+    );
+  } else if (fileName === "experiences.html") {
+    html = html.replace(
+      /<h1 class="enter">The luxury<br\/>of <em>less\.<\/em><\/h1>/,
+      `<h1 class="enter">Tranquil Terrace Villa —<br/>Curated <em>Experiences</em></h1>`
+    );
+  } else if (fileName === "contact.html") {
+    html = html.replace(
+      /<h1 class="enter">Your escape<br\/>starts <em>here\.<\/em><\/h1>/,
+      `<h1 class="enter">Tranquil Terrace Villa —<br/>Contact &amp; <em>Direct Booking</em></h1>`
+    );
+  } else if (fileName === "gallery.html") {
+    html = html.replace(
+      /<h1 class="enter">Wish you<br\/>were <em>here\.<\/em><\/h1>/,
+      `<h1 class="enter">Tranquil Terrace Villa —<br/>Photo <em>Gallery</em></h1>`
+    );
+  } else if (fileName === "explore-galle.html") {
+    html = html.replace(
+      /<h1 class="enter">A quiet base\.<br\/><em>Open horizons\.<\/em><\/h1>/,
+      `<h1 class="enter">Tranquil Terrace Villa —<br/>Explore <em>Galle &amp; Beyond</em></h1>`
+    );
+  }
+
   // B. Clean up any existing header, orphaned notice bars, and duplicate mobile drawers
   html = html.replace(/<!-- (?:1\. )?Top Notice Announcement Bar -->\s*/g, "");
   html = html.replace(/<aside class="meta-notice-bar"[\s\S]*?<\/aside>\s*/g, "");
@@ -846,7 +928,7 @@ for (const fileName of htmlFiles) {
           playsinline 
           webkit-playsinline
           poster="videos/hero-poster.webp"
-          preload="auto"
+          preload="none"
           aria-hidden="true">
           <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(orientation: portrait) and (max-width: 1024px)"/>
           <source src="videos/hero-cinematic-portrait.mp4" type="video/mp4" media="(max-width: 768px)"/>
