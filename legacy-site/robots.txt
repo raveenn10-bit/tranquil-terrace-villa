@@ -20,6 +20,46 @@ Allow: /assets/
 Allow: /images/
 Allow: /videos/
 
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin.html
+Disallow: /api/admin/
+Disallow: /api/auth/
+
 User-agent: *
 Allow: /
 Allow: /api/calendar/

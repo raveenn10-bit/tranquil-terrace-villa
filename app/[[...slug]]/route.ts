@@ -87,6 +87,7 @@ export async function GET(
           "content-type": "text/html; charset=utf-8",
           "cache-control": "no-cache, no-store, must-revalidate",
           "x-content-type-options": "nosniff",
+          "x-robots-tag": "noindex, follow",
         },
       });
     }

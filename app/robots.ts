@@ -31,6 +31,23 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
       {
+        userAgent: [
+          "Bingbot",
+          "OAI-SearchBot",
+          "ChatGPT-User",
+          "PerplexityBot",
+          "Google-Extended",
+        ],
+        allow: "/",
+        disallow: [
+          "/admin",
+          "/admin/",
+          "/admin.html",
+          "/api/admin/",
+          "/api/auth/",
+        ],
+      },
+      {
         userAgent: "*",
         allow: [
           "/",

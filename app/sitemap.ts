@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://www.tranquilterracegalle.com";
-  const lastmod = "2026-10-30";
+  const lastmod = "2026-11-01";
 
   return [
     {
